@@ -5,10 +5,10 @@ Parses the test PDF and reports extraction results.
 import sys
 import os
 
-# Fix Windows symlink issue with HuggingFace Hub
-os.environ["HF_HUB_DISABLE_SYMLINKS"] = "1"
-# Fix encoding issue
-os.environ["PYTHONIOENCODING"] = "utf-8"
+# Platform-specific fixes
+if sys.platform == "win32":
+    os.environ["HF_HUB_DISABLE_SYMLINKS"] = "1"   # Windows symlink privilege issue
+    os.environ["PYTHONIOENCODING"] = "utf-8"        # Windows console encoding
 
 import json
 import logging

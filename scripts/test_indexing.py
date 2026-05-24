@@ -5,16 +5,19 @@ Parse PDF -> Generate summaries -> Build vector index -> Test retrieval.
 import sys
 import os
 
-# Fix Windows issues
-os.environ["HF_HUB_DISABLE_SYMLINKS"] = "1"
-os.environ["PYTHONIOENCODING"] = "utf-8"
+# Platform-specific fixes
+if sys.platform == "win32":
+    os.environ["HF_HUB_DISABLE_SYMLINKS"] = "1"   # Windows symlink privilege issue
+    os.environ["PYTHONIOENCODING"] = "utf-8"        # Windows console encoding
 
-# Monkey-patch: disable torch version check in transformers
+# Monkey-patch: disable torch version check in transformers (needed for torch < 2.6)
 # (Our models use safetensors format, not affected by CVE-2025-32434)
 import transformers.utils.import_utils
-transformers.utils.import_utils.check_torch_load_is_safe = lambda: None
+if hasattr(transformers.utils.import_utils, 'check_torch_load_is_safe'):
+    transformers.utils.import_utils.check_torch_load_is_safe = lambda: None
 import transformers.modeling_utils
-transformers.modeling_utils.check_torch_load_is_safe = lambda: None
+if hasattr(transformers.modeling_utils, 'check_torch_load_is_safe'):
+    transformers.modeling_utils.check_torch_load_is_safe = lambda: None
 
 import logging
 import json
@@ -110,7 +113,7 @@ def main():
     logger.info("\n[Step 3] Building vector index with BGE-M3...")
     embedder = BGEEmbedder(
         model_name="BAAI/bge-m3",
-        device="cuda",
+        device="auto",
         use_fp16=True,
         batch_size=8,
     )

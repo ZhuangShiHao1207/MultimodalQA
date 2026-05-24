@@ -24,6 +24,16 @@ from src.ingestion.models import DocumentElement, ElementType
 logger = logging.getLogger(__name__)
 
 
+def _auto_detect_device() -> str:
+    """Auto-detect the best available compute device."""
+    import torch
+    if torch.cuda.is_available():
+        return "cuda"
+    elif hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
+        return "mps"
+    return "cpu"
+
+
 class BGEEmbedder:
     """
     BGE-M3 embedding model wrapper.
@@ -33,7 +43,7 @@ class BGEEmbedder:
     def __init__(
         self,
         model_name: str = "BAAI/bge-m3",
-        device: str = "cuda",
+        device: str = "auto",
         use_fp16: bool = True,
         max_length: int = 8192,
         batch_size: int = 8,
@@ -41,24 +51,29 @@ class BGEEmbedder:
         """
         Args:
             model_name: HuggingFace model identifier
-            device: 'cuda' or 'cpu'
+            device: 'cuda', 'mps', 'cpu', or 'auto' (auto-detect)
             use_fp16: Use FP16 for faster inference
             max_length: Maximum token length
             batch_size: Batch size for encoding
         """
         self.model_name = model_name
-        self.device = device
+        self.device = device if device != "auto" else _auto_detect_device()
         self.use_fp16 = use_fp16
         self.max_length = max_length
         self.batch_size = batch_size
         self._model = None
+
+        logger.info(f"BGEEmbedder configured: device={self.device}")
 
     @property
     def model(self):
         """Lazy-load the model on first use."""
         if self._model is None:
             logger.info(f"Loading BGE-M3 model: {self.model_name} (device={self.device})...")
-            os.environ["HF_HUB_DISABLE_SYMLINKS"] = "1"
+            # Windows symlink workaround (not needed on macOS/Linux)
+            import sys
+            if sys.platform == "win32":
+                os.environ["HF_HUB_DISABLE_SYMLINKS"] = "1"
             from FlagEmbedding import BGEM3FlagModel
             self._model = BGEM3FlagModel(
                 self.model_name,

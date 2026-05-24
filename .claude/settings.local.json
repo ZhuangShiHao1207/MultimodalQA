@@ -13,7 +13,10 @@
       "Bash(HF_HUB_DISABLE_SYMLINKS_WARNING=1 conda run -n multimodalQA python -c \"import huggingface_hub; huggingface_hub.constants.HF_HUB_DISABLE_SYMLINKS_WARNING = True; print\\('ok'\\)\")",
       "Bash(HF_HUB_DISABLE_SYMLINKS=1 PYTHONIOENCODING=utf-8 conda run -n multimodalQA python scripts/test_parsing.py)",
       "Bash(HF_HUB_DISABLE_SYMLINKS=1 PYTHONIOENCODING=utf-8 conda run -n multimodalQA python scripts/test_indexing.py)",
-      "Bash(conda search *)"
+      "Bash(conda search *)",
+      "Bash(PYTHONIOENCODING=utf-8 HF_HUB_DISABLE_SYMLINKS=1 conda run -n multimodalQA python scripts/test_indexing.py)",
+      "Bash(chmod +x *)",
+      "Bash(PYTHONIOENCODING=utf-8 HF_HUB_DISABLE_SYMLINKS=1 conda run -n multimodalQA python scripts/test_qa.py)"
     ]
   }
 }
