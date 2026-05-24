@@ -1,0 +1,75 @@
+# MultimodalQA System Configuration
+# All paths are relative to project root
+
+# ============================================
+# Model Configuration
+# ============================================
+embedding:
+  model_name: "BAAI/bge-m3"
+  device: "cuda"           # cuda or cpu
+  use_fp16: true
+  max_length: 8192         # BGE-M3 supports up to 8192 tokens
+  batch_size: 8
+
+zhipuai:
+  model: "glm-4v-flash"    # Multimodal model for summarization & generation
+  temperature: 0.1         # Low temperature for factual answers
+  max_tokens: 4096
+  # API key loaded from .env file
+
+# ============================================
+# Document Processing
+# ============================================
+ingestion:
+  supported_formats:
+    - ".pdf"
+    - ".png"
+    - ".jpg"
+    - ".jpeg"
+
+  chunking:
+    method: "heading_tree"    # heading_tree | fixed_size | semantic
+    max_chunk_size: 1500      # characters per chunk
+    chunk_overlap: 200        # overlap between chunks
+
+  docling:
+    extract_tables: true
+    extract_images: true
+    ocr_enabled: true         # Enable OCR for scanned documents
+
+# ============================================
+# Vector Store
+# ============================================
+vector_store:
+  backend: "faiss"           # faiss | chromadb
+  index_type: "FlatIP"       # FlatIP (inner product) for cosine similarity
+  dimension: 1024            # BGE-M3 dense embedding dimension
+  persist_dir: "./vector_store"
+
+# ============================================
+# Retrieval
+# ============================================
+retrieval:
+  top_k: 5                   # Number of chunks to retrieve
+  score_threshold: 0.3       # Minimum similarity score
+  rerank: false              # Enable reranking (future)
+
+# ============================================
+# Generation
+# ============================================
+generation:
+  max_context_images: 3      # Max images to send to VLM per query
+  enable_citation: true      # Force citation in output
+  citation_format: "xml"     # xml | markdown
+
+# ============================================
+# Paths
+# ============================================
+paths:
+  data_dir: "./data"
+  vector_store_dir: "./vector_store"
+  doc_store_dir: "./doc_store"
+  upload_dir: "./uploads"
+  extracted_images_dir: "./extracted_images"
+  extracted_tables_dir: "./extracted_tables"
+  logs_dir: "./logs"

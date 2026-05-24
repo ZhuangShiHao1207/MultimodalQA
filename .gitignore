@@ -1,3 +1,12 @@
+智谱相关介绍.md
+*.pptx
+*.aux
+*.log
+*.gz
+*.pdf
+*.png
+*.jpg
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
@@ -216,3 +225,83 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# ============================================
+# Project-specific: MultimodalQA
+# ============================================
+
+# --- API Keys & Secrets ---
+.env.local
+secrets.yaml
+secrets.json
+**/api_key*
+**/credentials*
+
+# --- Model Weights & Cache ---
+# HuggingFace model cache (BGE-M3 etc.)
+models/
+*.bin
+*.safetensors
+*.onnx
+*.pt
+*.pth
+*.ckpt
+huggingface_cache/
+.cache/huggingface/
+
+# --- Vector Store Data ---
+# FAISS indices (can be large, regenerate from source)
+vector_store/
+*.faiss
+*.index
+*.pkl
+faiss_index/
+chroma_db/
+chromadb/
+
+# --- Document Store ---
+# Uploaded user documents & processed outputs
+uploads/
+uploaded_docs/
+doc_store/
+docstore/
+processed/
+output/
+results/
+
+# --- Docling Cache & Intermediate Files ---
+docling_output/
+.docling_cache/
+
+# --- Extracted Assets (regenerable) ---
+extracted_images/
+extracted_tables/
+chunks/
+summaries/
+
+# --- Evaluation Data (large datasets) ---
+# Keep evaluation scripts, ignore large dataset files
+evaluation/datasets/DocVQA/
+evaluation/datasets/ChartQA/
+*.tar.gz
+*.zip
+*.tar
+
+# --- Logs & Temp ---
+logs/
+*.log
+tmp/
+temp/
+.tmp/
+
+# --- OS-specific ---
+Thumbs.db
+.DS_Store
+Desktop.ini
+
+# --- IDE ---
+.idea/
+.vscode/
+*.swp
+*.swo
+*~

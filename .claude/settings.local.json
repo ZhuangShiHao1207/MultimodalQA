@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(conda run *)",
+      "Bash(nvidia-smi)",
+      "Bash(conda install *)",
+      "Bash(C:/Users/12077/anaconda3/envs/multimodalQA/python.exe *)",
+      "Bash(conda activate *)",
+      "Bash(python \"C:/Users/12077/Desktop/college/大三下/多模态大作业/MultimodalQA/scripts/verify_env.py\")",
+      "Bash(cmd.exe *)",
+      "Bash(powershell.exe *)",
+      "Bash(echo \"EXIT:$?\")",
+      "Bash(HF_HUB_DISABLE_SYMLINKS_WARNING=1 conda run -n multimodalQA python -c \"import huggingface_hub; huggingface_hub.constants.HF_HUB_DISABLE_SYMLINKS_WARNING = True; print\\('ok'\\)\")",
+      "Bash(HF_HUB_DISABLE_SYMLINKS=1 PYTHONIOENCODING=utf-8 conda run -n multimodalQA python scripts/test_parsing.py)",
+      "Bash(HF_HUB_DISABLE_SYMLINKS=1 PYTHONIOENCODING=utf-8 conda run -n multimodalQA python scripts/test_indexing.py)",
+      "Bash(conda search *)"
+    ]
+  }
+}
