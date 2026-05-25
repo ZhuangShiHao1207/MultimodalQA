@@ -4,6 +4,7 @@ import AppHeader from './components/AppHeader.vue'
 import Sidebar from './components/Sidebar.vue'
 import ChatPanel from './components/ChatPanel.vue'
 import UploadProgress from './components/UploadProgress.vue'
+import HelpGuide from './components/HelpGuide.vue'
 import { useChat } from './composables/useChat'
 import { useUpload } from './composables/useUpload'
 import { useDocuments } from './composables/useDocuments'
@@ -117,6 +118,9 @@ async function handleProcess(docId) {
       :percent="progressPercent"
       :message="progressMessage"
     />
+
+    <!-- Help Guide Button (bottom-left) -->
+    <HelpGuide />
   </el-container>
 </template>
 

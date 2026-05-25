@@ -9,6 +9,16 @@ export default defineConfig({
       '/api': {
         target: 'http://localhost:8000',
         changeOrigin: true,
+        // Critical: disable proxy buffering for SSE streaming
+        configure: (proxy) => {
+          proxy.on('proxyRes', (proxyRes) => {
+            // If the response is SSE, disable buffering
+            if (proxyRes.headers['content-type']?.includes('text/event-stream')) {
+              proxyRes.headers['Cache-Control'] = 'no-cache'
+              proxyRes.headers['X-Accel-Buffering'] = 'no'
+            }
+          })
+        },
       },
       '/static': {
         target: 'http://localhost:8000',

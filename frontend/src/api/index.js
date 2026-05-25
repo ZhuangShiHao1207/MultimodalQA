@@ -57,27 +57,65 @@ export async function* streamChat(documentId, question, mode, history = []) {
     throw new Error(`Chat failed: ${res.statusText}`)
   }
 
-  const reader = res.body.getReader()
-  const decoder = new TextDecoder()
-  let buffer = ''
+  // Check if response is actually streaming or arrived all at once
+  const contentType = res.headers.get('content-type') || ''
 
-  while (true) {
-    const { done, value } = await reader.read()
-    if (done) break
+  if (contentType.includes('text/event-stream') && res.body) {
+    // Try streaming parse
+    const reader = res.body.getReader()
+    const decoder = new TextDecoder()
+    let buffer = ''
 
-    buffer += decoder.decode(value, { stream: true })
+    while (true) {
+      const { done, value } = await reader.read()
+      if (done) break
 
-    // Parse SSE format: "data: {...}\n\n"
-    const parts = buffer.split('\n\n')
-    buffer = parts.pop() // Keep incomplete last part
+      buffer += decoder.decode(value, { stream: true })
 
-    for (const part of parts) {
-      const match = part.match(/^data:\s*(.+)$/m)
+      // Parse SSE format: "data: {...}\n\n"
+      const parts = buffer.split('\n\n')
+      buffer = parts.pop() // Keep incomplete last part
+
+      for (const part of parts) {
+        const lines = part.split('\n')
+        for (const line of lines) {
+          const match = line.match(/^data:\s*(.+)$/)
+          if (match) {
+            try {
+              yield JSON.parse(match[1])
+            } catch (e) {
+              console.warn('Failed to parse SSE event:', match[1])
+            }
+          }
+        }
+      }
+    }
+
+    // Process any remaining buffer
+    if (buffer.trim()) {
+      const lines = buffer.split('\n')
+      for (const line of lines) {
+        const match = line.match(/^data:\s*(.+)$/)
+        if (match) {
+          try {
+            yield JSON.parse(match[1])
+          } catch (e) {
+            console.warn('Failed to parse remaining SSE:', match[1])
+          }
+        }
+      }
+    }
+  } else {
+    // Fallback: response arrived all at once as text
+    const text = await res.text()
+    const lines = text.split('\n')
+    for (const line of lines) {
+      const match = line.match(/^data:\s*(.+)$/)
       if (match) {
         try {
           yield JSON.parse(match[1])
         } catch (e) {
-          console.warn('Failed to parse SSE event:', match[1])
+          console.warn('Failed to parse fallback SSE:', match[1])
         }
       }
     }
