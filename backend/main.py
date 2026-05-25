@@ -3,10 +3,21 @@ FastAPI application entry point.
 Sets up CORS, routes, and static file serving.
 """
 import sys
+import logging
 from pathlib import Path
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+
+# Configure logging - show all backend activity
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    handlers=[logging.StreamHandler(sys.stdout)],
+)
+# Reduce noise from httpx/httpcore
+logging.getLogger("httpx").setLevel(logging.WARNING)
+logging.getLogger("httpcore").setLevel(logging.WARNING)
 
 # Ensure project root is in path for src/ imports
 PROJECT_ROOT = Path(__file__).parent.parent

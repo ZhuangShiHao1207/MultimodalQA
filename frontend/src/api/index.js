@@ -49,7 +49,11 @@ export function subscribeProgress(taskId, onEvent, onError) {
 export async function* streamChat(documentId, question, mode, history = []) {
   const res = await fetch('/api/chat', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+    },
     body: JSON.stringify({ document_id: documentId, question, mode, history }),
   })
 

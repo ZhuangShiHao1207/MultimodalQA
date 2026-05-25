@@ -237,59 +237,80 @@ async def chat_stream(
     """
     Stream chat response as SSE events.
     Yields: retrieval → token → citation → done
+    All exceptions are caught and sent as error events to frontend.
     """
-    if doc_id not in document_stores:
-        yield f"data: {json.dumps({'type': 'error', 'content': 'Document not found or not ready'})}\n\n"
-        return
+    try:
+        logger.info(f"[Chat] Start: doc={doc_id}, mode={mode}, question='{question[:50]}'")
 
-    store = document_stores[doc_id]
-    embedder = get_embedder()
-    generator = get_generator()
+        if doc_id not in document_stores:
+            logger.error(f"[Chat] Document {doc_id} not in document_stores. Available: {list(document_stores.keys())}")
+            yield f"data: {json.dumps({'type': 'error', 'content': f'Document not found or not ready. Available docs: {list(document_stores.keys())}'})}\n\n"
+            return
 
-    # Step 1: Retrieve relevant context
-    retriever = MultiVectorRetriever(embedder=embedder, vector_store=store, top_k=5)
+        store = document_stores[doc_id]
+        embedder = get_embedder()
+        generator = get_generator()
 
-    context = await asyncio.to_thread(
-        retriever.retrieve_with_context, question, 3 if mode == "multimodal" else 0
-    )
+        # Step 1: Retrieve relevant context
+        logger.info(f"[Chat] Step 1: Retrieving context...")
+        retriever = MultiVectorRetriever(embedder=embedder, vector_store=store, top_k=5)
 
-    # Send retrieval results to frontend
-    images_for_frontend = []
-    for img_ctx in context.get("image_contexts", []):
-        img_name = Path(img_ctx["image_path"]).name if img_ctx.get("image_path") else ""
-        images_for_frontend.append({
-            "name": img_name,
-            "label": img_ctx.get("label", ""),
-            "page": img_ctx.get("page", 0),
-            "url": f"/static/documents/{doc_id}/images/{img_name}",
-        })
+        context = await asyncio.to_thread(
+            retriever.retrieve_with_context, question, 3 if mode == "multimodal" else 0
+        )
+        logger.info(f"[Chat] Retrieved: {len(context.get('text_contexts', []))} texts, "
+                    f"{len(context.get('image_contexts', []))} images, "
+                    f"{len(context.get('table_contexts', []))} tables")
 
-    retrieval_event = {
-        "type": "retrieval",
-        "pages": context.get("all_pages", []),
-        "images": images_for_frontend,
-        "chunk_count": len(context.get("text_contexts", [])),
-    }
-    yield f"data: {json.dumps(retrieval_event, ensure_ascii=False)}\n\n"
+        # Send retrieval results to frontend
+        images_for_frontend = []
+        for img_ctx in context.get("image_contexts", []):
+            img_name = Path(img_ctx["image_path"]).name if img_ctx.get("image_path") else ""
+            images_for_frontend.append({
+                "name": img_name,
+                "label": img_ctx.get("label", ""),
+                "page": img_ctx.get("page", 0),
+                "url": f"/static/documents/{doc_id}/images/{img_name}",
+            })
 
-    # Step 2: Generate answer
-    if mode == "text_only":
-        context["image_contexts"] = []
+        retrieval_event = {
+            "type": "retrieval",
+            "pages": context.get("all_pages", []),
+            "images": images_for_frontend,
+            "chunk_count": len(context.get("text_contexts", [])),
+        }
+        yield f"data: {json.dumps(retrieval_event, ensure_ascii=False)}\n\n"
 
-    result = await asyncio.to_thread(generator.generate, question, context)
+        # Step 2: Generate answer
+        logger.info(f"[Chat] Step 2: Generating answer (mode={mode})...")
+        if mode == "text_only":
+            context["image_contexts"] = []
 
-    # Step 3: Stream the answer (send as one chunk since API doesn't support streaming)
-    answer = result.get("answer", "")
-    # Split into chunks for progressive display
-    chunk_size = 20
-    for i in range(0, len(answer), chunk_size):
-        chunk = answer[i:i+chunk_size]
-        yield f"data: {json.dumps({'type': 'token', 'content': chunk}, ensure_ascii=False)}\n\n"
-        await asyncio.sleep(0.02)  # Small delay for streaming effect
+        result = await asyncio.to_thread(generator.generate, question, context)
 
-    # Step 4: Send citations
-    for citation in result.get("citations", []):
-        yield f"data: {json.dumps({'type': 'citation', **citation}, ensure_ascii=False)}\n\n"
+        answer = result.get("answer", "")
+        logger.info(f"[Chat] Generated answer: {len(answer)} chars, citations={result.get('citations', [])}")
 
-    # Done
-    yield f"data: {json.dumps({'type': 'done', 'mode': result.get('mode', mode)})}\n\n"
+        if not answer:
+            yield f"data: {json.dumps({'type': 'token', 'content': '(No answer generated - model returned empty response)'}, ensure_ascii=False)}\n\n"
+        else:
+            # Step 3: Stream the answer in chunks for progressive display
+            chunk_size = 20
+            for i in range(0, len(answer), chunk_size):
+                chunk = answer[i:i+chunk_size]
+                yield f"data: {json.dumps({'type': 'token', 'content': chunk}, ensure_ascii=False)}\n\n"
+                await asyncio.sleep(0.02)  # Small delay for streaming effect
+
+        # Step 4: Send citations
+        for citation in result.get("citations", []):
+            yield f"data: {json.dumps({'type': 'citation', **citation}, ensure_ascii=False)}\n\n"
+
+        # Done
+        yield f"data: {json.dumps({'type': 'done', 'mode': result.get('mode', mode)})}\n\n"
+        logger.info(f"[Chat] Complete.")
+
+    except Exception as e:
+        logger.error(f"[Chat] EXCEPTION: {type(e).__name__}: {e}", exc_info=True)
+        error_msg = f"Server error: {type(e).__name__}: {str(e)[:200]}"
+        yield f"data: {json.dumps({'type': 'error', 'content': error_msg}, ensure_ascii=False)}\n\n"
+        yield f"data: {json.dumps({'type': 'done', 'mode': mode})}\n\n"

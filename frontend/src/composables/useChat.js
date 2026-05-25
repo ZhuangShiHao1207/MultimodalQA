@@ -34,7 +34,10 @@ export function useChat() {
     isStreaming.value = true
 
     try {
+      let eventCount = 0
       for await (const event of streamChat(documentId, question, mode, [])) {
+        eventCount++
+        console.log(`[Chat SSE #${eventCount}]`, event.type, event)
         switch (event.type) {
           case 'retrieval':
             assistantMsg.images = event.images || []
@@ -54,8 +57,15 @@ export function useChat() {
             break
         }
       }
+      console.log(`[Chat] Stream ended, received ${eventCount} events`)
+      if (eventCount === 0) {
+        assistantMsg.content = '⚠️ No response received from server. Please check:\n1. Is the document fully processed (✓ status)?\n2. Check browser F12 console for errors\n3. Check backend terminal for error logs'
+      } else if (!assistantMsg.content.trim()) {
+        assistantMsg.content = '⚠️ Server returned empty response. Check backend logs for details.'
+      }
     } catch (err) {
-      assistantMsg.content = `Request failed: ${err.message}`
+      console.error('[Chat] Stream error:', err)
+      assistantMsg.content = `❌ Request failed: ${err.message}\n\nPlease check backend terminal for detailed error logs.`
     } finally {
       isStreaming.value = false
     }
