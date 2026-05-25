@@ -69,7 +69,18 @@ case "$SCRIPT" in
         ;;
     app|serve)
         echo "[Running: Application server]"
-        conda run -n "$CONDA_ENV" python -m src.api.app
+        conda run -n "$CONDA_ENV" python -m uvicorn backend.main:app --reload --port 8000
+        ;;
+    frontend|web)
+        echo "[Running: Vue frontend dev server]"
+        cd frontend && npm run dev
+        ;;
+    dev|all)
+        echo "[Starting: Backend (port 8000) + Frontend (port 5173)]"
+        echo "  Backend: http://localhost:8000/docs"
+        echo "  Frontend: http://localhost:5173"
+        conda run -n "$CONDA_ENV" python -m uvicorn backend.main:app --reload --port 8000 &
+        cd frontend && npm run dev
         ;;
     verify|env)
         echo "[Running: Environment verification]"
