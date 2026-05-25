@@ -72,6 +72,43 @@ document_metadata: dict = {}  # doc_id -> {filename, status, page_count, ...}
 document_stores: dict = {}    # doc_id -> VectorStore
 document_elements: dict = {}  # doc_id -> List[DocumentElement]
 
+# Data directory (pre-placed test PDFs)
+DATA_DIR = Path(__file__).parent.parent / "data"
+
+
+def scan_data_directory():
+    """
+    Scan data/ directory for pre-placed PDFs and register them.
+    Called once at startup. Registers as 'pending' (not yet processed).
+    """
+    if not DATA_DIR.exists():
+        return
+
+    for pdf_file in DATA_DIR.glob("*.pdf"):
+        # Use filename hash as stable doc_id (so it persists across restarts)
+        doc_id = hashlib.md5(pdf_file.name.encode()).hexdigest()[:8]
+
+        if doc_id not in document_metadata:
+            # Copy to documents dir for consistent handling
+            doc_dir = DOCUMENTS_DIR / doc_id
+            doc_dir.mkdir(parents=True, exist_ok=True)
+            dest_pdf = doc_dir / "source.pdf"
+            if not dest_pdf.exists():
+                shutil.copy2(pdf_file, dest_pdf)
+
+            document_metadata[doc_id] = {
+                "filename": pdf_file.name,
+                "status": "pending",  # Not yet processed
+                "page_count": 0,
+                "source_path": str(pdf_file),
+            }
+            logger.info(f"Registered pre-placed PDF: {pdf_file.name} (id={doc_id})")
+
+
+# Run scan at import time (when backend starts)
+import hashlib
+scan_data_directory()
+
 
 def get_document_list() -> list:
     """Return all documents with their metadata."""

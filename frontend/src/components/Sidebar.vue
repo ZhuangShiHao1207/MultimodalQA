@@ -3,7 +3,7 @@ const props = defineProps({
   documents: Array,
   activeDocId: String,
 })
-const emit = defineEmits(['select', 'upload', 'delete'])
+const emit = defineEmits(['select', 'upload', 'delete', 'process'])
 
 function handleBeforeUpload(file) {
   emit('upload', file)
@@ -44,19 +44,32 @@ function handleBeforeUpload(file) {
         <div class="doc-info">
           <el-icon v-if="doc.status === 'ready'" color="#67c23a"><CircleCheck /></el-icon>
           <el-icon v-else-if="doc.status === 'processing'" class="is-loading" color="#e6a23c"><Loading /></el-icon>
+          <el-icon v-else-if="doc.status === 'pending'" color="#909399"><Clock /></el-icon>
           <el-icon v-else color="#f56c6c"><CircleClose /></el-icon>
           <span class="doc-name">{{ doc.filename }}</span>
         </div>
         <div class="doc-meta">
           <span v-if="doc.page_count">{{ doc.page_count }} pages</span>
-          <el-button
-            type="danger"
-            size="small"
-            text
-            @click.stop="emit('delete', doc.id)"
-          >
-            <el-icon><Delete /></el-icon>
-          </el-button>
+          <span v-else-if="doc.status === 'pending'" class="pending-hint">Not processed</span>
+          <div class="doc-actions">
+            <el-button
+              v-if="doc.status === 'pending'"
+              type="primary"
+              size="small"
+              text
+              @click.stop="emit('process', doc.id)"
+            >
+              <el-icon><VideoPlay /></el-icon>
+            </el-button>
+            <el-button
+              type="danger"
+              size="small"
+              text
+              @click.stop="emit('delete', doc.id)"
+            >
+              <el-icon><Delete /></el-icon>
+            </el-button>
+          </div>
         </div>
       </div>
 
@@ -136,5 +149,14 @@ function handleBeforeUpload(file) {
   padding-left: 24px;
   font-size: 12px;
   color: #909399;
+}
+.doc-actions {
+  display: flex;
+  gap: 2px;
+}
+.pending-hint {
+  font-size: 11px;
+  color: #c0c4cc;
+  font-style: italic;
 }
 </style>

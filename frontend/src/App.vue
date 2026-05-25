@@ -46,6 +46,36 @@ function handleSend(question) {
   if (!activeDocId.value) return
   sendMessage(activeDocId.value, question, mode.value)
 }
+
+async function handleProcess(docId) {
+  // Trigger processing of a pending document
+  try {
+    const res = await fetch(`/api/documents/${docId}/process`, { method: 'POST' })
+    const data = await res.json()
+    if (data.task_id) {
+      // Show progress and wait for completion
+      const { subscribeProgress } = await import('./api/index.js')
+      showProgress.value = true
+      progressPercent.value = 5
+      progressMessage.value = 'Starting processing...'
+
+      subscribeProgress(data.task_id, (event) => {
+        progressStage.value = event.stage
+        progressPercent.value = event.progress
+        progressMessage.value = event.message
+        if (event.stage === 'done') {
+          setTimeout(() => { showProgress.value = false }, 800)
+          refreshDocs()
+          activeDocId.value = docId
+        } else if (event.stage === 'error') {
+          showProgress.value = false
+        }
+      })
+    }
+  } catch (err) {
+    console.error('Process failed:', err)
+  }
+}
 </script>
 
 <template>
@@ -64,6 +94,7 @@ function handleSend(question) {
           @select="handleSelectDoc"
           @upload="handleUpload"
           @delete="handleDeleteDoc"
+          @process="handleProcess"
         />
       </el-aside>
 

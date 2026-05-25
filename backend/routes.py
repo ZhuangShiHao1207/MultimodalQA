@@ -95,6 +95,36 @@ async def list_documents():
     return get_document_list()
 
 
+@router.post("/documents/{doc_id}/process")
+async def process_existing_document(doc_id: str, background_tasks: BackgroundTasks):
+    """
+    Trigger processing for a pre-registered (pending) document.
+    Used for PDFs in data/ folder that were auto-detected on startup.
+    """
+    from backend.services import document_metadata, DOCUMENTS_DIR
+
+    if doc_id not in document_metadata:
+        raise HTTPException(404, "Document not found")
+
+    meta = document_metadata[doc_id]
+    if meta.get("status") == "ready":
+        return {"message": "Already processed", "task_id": None}
+
+    # Find the PDF file
+    pdf_path = DOCUMENTS_DIR / doc_id / "source.pdf"
+    if not pdf_path.exists():
+        raise HTTPException(404, "PDF file not found on disk")
+
+    # Start processing
+    task_id = str(uuid.uuid4())[:8]
+    ProgressTracker(task_id)
+    document_metadata[doc_id]["status"] = "processing"
+
+    background_tasks.add_task(process_document_async, task_id, doc_id, str(pdf_path))
+
+    return {"task_id": task_id, "document_id": doc_id}
+
+
 @router.get("/documents/{doc_id}")
 async def get_document(doc_id: str):
     """Return single document metadata."""
