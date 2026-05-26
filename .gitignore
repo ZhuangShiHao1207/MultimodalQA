@@ -250,14 +250,17 @@ huggingface_cache/
 .cache/huggingface/
 
 # --- Vector Store Data ---
-# FAISS indices (can be large, regenerate from source)
+# FAISS indices (legacy, can be regenerated)
 vector_store/
 *.faiss
 *.index
 *.pkl
 faiss_index/
+# ChromaDB persistent storage (can be regenerated from source PDFs)
 chroma_db/
 chromadb/
+chroma_data/
+backend/chroma_data/
 
 # --- Document Store ---
 # Uploaded user documents & processed outputs

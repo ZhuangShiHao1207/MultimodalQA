@@ -18,7 +18,7 @@ FlagEmbedding>=1.3.4       # BAAI BGE-M3 model wrapper
 sentence-transformers>=3.4.0
 
 # --- Vector Store ---
-faiss-cpu>=1.9.0           # FAISS vector search (CPU version to save VRAM for models)
+chromadb>=1.0.0            # Persistent vector database (replaced FAISS)
 
 # --- LLM API (Zhipu GLM-4.6V) ---
 zhipuai>=2.1.0             # Zhipu AI official SDK (stable, well-maintained)

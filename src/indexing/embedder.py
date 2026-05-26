@@ -1,10 +1,11 @@
 """
-BGE-M3 embedding model and FAISS vector store.
+BGE-M3 embedding model and ChromaDB vector store.
 Handles vectorization of text chunks and summaries, plus similarity search.
+Persistent storage via ChromaDB — data survives backend restarts.
 """
 import os
+import sys
 import logging
-import pickle
 from pathlib import Path
 from typing import List, Tuple, Optional
 
@@ -17,7 +18,7 @@ if hasattr(transformers.modeling_utils, 'check_torch_load_is_safe'):
     transformers.modeling_utils.check_torch_load_is_safe = lambda: None
 
 import numpy as np
-import faiss
+import chromadb
 
 from src.ingestion.models import DocumentElement, ElementType
 
@@ -48,21 +49,12 @@ class BGEEmbedder:
         max_length: int = 8192,
         batch_size: int = 8,
     ):
-        """
-        Args:
-            model_name: HuggingFace model identifier
-            device: 'cuda', 'mps', 'cpu', or 'auto' (auto-detect)
-            use_fp16: Use FP16 for faster inference
-            max_length: Maximum token length
-            batch_size: Batch size for encoding
-        """
         self.model_name = model_name
         self.device = device if device != "auto" else _auto_detect_device()
         self.use_fp16 = use_fp16
         self.max_length = max_length
         self.batch_size = batch_size
         self._model = None
-
         logger.info(f"BGEEmbedder configured: device={self.device}")
 
     @property
@@ -70,8 +62,6 @@ class BGEEmbedder:
         """Lazy-load the model on first use."""
         if self._model is None:
             logger.info(f"Loading BGE-M3 model: {self.model_name} (device={self.device})...")
-            # Windows symlink workaround (not needed on macOS/Linux)
-            import sys
             if sys.platform == "win32":
                 os.environ["HF_HUB_DISABLE_SYMLINKS"] = "1"
             from FlagEmbedding import BGEM3FlagModel
@@ -84,24 +74,14 @@ class BGEEmbedder:
         return self._model
 
     def encode(self, texts: List[str]) -> np.ndarray:
-        """
-        Encode a list of texts into dense vectors.
-
-        Args:
-            texts: List of text strings to encode
-
-        Returns:
-            numpy array of shape (len(texts), 1024)
-        """
+        """Encode texts into 1024-dim dense vectors."""
         if not texts:
-            return np.empty((0, self.dimension if hasattr(self, 'dimension') else 1024), dtype=np.float32)
-
+            return np.empty((0, 1024), dtype=np.float32)
         embeddings = self.model.encode(
             texts,
             batch_size=self.batch_size,
             max_length=self.max_length,
         )["dense_vecs"]
-
         return np.array(embeddings, dtype=np.float32)
 
     def encode_query(self, query: str) -> np.ndarray:
@@ -111,173 +91,158 @@ class BGEEmbedder:
 
 class VectorStore:
     """
-    FAISS-based vector store for document elements.
-    Supports building index, similarity search, and persistence.
+    ChromaDB-backed vector store for document elements.
+    Persistent by default — data survives backend restarts.
     """
 
     def __init__(
         self,
-        dimension: int = 1024,
-        index_type: str = "FlatIP",
+        collection_name: str = "documents",
         persist_dir: Optional[str] = None,
     ):
         """
         Args:
-            dimension: Vector dimension (1024 for BGE-M3)
-            index_type: FAISS index type ('FlatIP' for inner product / cosine)
-            persist_dir: Directory for saving/loading index
+            collection_name: ChromaDB collection name
+            persist_dir: Directory for ChromaDB persistence (None = in-memory)
         """
-        self.dimension = dimension
-        self.persist_dir = Path(persist_dir) if persist_dir else None
+        self.collection_name = collection_name
 
-        # Create FAISS index
-        if index_type == "FlatIP":
-            self.index = faiss.IndexFlatIP(dimension)
-        elif index_type == "FlatL2":
-            self.index = faiss.IndexFlatL2(dimension)
+        if persist_dir:
+            self.persist_dir = Path(persist_dir)
+            self.persist_dir.mkdir(parents=True, exist_ok=True)
+            self.client = chromadb.PersistentClient(path=str(self.persist_dir))
         else:
-            raise ValueError(f"Unsupported index type: {index_type}")
+            self.client = chromadb.EphemeralClient()
 
-        # Document store: maps index position -> DocumentElement
-        self.doc_store: List[DocumentElement] = []
+        self.collection = self.client.get_or_create_collection(
+            name=collection_name,
+            metadata={"hnsw:space": "cosine"},
+        )
 
-        logger.info(f"VectorStore initialized: dim={dimension}, type={index_type}")
-
-    def add_elements(
-        self, elements: List[DocumentElement], embeddings: np.ndarray
-    ):
-        """
-        Add document elements and their embeddings to the store.
-
-        Args:
-            elements: List of DocumentElements
-            embeddings: Corresponding embedding vectors (n, 1024)
-        """
-        if len(elements) != len(embeddings):
-            raise ValueError(
-                f"Mismatch: {len(elements)} elements vs {len(embeddings)} embeddings"
-            )
-
-        # Normalize vectors for cosine similarity (FlatIP)
-        faiss.normalize_L2(embeddings)
-
-        # Add to FAISS index
-        self.index.add(embeddings)
-
-        # Store elements
-        self.doc_store.extend(elements)
+        # Local cache for full DocumentElement objects
+        self._elements_cache: dict = {}
 
         logger.info(
-            f"Added {len(elements)} elements to store. "
-            f"Total: {self.index.ntotal} vectors."
+            f"VectorStore initialized: collection='{collection_name}', "
+            f"persist={'yes (' + str(persist_dir) + ')' if persist_dir else 'no (in-memory)'}, "
+            f"existing_vectors={self.collection.count()}"
         )
+
+    def add_elements(self, elements: List[DocumentElement], embeddings: np.ndarray):
+        """Add document elements and their embeddings to the store."""
+        if len(elements) != len(embeddings):
+            raise ValueError(f"Mismatch: {len(elements)} elements vs {len(embeddings)} embeddings")
+        if len(elements) == 0:
+            return
+
+        ids = [elem.id for elem in elements]
+        documents = []
+        metadatas = []
+
+        for elem in elements:
+            doc_text = elem.summary or elem.text_content or elem.caption or ""
+            documents.append(doc_text[:10000])
+            metadatas.append({
+                "type": elem.type.value,
+                "page_number": elem.page_number,
+                "document_id": elem.document_id,
+                "document_name": elem.document_name,
+                "heading_context": elem.heading_context or "",
+                "inferred_label": elem.inferred_label or "",
+                "caption": elem.caption or "",
+                "image_path": elem.image_path or "",
+                "has_image": "true" if elem.image_path else "false",
+            })
+            self._elements_cache[elem.id] = elem
+
+        self.collection.upsert(
+            ids=ids,
+            embeddings=embeddings.tolist(),
+            documents=documents,
+            metadatas=metadatas,
+        )
+
+        logger.info(f"Added {len(elements)} elements to store. Total: {self.collection.count()} vectors.")
 
     def search(
         self, query_vector: np.ndarray, top_k: int = 5, score_threshold: float = 0.0
     ) -> List[Tuple[DocumentElement, float]]:
         """
-        Search for most similar elements to a query vector.
-
-        Args:
-            query_vector: Query embedding (1024,)
-            top_k: Number of results to return
-            score_threshold: Minimum similarity score
-
-        Returns:
-            List of (DocumentElement, score) tuples, sorted by score descending
+        Search for most similar elements.
+        Returns list of (DocumentElement, cosine_similarity_score) tuples.
         """
-        if self.index.ntotal == 0:
+        if self.collection.count() == 0:
             return []
 
-        # Normalize query vector
-        query_vector = query_vector.reshape(1, -1).astype(np.float32)
-        faiss.normalize_L2(query_vector)
+        n_results = min(top_k, self.collection.count())
+        results = self.collection.query(
+            query_embeddings=[query_vector.tolist()],
+            n_results=n_results,
+            include=["metadatas", "documents", "distances"],
+        )
 
-        # Search
-        scores, indices = self.index.search(query_vector, min(top_k, self.index.ntotal))
-
-        results = []
-        for score, idx in zip(scores[0], indices[0]):
-            if idx < 0 or score < score_threshold:
+        output = []
+        for doc_id, distance, metadata, document in zip(
+            results["ids"][0],
+            results["distances"][0],
+            results["metadatas"][0],
+            results["documents"][0],
+        ):
+            # Cosine distance → similarity
+            score = 1.0 - distance
+            if score < score_threshold:
                 continue
-            results.append((self.doc_store[idx], float(score)))
 
-        return results
+            # Get full element from cache or reconstruct from metadata
+            if doc_id in self._elements_cache:
+                elem = self._elements_cache[doc_id]
+            else:
+                elem = DocumentElement(
+                    id=doc_id,
+                    type=ElementType(metadata.get("type", "text")),
+                    document_id=metadata.get("document_id", ""),
+                    document_name=metadata.get("document_name", ""),
+                    page_number=metadata.get("page_number", 0),
+                    text_content=document or "",
+                    heading_context=metadata.get("heading_context", ""),
+                    inferred_label=metadata.get("inferred_label", ""),
+                    caption=metadata.get("caption", ""),
+                    image_path=metadata.get("image_path", "") or None,
+                    summary=document or "",
+                )
+                self._elements_cache[doc_id] = elem
 
-    def save(self, path: Optional[str] = None):
-        """Save index and doc store to disk."""
-        save_dir = Path(path) if path else self.persist_dir
-        if not save_dir:
-            raise ValueError("No persist directory specified")
+            output.append((elem, score))
 
-        save_dir.mkdir(parents=True, exist_ok=True)
-
-        # FAISS on Windows doesn't handle non-ASCII paths well
-        # Use short relative path or ASCII-only path
-        index_path = str(save_dir / "index.faiss")
-        store_path = str(save_dir / "doc_store.pkl")
-
-        try:
-            faiss.write_index(self.index, index_path)
-        except RuntimeError:
-            # Fallback: save to temp and move
-            import tempfile, shutil
-            with tempfile.NamedTemporaryFile(suffix=".faiss", delete=False) as tmp:
-                faiss.write_index(self.index, tmp.name)
-                shutil.move(tmp.name, index_path)
-
-        # Save doc store
-        with open(store_path, "wb") as f:
-            pickle.dump(self.doc_store, f)
-
-        logger.info(f"VectorStore saved to {save_dir} ({self.index.ntotal} vectors)")
-
-    def load(self, path: Optional[str] = None):
-        """Load index and doc store from disk."""
-        load_dir = Path(path) if path else self.persist_dir
-        if not load_dir:
-            raise ValueError("No persist directory specified")
-
-        index_path = load_dir / "index.faiss"
-        store_path = load_dir / "doc_store.pkl"
-
-        if not index_path.exists() or not store_path.exists():
-            raise FileNotFoundError(f"No saved index found in {load_dir}")
-
-        self.index = faiss.read_index(str(index_path))
-
-        with open(store_path, "rb") as f:
-            self.doc_store = pickle.load(f)
-
-        logger.info(f"VectorStore loaded from {load_dir} ({self.index.ntotal} vectors)")
+        return output
 
     @property
     def size(self) -> int:
         """Number of vectors in the store."""
-        return self.index.ntotal
+        return self.collection.count()
+
+    def delete_collection(self):
+        """Delete the entire collection."""
+        try:
+            self.client.delete_collection(self.collection_name)
+            self._elements_cache.clear()
+        except Exception as e:
+            logger.warning(f"Failed to delete collection: {e}")
 
 
 def build_index(
     elements: List[DocumentElement],
     embedder: BGEEmbedder,
     persist_dir: Optional[str] = None,
+    collection_name: str = "documents",
 ) -> VectorStore:
     """
-    Build a complete vector index from document elements.
+    Build a vector index from document elements using ChromaDB.
 
     For TEXT elements: embed the text_content directly.
     For TABLE/FIGURE elements: embed the summary (generated by VLM).
-    PAGE_IMAGE elements are skipped (they're only for reference).
-
-    Args:
-        elements: List of all DocumentElements (text + visual)
-        embedder: BGE-M3 embedding model
-        persist_dir: Where to save the index
-
-    Returns:
-        Populated VectorStore
+    PAGE_IMAGE elements are skipped.
     """
-    # Filter elements that should be indexed
     indexable = []
     texts_to_embed = []
 
@@ -286,35 +251,23 @@ def build_index(
             if elem.text_content.strip():
                 indexable.append(elem)
                 texts_to_embed.append(elem.text_content)
-
         elif elem.type in (ElementType.TABLE, ElementType.FIGURE):
-            # Use summary for embedding (falls back to text_content/caption)
             embed_text = elem.summary or elem.text_content or elem.caption
             if embed_text and embed_text.strip():
                 indexable.append(elem)
                 texts_to_embed.append(embed_text)
 
-        # PAGE_IMAGE elements are not indexed (used only for generation stage)
-
     if not indexable:
         logger.warning("No indexable elements found!")
-        return VectorStore(persist_dir=persist_dir)
+        return VectorStore(collection_name=collection_name, persist_dir=persist_dir)
 
     logger.info(f"Embedding {len(texts_to_embed)} elements with BGE-M3...")
-
-    # Encode all texts
     embeddings = embedder.encode(texts_to_embed)
 
-    # Build vector store
     store = VectorStore(
-        dimension=embeddings.shape[1],
-        index_type="FlatIP",
+        collection_name=collection_name,
         persist_dir=persist_dir,
     )
     store.add_elements(indexable, embeddings)
-
-    # Save if persist_dir specified
-    if persist_dir:
-        store.save()
 
     return store

@@ -66,7 +66,7 @@ def get_generator() -> GroundedGenerator:
 
 
 # ============================================================
-# Per-document stores (in-memory for demo)
+# Per-document stores (ChromaDB persistent)
 # ============================================================
 document_metadata: dict = {}  # doc_id -> {filename, status, page_count, ...}
 document_stores: dict = {}    # doc_id -> VectorStore
@@ -74,35 +74,59 @@ document_elements: dict = {}  # doc_id -> List[DocumentElement]
 
 # Data directory (pre-placed test PDFs)
 DATA_DIR = Path(__file__).parent.parent / "data"
+CHROMA_DIR = Path(__file__).parent / "chroma_data"  # Persistent ChromaDB storage
+
+
+def _try_load_existing_store(doc_id: str) -> bool:
+    """Try to load an existing ChromaDB collection for a document."""
+    collection_name = f"doc_{doc_id}"
+    chroma_path = str(CHROMA_DIR)
+
+    try:
+        store = VectorStore(collection_name=collection_name, persist_dir=chroma_path)
+        if store.size > 0:
+            document_stores[doc_id] = store
+            logger.info(f"Loaded existing index for doc {doc_id}: {store.size} vectors")
+            return True
+    except Exception as e:
+        logger.debug(f"No existing index for {doc_id}: {e}")
+
+    return False
 
 
 def scan_data_directory():
     """
     Scan data/ directory for pre-placed PDFs and register them.
-    Called once at startup. Registers as 'pending' (not yet processed).
+    Also tries to load existing ChromaDB indexes (survives restarts).
     """
     if not DATA_DIR.exists():
         return
 
     for pdf_file in DATA_DIR.glob("*.pdf"):
-        # Use filename hash as stable doc_id (so it persists across restarts)
         doc_id = hashlib.md5(pdf_file.name.encode()).hexdigest()[:8]
 
         if doc_id not in document_metadata:
-            # Copy to documents dir for consistent handling
+            # Copy to documents dir
             doc_dir = DOCUMENTS_DIR / doc_id
             doc_dir.mkdir(parents=True, exist_ok=True)
             dest_pdf = doc_dir / "source.pdf"
             if not dest_pdf.exists():
                 shutil.copy2(pdf_file, dest_pdf)
 
+            # Try to load existing index from ChromaDB
+            has_index = _try_load_existing_store(doc_id)
+
             document_metadata[doc_id] = {
                 "filename": pdf_file.name,
-                "status": "pending",  # Not yet processed
+                "status": "ready" if has_index else "pending",
                 "page_count": 0,
                 "source_path": str(pdf_file),
             }
-            logger.info(f"Registered pre-placed PDF: {pdf_file.name} (id={doc_id})")
+
+            if has_index:
+                logger.info(f"Restored document: {pdf_file.name} (id={doc_id}) [ready, index loaded from disk]")
+            else:
+                logger.info(f"Registered document: {pdf_file.name} (id={doc_id}) [pending, needs processing]")
 
 
 # Run scan at import time (when backend starts)
@@ -180,11 +204,16 @@ def process_document_sync(task_id: str, doc_id: str, pdf_path: str):
         elements = summarizer.summarize_elements(elements)
         tracker.update("summarizing", 70, f"Summarized {visual_count} visual elements")
 
-        # Stage 4: Build vector index
+        # Stage 4: Build vector index (persistent ChromaDB)
         tracker.update("embedding", 75, "Embedding with BGE-M3...")
         embedder = get_embedder()
-        store = build_index(elements, embedder)
-        tracker.update("embedding", 90, f"Indexed {store.size} vectors")
+        collection_name = f"doc_{doc_id}"
+        store = build_index(
+            elements, embedder,
+            persist_dir=str(CHROMA_DIR),
+            collection_name=collection_name,
+        )
+        tracker.update("embedding", 90, f"Indexed {store.size} vectors (persistent)")
 
         # Stage 5: Save metadata and finalize
         # Copy images to accessible location
