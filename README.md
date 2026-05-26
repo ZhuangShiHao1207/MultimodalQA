@@ -2,6 +2,86 @@
 
 > 基于 Multi-Vector Retriever 架构的文档智能助手，支持 PDF 上传、自动解析（文本/表格/图像分离）、多模态检索与带溯源引用的智能问答。
 
+---
+
+## 环境配置与运行
+
+### 环境要求
+
+- Python 3.10+
+- Node.js 18+
+- NVIDIA GPU 8GB+ (推荐) 或 Apple Silicon Mac (MPS)
+- 智谱 AI API Key（[注册地址](https://open.bigmodel.cn/)）
+
+### 1. 安装 Python 依赖
+
+```bash
+# 创建 conda 环境
+conda create -n multimodalQA python=3.10 -y
+conda activate multimodalQA
+
+# 安装 PyTorch (根据平台选择一个)
+# Windows (CUDA):
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cu126
+# macOS (MPS):
+pip install torch torchvision
+# Linux (CPU only):
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+
+# 安装其他依赖
+pip install -r requirements.txt
+```
+
+### 2. 安装前端依赖
+
+```bash
+cd frontend
+npm install
+```
+
+### 3. 配置 API Key
+
+在项目根目录创建 `.env` 文件：
+```env
+ZHIPUAI_API_KEY=your_api_key_here
+```
+
+### 4. 启动服务
+
+```bash
+# 终端 1: 启动后端 (FastAPI)
+conda activate multimodalQA
+python -m uvicorn backend.main:app --reload --port 8000
+
+# 终端 2: 启动前端 (Vue)
+cd frontend
+npm run dev
+```
+
+或使用启动脚本：
+```bash
+./run.sh --platform win app       # 启动后端
+./run.sh --platform win frontend  # 启动前端
+./run.sh --platform mac app       # macOS 启动后端
+```
+
+### 5. 访问
+
+| 地址 | 说明 |
+|------|------|
+| http://localhost:5173 | 前端界面（主入口） |
+| http://localhost:8000/docs | API 文档（Swagger UI） |
+
+### 6. 使用流程
+
+```
+上传 PDF → 点击 ▶ 构建索引（等待约1分钟）→ 选中文档 → 输入问题 → 获得带引用的答案
+```
+
+> **注意**：首次启动后端时，`data/` 文件夹下的 PDF 会自动注册但需要手动点击 ▶ 触发索引构建。已构建过的索引会通过 ChromaDB 持久化，重启后端后无需重新构建。
+
+---
+
 ## 项目概览
 
 本系统针对包含复杂排版的 PDF 文档（多栏、嵌套表格、统计图表），构建了一套完整的多模态 RAG（Retrieval-Augmented Generation）管道。用户上传文档后，系统自动完成版面分析与结构化提取，并支持自然语言问答——回答中精确标注引用的页码与图表编号。
@@ -30,7 +110,7 @@ graph TB
         subgraph Local["本地 GPU (8GB)"]
             Docling[IBM Docling<br/>版面分析]
             BGE[BGE-M3<br/>向量化]
-            FAISS[FAISS<br/>向量检索]
+            ChromaDB[ChromaDB<br/>持久化向量检索]
         end
         subgraph Cloud["☁️ 云端 API"]
             GLM[智谱 GLM-4V<br/>摘要 + 生成]
@@ -41,7 +121,7 @@ graph TB
     Backend -->|"import src/"| Pipeline
     Services --> Docling
     Services --> BGE
-    Services --> FAISS
+    Services --> ChromaDB
     Services --> GLM
 
     style Frontend fill:#ecf5ff,stroke:#409eff
@@ -67,7 +147,7 @@ graph LR
         Text --> Embed[BGE-M3 向量化]
         Table --> VLM1[GLM-4V 摘要] --> Embed
         Image --> VLM2[GLM-4V 摘要] --> Embed
-        Embed --> Store[(FAISS 向量库)]
+        Embed --> Store[(ChromaDB 持久化)]
     end
 
     subgraph S3["Stage 3: 混合召回"]
@@ -131,9 +211,9 @@ graph TD
 | **后端** | FastAPI (Python) | REST API + SSE 流式响应 |
 | **文档解析** | IBM Docling 2.95 | GPU 加速的 PDF 版面分析 |
 | **向量模型** | BAAI/BGE-M3 (569M) | 1024 维 dense embedding，支持 8192 tokens |
-| **向量数据库** | FAISS (CPU) | 余弦相似度检索 |
+| **向量数据库** | ChromaDB (持久化) | 余弦相似度检索，重启不丢数据 |
 | **多模态大模型** | 智谱 GLM-4V-Flash | 图表摘要生成 + 问答推理 |
-| **通信协议** | REST + SSE | 进度推送 + 答案流式输出 |
+| **通信协议** | REST + SSE | 进度推送 + 答案输出 |
 
 ## 项目结构
 
@@ -146,7 +226,7 @@ MultimodalQA/
 │   │   └── chunker.py           #   文本分块 (标题树/语义切分)
 │   ├── indexing/                  # 摘要生成与向量化
 │   │   ├── summarizer.py        #   VLM 图表摘要 (GLM-4V API)
-│   │   └── embedder.py          #   BGE-M3 向量化 + FAISS 索引
+│   │   └── embedder.py          #   BGE-M3 向量化 + ChromaDB 索引
 │   ├── retrieval/                 # 多向量检索
 │   │   └── retriever.py         #   Multi-Vector Retriever (代理召回)
 │   ├── generation/                # 溯源生成
@@ -159,6 +239,7 @@ MultimodalQA/
 │   ├── routes.py                 #   API 路由 (7个端点)
 │   ├── services.py               #   桥接层 (routes ←→ src/)
 │   ├── progress.py               #   SSE 进度追踪 (asyncio.Queue)
+│   ├── chroma_data/              #   ChromaDB 持久化数据
 │   └── documents/                #   上传 PDF + 提取产物存储
 │
 ├── frontend/                      # Vue 3 前端
@@ -169,88 +250,29 @@ MultimodalQA/
 │   │   │   ├── Sidebar.vue       #     拖拽上传 + 文档列表
 │   │   │   ├── ChatPanel.vue     #     聊天容器 + 输入框
 │   │   │   ├── MessageBubble.vue #     消息气泡 (图文混合+引用)
-│   │   │   └── UploadProgress.vue#     解析进度弹窗
+│   │   │   ├── UploadProgress.vue#     解析进度弹窗
+│   │   │   └── HelpGuide.vue    #     使用指南弹窗
 │   │   ├── composables/          #   状态逻辑
-│   │   │   ├── useChat.js        #     聊天 + SSE 流式
+│   │   │   ├── useChat.js        #     聊天 + 打字动画
 │   │   │   ├── useUpload.js      #     上传 + 进度
 │   │   │   └── useDocuments.js   #     文档列表管理
 │   │   └── api/index.js          #   所有后端 API 调用
 │   └── vite.config.js            #   开发代理配置
 │
-├── scripts/                       # 测试与评测脚本
-│   ├── test_parsing.py           #   文档解析测试
-│   ├── test_indexing.py          #   索引管道测试
-│   └── test_qa.py                #   端到端 QA 对比测试
+├── evaluation/                    # 评测系统
+│   ├── EVALUATION_REPORT.md      #   详细评测报告
+│   ├── metrics.py                #   ANLS / Accuracy 指标实现
+│   ├── run_eval.py               #   自动化评测脚本
+│   └── datasets/
+│       └── self_built_qa.json    #   自建 12 题 QA 数据集
 │
+├── scripts/                       # 测试脚本
 ├── configs/config.yaml            # 系统配置
 ├── data/                          # 测试 PDF 文件
 ├── run.sh                         # 统一启动脚本
 ├── requirements.txt               # Python 依赖
 └── .env                           # API Key (已 gitignore)
 ```
-
-## 快速开始
-
-### 环境要求
-
-- Python 3.10+
-- Node.js 18+
-- NVIDIA GPU 8GB+ (推荐) 或 Apple Silicon Mac (MPS)
-- 智谱 AI API Key
-
-### 1. 安装 Python 依赖
-
-```bash
-# 创建 conda 环境
-conda create -n multimodalQA python=3.10 -y
-conda activate multimodalQA
-
-# 安装 PyTorch (根据平台选择)
-# Windows (CUDA):
-pip install torch torchvision --index-url https://download.pytorch.org/whl/cu126
-# macOS (MPS):
-pip install torch torchvision
-
-# 安装其他依赖
-pip install -r requirements.txt
-```
-
-### 2. 安装前端依赖
-
-```bash
-cd frontend
-npm install
-```
-
-### 3. 配置 API Key
-
-创建 `.env` 文件：
-```env
-ZHIPUAI_API_KEY=your_api_key_here
-```
-
-### 4. 启动服务
-
-```bash
-# 终端 1: 启动后端 (FastAPI)
-conda activate multimodalQA
-python -m uvicorn backend.main:app --reload --port 8000
-
-# 终端 2: 启动前端 (Vue)
-cd frontend
-npm run dev
-```
-
-或使用启动脚本：
-```bash
-./run.sh --platform win app       # 启动后端
-./run.sh --platform win frontend  # 启动前端
-```
-
-### 5. 访问
-
-- **前端界面**: http://localhost:5173
-- **API 文档**: http://localhost:8000/docs
 
 ## API 端点
 
@@ -259,7 +281,7 @@ npm run dev
 | `POST` | `/api/upload` | 上传 PDF 文件，返回 task_id |
 | `GET` | `/api/upload/{task_id}/progress` | SSE 流：解析进度实时推送 |
 | `GET` | `/api/documents` | 获取已上传文档列表 |
-| `GET` | `/api/documents/{id}` | 获取单个文档元数据 |
+| `POST` | `/api/documents/{id}/process` | 触发已注册文档的索引构建 |
 | `DELETE` | `/api/documents/{id}` | 删除文档 |
 | `GET` | `/api/documents/{id}/images/{name}` | 获取提取的图片 |
 | `POST` | `/api/chat` | 问答（检索→生成→引用），返回 JSON |
@@ -269,7 +291,7 @@ npm run dev
 | 阶段 | 内容 | 状态 |
 |------|------|------|
 | Phase 1 | 文档解析管道 (Docling + 分块) | ✅ 完成 |
-| Phase 2 | 多模态索引引擎 (VLM摘要 + BGE-M3 + FAISS) | ✅ 完成 |
+| Phase 2 | 多模态索引引擎 (VLM摘要 + BGE-M3 + ChromaDB) | ✅ 完成 |
 | Phase 3 | 检索与生成 (Multi-Vector Retriever + 溯源) | ✅ 完成 |
 | Phase 3b | 纯文本 RAG 基线对比 | ✅ 完成 |
 | Phase 4 | 全栈 Web 前端 (Vue 3) + 后端 (FastAPI) | ✅ 完成 |
@@ -307,7 +329,7 @@ npm run dev
 | **视觉依据** | 引用了 Figure 1 (训练损失折线图) 并展示原图 | 无图表支撑，只能从文字描述推测 |
 | **回答质量** | 精确、有数据支撑 | 笼统、缺乏关键视觉对比信息 |
 
-**结论**：对于需要图表视觉信息的问题，纯文本 RAG 因无法获取曲线走势而产生模糊/错误回答；多模态 RAG 通过代理召回原始图片，让 VLM 直接"看到"图表，回答显著更准确。
+**结论**：对于需要图表视觉信息的问题，纯文本 RAG 因无法获取曲线走势而产生模糊/错误回答；多模态 RAG 通过代理召回原始图片，让 VLM 直接"看到"图表，回答显著更准确。详细评测报告见 [`evaluation/EVALUATION_REPORT.md`](evaluation/EVALUATION_REPORT.md)。
 
 ## 跨平台支持
 
