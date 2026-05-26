@@ -1,0 +1,98 @@
+[
+  {
+    "id": "q01",
+    "question": "K-Means算法的目标函数是什么？",
+    "gold_answers": ["目标函数为簇内距离之和最小化", "最小化簇内样本到聚类中心的距离之和"],
+    "type": "text",
+    "requires_visual": false,
+    "page": 1
+  },
+  {
+    "id": "q02",
+    "question": "K-Means++初始化需要多少次迭代收敛？",
+    "gold_answers": ["46", "46次", "46次迭代"],
+    "type": "table",
+    "requires_visual": false,
+    "page": 4
+  },
+  {
+    "id": "q03",
+    "question": "Random初始化的测试集准确率是多少？",
+    "gold_answers": ["0.5937", "59.37%", "0.5937"],
+    "type": "table",
+    "requires_visual": false,
+    "page": 4
+  },
+  {
+    "id": "q04",
+    "question": "从训练损失曲线来看，哪种初始化方法的损失下降更快？",
+    "gold_answers": ["K-Means++", "KMeans++", "K-Means++初始化"],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 5
+  },
+  {
+    "id": "q05",
+    "question": "三种协方差结构中，哪种的训练准确率最高？",
+    "gold_answers": ["Full", "完全协方差", "full"],
+    "type": "table",
+    "requires_visual": false,
+    "page": 5
+  },
+  {
+    "id": "q06",
+    "question": "Spherical协方差结构的测试ACC是多少？",
+    "gold_answers": ["0.5376", "53.76%"],
+    "type": "table",
+    "requires_visual": false,
+    "page": 5
+  },
+  {
+    "id": "q07",
+    "question": "GMM（Full协方差+Random初始化）的测试集准确率是多少？",
+    "gold_answers": ["0.6350", "63.50%", "0.635"],
+    "type": "table",
+    "requires_visual": false,
+    "page": 6
+  },
+  {
+    "id": "q08",
+    "question": "从聚类可视化散点图来看，Ground Truth、Random和K-Means++的聚类效果有什么区别？",
+    "gold_answers": ["K-Means++的聚类结果更接近Ground Truth", "kmeans++更接近真实分布"],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 7
+  },
+  {
+    "id": "q09",
+    "question": "K-Means和GMM哪种方法的聚类准确率更高？",
+    "gold_answers": ["GMM", "GMM更高", "GMM方法"],
+    "type": "text",
+    "requires_visual": false,
+    "page": 8
+  },
+  {
+    "id": "q10",
+    "question": "Full协方差结构的训练时间是多少秒？",
+    "gold_answers": ["126.15", "126.15秒", "126.15s"],
+    "type": "table",
+    "requires_visual": false,
+    "page": 5
+  },
+  {
+    "id": "q11",
+    "question": "从Log-Likelihood曲线来看，三种协方差结构最终收敛时的对数似然值大小顺序是什么？",
+    "gold_answers": ["Full > Diagonal > Spherical", "full最高spherical最低"],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 6
+  },
+  {
+    "id": "q12",
+    "question": "GMM使用EM算法训练时，E步计算的是什么？",
+    "gold_answers": ["后验概率", "责任度", "每个样本属于第j个高斯分量的后验概率"],
+    "type": "text",
+    "requires_visual": false,
+    "page": 2
+  }
+]

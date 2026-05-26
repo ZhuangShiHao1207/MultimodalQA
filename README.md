@@ -273,7 +273,7 @@ npm run dev
 | Phase 3 | 检索与生成 (Multi-Vector Retriever + 溯源) | ✅ 完成 |
 | Phase 3b | 纯文本 RAG 基线对比 | ✅ 完成 |
 | Phase 4 | 全栈 Web 前端 (Vue 3) + 后端 (FastAPI) | ✅ 完成 |
-| Phase 5 | 数据集评测 (DocVQA + ANLS) | ⬜ 待实现 |
+| Phase 5 | 数据集评测 (自建 QA + ANLS) | ✅ 完成 |
 
 ## 已验证的关键指标
 

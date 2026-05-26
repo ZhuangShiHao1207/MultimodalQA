@@ -67,6 +67,10 @@ case "$SCRIPT" in
         echo "[Running: test_indexing.py]"
         conda run -n "$CONDA_ENV" python scripts/test_indexing.py
         ;;
+    eval|evaluate)
+        echo "[Running: Evaluation (Multimodal vs Text-only)]"
+        conda run -n "$CONDA_ENV" python evaluation/run_eval.py
+        ;;
     app|serve)
         echo "[Running: Application server]"
         conda run -n "$CONDA_ENV" python -m uvicorn backend.main:app --reload --port 8000
