@@ -73,7 +73,12 @@ function handleBeforeUpload(file) {
         </div>
       </div>
 
-      <el-empty v-if="!documents.length" description="No documents yet" :image-size="60" />
+      <el-empty v-if="!documents.length" :image-size="60">
+        <template #description>
+          <p>No documents yet</p>
+          <p class="empty-hint">Upload a PDF or wait ~1 min for backend to detect files in data/ folder</p>
+        </template>
+      </el-empty>
     </div>
   </div>
 </template>
@@ -158,5 +163,10 @@ function handleBeforeUpload(file) {
   font-size: 11px;
   color: #c0c4cc;
   font-style: italic;
+}
+.empty-hint {
+  font-size: 11px;
+  color: #c0c4cc;
+  margin-top: 4px;
 }
 </style>

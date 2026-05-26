@@ -290,6 +290,7 @@ async def chat_stream(
 
         answer = result.get("answer", "")
         logger.info(f"[Chat] Generated answer: {len(answer)} chars, citations={result.get('citations', [])}")
+        logger.info(f"[Chat] Answer content: {answer[:300]}")
 
         if not answer:
             yield f"data: {json.dumps({'type': 'token', 'content': '(No answer generated - model returned empty response)'}, ensure_ascii=False)}\n\n"
@@ -314,3 +315,83 @@ async def chat_stream(
         error_msg = f"Server error: {type(e).__name__}: {str(e)[:200]}"
         yield f"data: {json.dumps({'type': 'error', 'content': error_msg}, ensure_ascii=False)}\n\n"
         yield f"data: {json.dumps({'type': 'done', 'mode': mode})}\n\n"
+
+
+async def chat_direct(
+    doc_id: str, question: str, mode: str, history: list
+) -> dict:
+    """
+    Non-streaming chat: returns complete JSON response.
+    More reliable than SSE through Vite proxy.
+    """
+    try:
+        logger.info(f"[Chat] Start: doc={doc_id}, mode={mode}, question='{question[:50]}'")
+
+        if doc_id not in document_stores:
+            logger.error(f"[Chat] Document {doc_id} not in document_stores. Available: {list(document_stores.keys())}")
+            return {
+                "answer": f"Document not ready. Please process the document first.",
+                "images": [],
+                "citations": [],
+                "pages": [],
+                "mode": mode,
+                "error": True,
+            }
+
+        store = document_stores[doc_id]
+        embedder = get_embedder()
+        generator = get_generator()
+
+        # Step 1: Retrieve relevant context
+        logger.info(f"[Chat] Step 1: Retrieving context...")
+        retriever = MultiVectorRetriever(embedder=embedder, vector_store=store, top_k=5)
+        context = await asyncio.to_thread(
+            retriever.retrieve_with_context, question, 3 if mode == "multimodal" else 0
+        )
+        logger.info(f"[Chat] Retrieved: {len(context.get('text_contexts', []))} texts, "
+                    f"{len(context.get('image_contexts', []))} images, "
+                    f"{len(context.get('table_contexts', []))} tables")
+
+        # Build image info for frontend
+        images_for_frontend = []
+        for img_ctx in context.get("image_contexts", []):
+            img_name = Path(img_ctx["image_path"]).name if img_ctx.get("image_path") else ""
+            images_for_frontend.append({
+                "name": img_name,
+                "label": img_ctx.get("label", ""),
+                "page": img_ctx.get("page", 0),
+                "url": f"/api/documents/{doc_id}/images/{img_name}",
+            })
+
+        # Step 2: Generate answer
+        logger.info(f"[Chat] Step 2: Generating answer (mode={mode})...")
+        if mode == "text_only":
+            context["image_contexts"] = []
+
+        result = await asyncio.to_thread(generator.generate, question, context)
+
+        answer = result.get("answer", "")
+        citations = result.get("citations", [])
+        logger.info(f"[Chat] Generated answer ({len(answer)} chars): {answer[:200]}")
+        logger.info(f"[Chat] Citations: {citations}")
+        logger.info(f"[Chat] Complete.")
+
+        return {
+            "answer": answer,
+            "images": images_for_frontend,
+            "citations": citations,
+            "pages": context.get("all_pages", []),
+            "mode": result.get("mode", mode),
+            "error": False,
+        }
+
+    except Exception as e:
+        logger.error(f"[Chat] EXCEPTION: {type(e).__name__}: {e}", exc_info=True)
+        return {
+            "answer": f"Server error: {type(e).__name__}: {str(e)[:300]}",
+            "images": [],
+            "citations": [],
+            "pages": [],
+            "mode": mode,
+            "error": True,
+        }

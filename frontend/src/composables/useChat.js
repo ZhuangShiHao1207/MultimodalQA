@@ -1,9 +1,9 @@
-import { ref } from 'vue'
-import { streamChat } from '../api'
+import { ref, reactive } from 'vue'
+import { sendChatMessage } from '../api'
 
 /**
  * Chat state management.
- * Handles message list, streaming responses, and citation tracking.
+ * Uses direct JSON response + frontend typing animation.
  */
 export function useChat() {
   const messages = ref([])
@@ -20,52 +20,51 @@ export function useChat() {
       citations: [],
     })
 
-    // Prepare assistant placeholder
-    const assistantMsg = {
+    // Add assistant placeholder as reactive object
+    messages.value.push({
       role: 'assistant',
       content: '',
       images: [],
       citations: [],
       mode: mode,
       pages: [],
-    }
-    messages.value.push(assistantMsg)
+    })
+
+    // Get reference to the REACTIVE proxy in the array (critical for Vue reactivity!)
+    const assistantMsg = messages.value[messages.value.length - 1]
 
     isStreaming.value = true
 
     try {
-      let eventCount = 0
-      for await (const event of streamChat(documentId, question, mode, [])) {
-        eventCount++
-        console.log(`[Chat SSE #${eventCount}]`, event.type, event)
-        switch (event.type) {
-          case 'retrieval':
-            assistantMsg.images = event.images || []
-            assistantMsg.pages = event.pages || []
-            break
-          case 'token':
-            assistantMsg.content += event.content
-            break
-          case 'citation':
-            assistantMsg.citations.push(event)
-            break
-          case 'error':
-            assistantMsg.content = `Error: ${event.content}`
-            break
-          case 'done':
-            assistantMsg.mode = event.mode || mode
-            break
-        }
+      // Send request and get complete response
+      const result = await sendChatMessage(documentId, question, mode, [])
+      console.log('[Chat] Response received:', result)
+
+      // Set metadata immediately
+      assistantMsg.images = result.images || []
+      assistantMsg.citations = result.citations || []
+      assistantMsg.pages = result.pages || []
+      assistantMsg.mode = result.mode || mode
+
+      // Get the full answer
+      const fullAnswer = result.answer || ''
+      if (!fullAnswer) {
+        assistantMsg.content = '⚠️ Empty response from server.'
+        return
       }
-      console.log(`[Chat] Stream ended, received ${eventCount} events`)
-      if (eventCount === 0) {
-        assistantMsg.content = '⚠️ No response received from server. Please check:\n1. Is the document fully processed (✓ status)?\n2. Check browser F12 console for errors\n3. Check backend terminal for error logs'
-      } else if (!assistantMsg.content.trim()) {
-        assistantMsg.content = '⚠️ Server returned empty response. Check backend logs for details.'
+
+      // Typing animation: reveal answer progressively
+      const chunkSize = 8
+      for (let i = 0; i < fullAnswer.length; i += chunkSize) {
+        assistantMsg.content = fullAnswer.substring(0, i + chunkSize)
+        await sleep(20)
       }
+      // Ensure full content is shown
+      assistantMsg.content = fullAnswer
+
     } catch (err) {
-      console.error('[Chat] Stream error:', err)
-      assistantMsg.content = `❌ Request failed: ${err.message}\n\nPlease check backend terminal for detailed error logs.`
+      console.error('[Chat] Error:', err)
+      assistantMsg.content = `❌ Request failed: ${err.message}`
     } finally {
       isStreaming.value = false
     }
@@ -76,4 +75,8 @@ export function useChat() {
   }
 
   return { messages, isStreaming, sendMessage, clearChat }
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms))
 }

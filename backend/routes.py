@@ -165,18 +165,15 @@ async def get_image(doc_id: str, img_name: str):
 
 @router.post("/chat")
 async def chat(request: ChatRequest):
-    """SSE stream: retrieval → tokens → citations → done."""
-    return StreamingResponse(
-        chat_stream(
-            doc_id=request.document_id,
-            question=request.question,
-            mode=request.mode,
-            history=request.history,
-        ),
-        media_type="text/event-stream",
-        headers={
-            "Cache-Control": "no-cache",
-            "Connection": "keep-alive",
-            "X-Accel-Buffering": "no",
-        },
+    """
+    Direct JSON response (not SSE).
+    Returns complete answer with retrieval info and citations.
+    """
+    from backend.services import chat_direct
+    result = await chat_direct(
+        doc_id=request.document_id,
+        question=request.question,
+        mode=request.mode,
+        history=request.history,
     )
+    return result
