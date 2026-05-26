@@ -366,7 +366,10 @@ async def chat_direct(
         # Step 2: Generate answer
         logger.info(f"[Chat] Step 2: Generating answer (mode={mode})...")
         if mode == "text_only":
+            # Text-only baseline: strip ALL visual context
             context["image_contexts"] = []
+            images_for_frontend = []  # Don't show images to user either
+            logger.info(f"[Chat] Text-only mode: stripped images, keeping text+tables as text")
 
         result = await asyncio.to_thread(generator.generate, question, context)
 
