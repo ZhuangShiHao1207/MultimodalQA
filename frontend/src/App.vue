@@ -14,7 +14,7 @@ const mode = ref('multimodal')
 const activeDocId = ref(null)
 
 // Composables
-const { messages, isStreaming, sendMessage, clearChat } = useChat()
+const { messages, isStreaming, sendMessage, clearChat, setActiveDoc } = useChat()
 const { documents, refresh: refreshDocs, remove: removeDocs } = useDocuments()
 const { showProgress, progressStage, progressPercent, progressMessage, upload } = useUpload()
 
@@ -24,7 +24,7 @@ async function handleUpload(file) {
     const docId = await upload(file)
     await refreshDocs()
     activeDocId.value = docId
-    clearChat()
+    setActiveDoc(docId)
   } catch (err) {
     console.error('Upload failed:', err)
   }
@@ -32,14 +32,15 @@ async function handleUpload(file) {
 
 function handleSelectDoc(docId) {
   activeDocId.value = docId
-  clearChat()
+  setActiveDoc(docId)  // Switch to this doc's chat history (preserved)
 }
 
 async function handleDeleteDoc(docId) {
   await removeDocs(docId)
+  clearChat(docId)  // Only clear the deleted doc's history
   if (activeDocId.value === docId) {
     activeDocId.value = null
-    clearChat()
+    setActiveDoc(null)
   }
 }
 
