@@ -7,8 +7,7 @@ const emit = defineEmits(['update:mode'])
   <div class="header-content">
     <div class="header-left">
       <el-icon size="24" color="#409eff"><Document /></el-icon>
-      <h1 class="title">MultimodalQA</h1>
-      <el-tag type="info" size="small">Document Intelligence Assistant</el-tag>
+      <h1 class="title">MultimodalQA —— 文档智能助手（多模态RAG）</h1>
     </div>
     <div class="header-right">
       <span class="mode-label">RAG Mode:</span>
