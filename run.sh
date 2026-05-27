@@ -73,7 +73,7 @@ case "$SCRIPT" in
         ;;
     app|serve)
         echo "[Running: Application server]"
-        conda run -n "$CONDA_ENV" python -m uvicorn backend.main:app --reload --port 8000
+        conda run -n "$CONDA_ENV" python -m uvicorn backend.main:app --reload --port 8000 --reload-exclude "scripts/*" --reload-exclude "docling_output/*" --reload-exclude "evaluation/*" --reload-exclude "frontend/*"
         ;;
     frontend|web)
         echo "[Running: Vue frontend dev server]"

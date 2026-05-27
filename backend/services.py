@@ -134,6 +134,57 @@ import hashlib
 scan_data_directory()
 
 
+def scan_uploaded_documents():
+    """
+    Scan backend/documents/ for previously uploaded PDFs.
+    Restores metadata + ChromaDB indexes that survive restarts.
+    """
+    if not DOCUMENTS_DIR.exists():
+        return
+
+    for doc_dir in DOCUMENTS_DIR.iterdir():
+        if not doc_dir.is_dir():
+            continue
+
+        doc_id = doc_dir.name
+        if doc_id in document_metadata:
+            continue  # Already registered from data/ scan
+
+        pdf_path = doc_dir / "source.pdf"
+        if not pdf_path.exists():
+            continue
+
+        # Try to load saved metadata.json
+        meta_file = doc_dir / "metadata.json"
+        if meta_file.exists():
+            try:
+                saved_meta = json.loads(meta_file.read_text(encoding="utf-8"))
+                filename = saved_meta.get("filename", f"document_{doc_id}.pdf")
+            except Exception:
+                filename = f"document_{doc_id}.pdf"
+        else:
+            filename = f"document_{doc_id}.pdf"
+
+        # Try to load existing ChromaDB index
+        has_index = _try_load_existing_store(doc_id)
+
+        document_metadata[doc_id] = {
+            "filename": filename,
+            "status": "ready" if has_index else "pending",
+            "page_count": saved_meta.get("page_count", 0) if meta_file.exists() else 0,
+            "element_count": saved_meta.get("element_count", 0) if meta_file.exists() else 0,
+            "vector_count": saved_meta.get("vector_count", 0) if meta_file.exists() else 0,
+        }
+
+        if has_index:
+            logger.info(f"Restored uploaded doc: {filename} (id={doc_id}) [ready]")
+        else:
+            logger.info(f"Found uploaded doc: {filename} (id={doc_id}) [pending, needs reprocessing]")
+
+
+scan_uploaded_documents()
+
+
 def get_document_list() -> list:
     """Return all documents with their metadata."""
     return [
@@ -239,6 +290,10 @@ def process_document_sync(task_id: str, doc_id: str, pdf_path: str):
             "element_count": len(elements),
             "vector_count": store.size,
         }
+
+        # Persist metadata to disk (survives restarts)
+        meta_file = doc_dir / "metadata.json"
+        meta_file.write_text(json.dumps(document_metadata[doc_id], ensure_ascii=False), encoding="utf-8")
 
         # Save markdown
         (doc_dir / "document.md").write_text(markdown, encoding="utf-8")
