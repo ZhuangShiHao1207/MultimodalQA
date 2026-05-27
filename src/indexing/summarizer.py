@@ -29,7 +29,7 @@ class VLMSummarizer:
     def __init__(
         self,
         api_key: Optional[str] = None,
-        model: str = "glm-4v-flash",
+        model: str = "glm-4.6v",
         max_retries: int = 3,
         retry_delay: float = 2.0,
     ):

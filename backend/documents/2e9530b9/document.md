@@ -179,7 +179,7 @@ Iterations Iterations
 3. 计算复杂度与性能的权衡 ： Full 协方差虽然性能最好，但训练时间（ 126.15s ）是 Spherical （ 40.24s ）的三倍多，同时收敛速度慢于其他两种结构。在资源受限的情况下， Spherical 协方 差提供了较好的性能 -效率平衡。
 4. 对数似然与 ACC 的一致性 ：在协方差结构对比中，对数似然越高的模型，其 ACC 也越高， 两者呈现较好的正相关关系。
 
-GMM Experiment1:CovarianceType Comparison
+GMMExperiment1:CovarianceTypeComparison
 
 <!-- image -->
 
@@ -202,7 +202,7 @@ GMM Experiment1:CovarianceType Comparison
 2. 对数似然与 ACC 的矛盾 ： K-Means++ 初始化得到的对数似然值（ -308797.24 ）高于随机初始 化（ -314934.24 ） ，说明其模型更好地拟合了数据的概率分布。然而，这并未转化为更高的聚 类精度。
 3. 收敛行为的差异 ：两种初始化方法都在达到最大迭代次数（ 150 次）时停止，未完全收敛。从 训练曲线（图 3 ）可以看出，两者的对数似然都在持续上升，且 K-Means++ 的对数似然始终 高于随机初始化，说明 K-means++ 收敛更快，但 ACC 的变化趋势不同。
 
-GMM Experiment 2:Initialization Method Comparison
+GMMExperiment2:InitializationMethodComparison
 
 图 3: 不同初始化方法的 GMM 训练曲线
 

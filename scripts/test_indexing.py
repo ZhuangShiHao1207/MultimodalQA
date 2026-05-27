@@ -94,7 +94,7 @@ def main():
 
         # ===== Step 2: Generate Summaries for Visual Elements =====
         logger.info("\n[Step 2] Generating VLM summaries for figures & tables...")
-        summarizer = VLMSummarizer(model="glm-4v-flash")
+        summarizer = VLMSummarizer(model="glm-4.6v")
         elements = summarizer.summarize_elements(elements)
 
         # Cache for future runs

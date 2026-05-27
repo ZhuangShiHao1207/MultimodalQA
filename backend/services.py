@@ -54,14 +54,14 @@ def get_embedder() -> BGEEmbedder:
 def get_summarizer() -> VLMSummarizer:
     global _summarizer
     if _summarizer is None:
-        _summarizer = VLMSummarizer(model="glm-4v-flash")
+        _summarizer = VLMSummarizer(model="glm-4.6v")
     return _summarizer
 
 
 def get_generator() -> GroundedGenerator:
     global _generator
     if _generator is None:
-        _generator = GroundedGenerator(model="glm-4v-flash", max_tokens=1024)
+        _generator = GroundedGenerator(model="glm-4.6v", max_tokens=4096)
     return _generator
 
 
@@ -229,8 +229,11 @@ def process_document_sync(task_id: str, doc_id: str, pdf_path: str):
         # Store in memory
         document_stores[doc_id] = store
         document_elements[doc_id] = elements
+
+        # Preserve original filename if already set (from upload handler)
+        existing_filename = document_metadata.get(doc_id, {}).get("filename", Path(pdf_path).name)
         document_metadata[doc_id] = {
-            "filename": Path(pdf_path).name,
+            "filename": existing_filename,
             "status": "ready",
             "page_count": page_count,
             "element_count": len(elements),

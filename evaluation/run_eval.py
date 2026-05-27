@@ -57,7 +57,7 @@ def load_or_build_index():
     chunker = TextChunker(max_chunk_size=1500, chunk_overlap=200, min_chunk_size=80)
     elements = chunker.chunk_elements(elements)
 
-    summarizer = VLMSummarizer(model="glm-4v-flash")
+    summarizer = VLMSummarizer(model="glm-4.6v")
     elements = summarizer.summarize_elements(elements)
 
     with open(cache_path, "wb") as f:
@@ -78,7 +78,7 @@ def run_evaluation():
     elements = load_or_build_index()
     embedder = BGEEmbedder(model_name="BAAI/bge-m3", device="auto", use_fp16=True)
     store = build_index(elements, embedder)
-    generator = GroundedGenerator(model="glm-4v-flash", max_tokens=1024)
+    generator = GroundedGenerator(model="glm-4.6v", max_tokens=4096)
     retriever = MultiVectorRetriever(embedder=embedder, vector_store=store, top_k=5)
 
     logger.info(f"Index built: {store.size} vectors")

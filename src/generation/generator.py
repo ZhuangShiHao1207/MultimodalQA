@@ -37,9 +37,9 @@ class GroundedGenerator:
     def __init__(
         self,
         api_key: Optional[str] = None,
-        model: str = "glm-4v-flash",
+        model: str = "glm-4.6v",
         temperature: float = 0.1,
-        max_tokens: int = 1024,
+        max_tokens: int = 4096,
     ):
         self.api_key = api_key or os.getenv("ZHIPUAI_API_KEY")
         if not self.api_key:
@@ -97,8 +97,9 @@ class GroundedGenerator:
             "text": f"{SYSTEM_PROMPT}\n\n---\n\n**文档上下文：**\n{context_text}\n\n---\n\n**用户问题：** {query}",
         })
 
-        # Add images
-        for img_ctx in context["image_contexts"]:
+        # Add images (glm-4.6v supports multiple images well, limit to 5 for safety)
+        max_images_to_send = 5
+        for img_ctx in context["image_contexts"][:max_images_to_send]:
             image_b64 = self._encode_image(img_ctx["image_path"])
             content_parts.append({
                 "type": "text",
@@ -152,7 +153,7 @@ class GroundedGenerator:
         return "\n".join(parts) if parts else "（无相关文档内容）"
 
     def _call_api(self, messages: list) -> str:
-        """Call Zhipu API."""
+        """Call Zhipu API and clean response."""
         try:
             response = self.client.chat.completions.create(
                 model=self.model,
@@ -160,10 +161,30 @@ class GroundedGenerator:
                 max_tokens=self.max_tokens,
                 temperature=self.temperature,
             )
-            return response.choices[0].message.content.strip()
+            raw = response.choices[0].message.content.strip()
+            # Clean GLM special tokens that leak in multi-image scenarios
+            cleaned = self._clean_special_tokens(raw)
+            return cleaned
         except Exception as e:
             logger.error(f"API call failed: {e}")
             return f"生成失败: {e}"
+
+    def _clean_special_tokens(self, text: str) -> str:
+        """Remove GLM model special tokens that shouldn't appear in output."""
+        # GLM sometimes outputs these when confused (especially with multiple images)
+        special_tokens = [
+            "<|observation|>", "<|user|>", "<|assistant|>", "<|system|>",
+            "<|endoftext|>", "<|tool|>", "<|result|>",
+        ]
+        for token in special_tokens:
+            text = text.replace(token, "")
+
+        # If after cleaning the text is empty, it means the model failed to generate
+        text = text.strip()
+        if not text:
+            return "模型未能生成有效回答，请尝试简化问题或减少问题中涉及的图片数量。"
+
+        return text
 
     def _parse_citations(self, response: str) -> List[dict]:
         """Extract citation tags from response."""

@@ -66,7 +66,7 @@ def load_or_build_elements():
     elements = chunker.chunk_elements(elements)
 
     # Summarize
-    summarizer = VLMSummarizer(model="glm-4v-flash")
+    summarizer = VLMSummarizer(model="glm-4.6v")
     elements = summarizer.summarize_elements(elements)
 
     with open(cache_path, "wb") as f:
@@ -91,7 +91,7 @@ def main():
     # Initialize shared components
     logger.info("\n[2] Initializing models...")
     embedder = BGEEmbedder(model_name="BAAI/bge-m3", device="auto", use_fp16=True)
-    generator = GroundedGenerator(model="glm-4v-flash", temperature=0.1)
+    generator = GroundedGenerator(model="glm-4.6v", temperature=0.1)
 
     # Build Multimodal RAG index
     logger.info("\n[3] Building Multimodal RAG index...")

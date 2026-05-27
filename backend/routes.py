@@ -52,13 +52,21 @@ async def upload_pdf(
     task_id = str(uuid.uuid4())[:8]
     doc_id = str(uuid.uuid4())[:8]
 
-    # Save uploaded file
+    # Save uploaded file (keep original filename for display)
     doc_dir = DOCUMENTS_DIR / doc_id
     doc_dir.mkdir(parents=True, exist_ok=True)
     pdf_path = doc_dir / "source.pdf"
 
     with open(pdf_path, "wb") as f:
         shutil.copyfileobj(file.file, f)
+
+    # Store original filename in metadata immediately
+    from backend.services import document_metadata
+    document_metadata[doc_id] = {
+        "filename": file.filename,  # Use original upload filename
+        "status": "processing",
+        "page_count": 0,
+    }
 
     # Initialize progress tracker
     ProgressTracker(task_id)
