@@ -41,7 +41,7 @@ npm install
 
 ### 3. 配置 API Key
 
-在项目根目录创建 `.env` 文件：
+在项目根目录创建 `.env` 文件（复制.env.exampleb并且改名成.env），修改：
 ```env
 ZHIPUAI_API_KEY=your_api_key_here
 ```
