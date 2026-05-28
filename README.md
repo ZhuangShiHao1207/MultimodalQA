@@ -51,19 +51,13 @@ ZHIPUAI_API_KEY=your_api_key_here
 ```bash
 # 终端 1: 启动后端 (FastAPI)
 conda activate multimodalQA
-python -m uvicorn backend.main:app --reload --port 8000
+python -m uvicorn backend.main:app --reload --port 8001
 
 # 终端 2: 启动前端 (Vue)
 cd frontend
 npm run dev
 ```
 
-或使用启动脚本：
-```bash
-./run.sh --platform win app       # 启动后端
-./run.sh --platform win frontend  # 启动前端
-./run.sh --platform mac app       # macOS 启动后端
-```
 
 ### 5. 访问
 
