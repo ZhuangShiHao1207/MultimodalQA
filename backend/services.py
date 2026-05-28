@@ -201,17 +201,37 @@ def get_document_info(doc_id: str) -> dict:
 
 
 def delete_document(doc_id: str) -> bool:
-    """Delete a document and its data."""
+    """Delete a document and all its data (memory + disk + ChromaDB)."""
     if doc_id not in document_metadata:
         return False
+
+    # Cleanup ChromaDB collection
+    if doc_id in document_stores:
+        try:
+            document_stores[doc_id].delete_collection()
+        except Exception as e:
+            logger.warning(f"Failed to delete ChromaDB collection for {doc_id}: {e}")
+    else:
+        # Try to delete even if not in memory (might exist on disk from previous session)
+        try:
+            collection_name = f"doc_{doc_id}"
+            import chromadb
+            client = chromadb.PersistentClient(path=str(CHROMA_DIR))
+            client.delete_collection(collection_name)
+        except Exception:
+            pass
+
     # Cleanup memory
     document_metadata.pop(doc_id, None)
     document_stores.pop(doc_id, None)
     document_elements.pop(doc_id, None)
+
     # Cleanup disk
     doc_dir = DOCUMENTS_DIR / doc_id
     if doc_dir.exists():
         shutil.rmtree(doc_dir)
+
+    logger.info(f"Deleted document {doc_id} (memory + disk + ChromaDB)")
     return True
 
 
@@ -267,12 +287,24 @@ def process_document_sync(task_id: str, doc_id: str, pdf_path: str):
         tracker.update("embedding", 90, f"Indexed {store.size} vectors (persistent)")
 
         # Stage 5: Save metadata and finalize
-        # Copy images to accessible location
+        # Copy images and pages to accessible location
+        (doc_dir / "pages").mkdir(exist_ok=True)
         for elem in elements:
             if elem.image_path and Path(elem.image_path).exists():
                 dest = doc_dir / "images" / Path(elem.image_path).name
                 if not dest.exists():
                     shutil.copy2(elem.image_path, dest)
+            # Also copy page images for citation preview
+            if elem.type == ElementType.PAGE_IMAGE and elem.image_path and Path(elem.image_path).exists():
+                dest = doc_dir / "pages" / Path(elem.image_path).name
+                if not dest.exists():
+                    shutil.copy2(elem.image_path, dest)
+
+        # Cleanup: remove docling_output/ (intermediate files, everything needed is already copied)
+        docling_out = doc_dir / "docling_output"
+        if docling_out.exists():
+            shutil.rmtree(docling_out)
+            logger.info(f"Cleaned up docling_output/ for doc {doc_id}")
 
         # Count pages
         page_count = max((e.page_number for e in elements if e.page_number > 0), default=0)

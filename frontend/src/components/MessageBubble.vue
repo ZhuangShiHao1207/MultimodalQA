@@ -1,8 +1,14 @@
 <script setup>
+import { ref } from 'vue'
+
 const props = defineProps({
   message: Object,
   activeDocId: String,
 })
+
+const showPagePreview = ref(false)
+const previewPageNum = ref(0)
+const pagePreviewUrl = ref('')
 
 function getImageSrc(img) {
   if (img.url) return img.url
@@ -10,6 +16,13 @@ function getImageSrc(img) {
     return `/api/documents/${props.activeDocId}/images/${img.name}`
   }
   return ''
+}
+
+function previewPage(pageNum) {
+  if (!props.activeDocId || !pageNum) return
+  previewPageNum.value = pageNum
+  pagePreviewUrl.value = `/api/documents/${props.activeDocId}/pages/${pageNum}`
+  showPagePreview.value = true
 }
 </script>
 
@@ -59,18 +72,52 @@ function getImageSrc(img) {
           type="warning"
           effect="plain"
           class="citation-tag"
+          @click="previewPage(c.page)"
         >
-          Page {{ c.page }}{{ c.label ? ' - ' + c.label : '' }}
+          📄 Page {{ c.page }}{{ c.label ? ' - ' + c.label : '' }}
         </el-tag>
       </div>
 
-      <!-- Referenced pages -->
+      <!-- Referenced pages (clickable for preview) -->
       <div v-if="message.pages && message.pages.length && message.role === 'assistant'" class="ref-pages">
         <span class="ref-label">Referenced:</span>
-        <el-tag v-for="p in message.pages" :key="p" size="small" type="info" effect="plain">
+        <el-tag
+          v-for="p in message.pages"
+          :key="p"
+          size="small"
+          type="info"
+          effect="plain"
+          class="page-tag"
+          @click="previewPage(p)"
+        >
           p.{{ p }}
         </el-tag>
       </div>
+
+      <!-- Page preview dialog -->
+      <el-dialog
+        v-model="showPagePreview"
+        :title="`Page ${previewPageNum} Preview`"
+        width="700px"
+        :append-to-body="true"
+      >
+        <div class="page-preview-container">
+          <el-image
+            :src="pagePreviewUrl"
+            fit="contain"
+            style="width: 100%; max-height: 80vh;"
+            :preview-src-list="[pagePreviewUrl]"
+          >
+            <template #error>
+              <div class="page-preview-error">
+                <el-icon size="48"><Picture /></el-icon>
+                <p>Page image not available</p>
+                <p class="hint">Page images are generated during document processing</p>
+              </div>
+            </template>
+          </el-image>
+        </div>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -162,6 +209,16 @@ export default {
 }
 .citation-tag {
   cursor: pointer;
+  transition: transform 0.15s;
+}
+.citation-tag:hover {
+  transform: scale(1.05);
+}
+.page-tag {
+  cursor: pointer;
+}
+.page-tag:hover {
+  color: #409eff;
 }
 .ref-pages {
   margin-top: 8px;
@@ -173,5 +230,19 @@ export default {
 .ref-label {
   font-size: 11px;
   color: #909399;
+}
+.page-preview-container {
+  text-align: center;
+}
+.page-preview-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px;
+  color: #909399;
+}
+.page-preview-error .hint {
+  font-size: 12px;
+  margin-top: 8px;
 }
 </style>

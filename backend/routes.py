@@ -152,19 +152,23 @@ async def remove_document(doc_id: str):
 
 @router.get("/documents/{doc_id}/images/{img_name}")
 async def get_image(doc_id: str, img_name: str):
-    """Serve an extracted image file."""
+    """Serve an extracted figure image."""
     img_path = DOCUMENTS_DIR / doc_id / "images" / img_name
     if not img_path.exists():
-        # Try docling output path
-        docling_dir = DOCUMENTS_DIR / doc_id / "docling_output"
-        if docling_dir.exists():
-            # Search in subdirectories
-            matches = list(docling_dir.rglob(img_name))
-            if matches:
-                img_path = matches[0]
-
-    if not img_path.exists():
         raise HTTPException(404, "Image not found")
+    return FileResponse(str(img_path), media_type="image/png")
+
+
+@router.get("/documents/{doc_id}/pages/{page_num}")
+async def get_page_image(doc_id: str, page_num: int):
+    """Serve a rendered page image (for citation preview)."""
+    # Try common naming patterns
+    for pattern in [f"page_{page_num}.png", f"page_{page_num:02d}.png"]:
+        page_path = DOCUMENTS_DIR / doc_id / "pages" / pattern
+        if page_path.exists():
+            return FileResponse(str(page_path), media_type="image/png")
+
+    raise HTTPException(404, f"Page {page_num} image not found")
 
     return FileResponse(str(img_path), media_type="image/png")
 
