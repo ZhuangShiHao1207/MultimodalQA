@@ -100,16 +100,30 @@ class MultiVectorRetriever:
                 })
 
             elif elem.type == ElementType.FIGURE:
-                if image_count < max_images and elem.image_path and Path(elem.image_path).exists():
-                    image_contexts.append({
-                        "image_path": elem.image_path,
-                        "summary": elem.summary,
-                        "caption": elem.caption,
-                        "page": elem.page_number,
-                        "label": elem.inferred_label,
-                        "score": score,
-                    })
-                    image_count += 1
+                if image_count < max_images and elem.image_path:
+                    # Resolve image path (may need fallback for old metadata)
+                    img_path = Path(elem.image_path)
+                    if not img_path.exists():
+                        # Fallback: derive backend doc_id from collection name (format: "doc_{id}")
+                        collection_name = self.vector_store.collection_name
+                        backend_doc_id = collection_name.replace("doc_", "", 1) if collection_name.startswith("doc_") else elem.document_id
+                        fallback = Path(__file__).parent.parent.parent / "backend" / "documents" / backend_doc_id / "images" / img_path.name
+                        if fallback.exists():
+                            img_path = fallback
+                            elem.image_path = str(fallback)
+                            logger.debug(f"Resolved image path via fallback: {fallback}")
+                    if img_path.exists():
+                        image_contexts.append({
+                            "image_path": str(img_path),
+                            "summary": elem.summary,
+                            "caption": elem.caption,
+                            "page": elem.page_number,
+                            "label": elem.inferred_label,
+                            "score": score,
+                        })
+                        image_count += 1
+                    else:
+                        logger.warning(f"Figure image not found: {elem.image_path}")
 
         return {
             "text_contexts": text_contexts,

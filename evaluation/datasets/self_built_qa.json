@@ -1,6 +1,7 @@
 [
   {
     "id": "q01",
+    "document": "测试数据（某次实验报告）.pdf",
     "question": "K-Means算法的目标函数是什么？",
     "gold_answers": ["目标函数为簇内距离之和最小化", "最小化簇内样本到聚类中心的距离之和"],
     "type": "text",
@@ -9,6 +10,7 @@
   },
   {
     "id": "q02",
+    "document": "测试数据（某次实验报告）.pdf",
     "question": "K-Means++初始化需要多少次迭代收敛？",
     "gold_answers": ["46", "46次", "46次迭代"],
     "type": "table",
@@ -17,6 +19,7 @@
   },
   {
     "id": "q03",
+    "document": "测试数据（某次实验报告）.pdf",
     "question": "Random初始化的测试集准确率是多少？",
     "gold_answers": ["0.5937", "59.37%", "0.5937"],
     "type": "table",
@@ -25,6 +28,7 @@
   },
   {
     "id": "q04",
+    "document": "测试数据（某次实验报告）.pdf",
     "question": "从训练损失曲线来看，哪种初始化方法的损失下降更快？",
     "gold_answers": ["K-Means++", "KMeans++", "K-Means++初始化"],
     "type": "figure",
@@ -33,6 +37,7 @@
   },
   {
     "id": "q05",
+    "document": "测试数据（某次实验报告）.pdf",
     "question": "三种协方差结构中，哪种的训练准确率最高？",
     "gold_answers": ["Full", "完全协方差", "full"],
     "type": "table",
@@ -41,6 +46,7 @@
   },
   {
     "id": "q06",
+    "document": "测试数据（某次实验报告）.pdf",
     "question": "Spherical协方差结构的测试ACC是多少？",
     "gold_answers": ["0.5376", "53.76%"],
     "type": "table",
@@ -49,6 +55,7 @@
   },
   {
     "id": "q07",
+    "document": "测试数据（某次实验报告）.pdf",
     "question": "GMM（Full协方差+Random初始化）的测试集准确率是多少？",
     "gold_answers": ["0.6350", "63.50%", "0.635"],
     "type": "table",
@@ -57,6 +64,7 @@
   },
   {
     "id": "q08",
+    "document": "测试数据（某次实验报告）.pdf",
     "question": "从聚类可视化散点图来看，Ground Truth、Random和K-Means++的聚类效果有什么区别？",
     "gold_answers": ["K-Means++的聚类结果更接近Ground Truth", "kmeans++更接近真实分布"],
     "type": "figure",
@@ -65,6 +73,7 @@
   },
   {
     "id": "q09",
+    "document": "测试数据（某次实验报告）.pdf",
     "question": "K-Means和GMM哪种方法的聚类准确率更高？",
     "gold_answers": ["GMM", "GMM更高", "GMM方法"],
     "type": "text",
@@ -73,6 +82,7 @@
   },
   {
     "id": "q10",
+    "document": "测试数据（某次实验报告）.pdf",
     "question": "Full协方差结构的训练时间是多少秒？",
     "gold_answers": ["126.15", "126.15秒", "126.15s"],
     "type": "table",
@@ -81,6 +91,7 @@
   },
   {
     "id": "q11",
+    "document": "测试数据（某次实验报告）.pdf",
     "question": "从Log-Likelihood曲线来看，三种协方差结构最终收敛时的对数似然值大小顺序是什么？",
     "gold_answers": ["Full > Diagonal > Spherical", "full最高spherical最低"],
     "type": "figure",
@@ -89,10 +100,128 @@
   },
   {
     "id": "q12",
+    "document": "测试数据（某次实验报告）.pdf",
     "question": "GMM使用EM算法训练时，E步计算的是什么？",
     "gold_answers": ["后验概率", "责任度", "每个样本属于第j个高斯分量的后验概率"],
     "type": "text",
     "requires_visual": false,
     "page": 2
+  },
+  {
+    "id": "q13",
+    "document": "大数据报告（电影评论情感二分类）.pdf",
+    "question": "从模型对比柱状图来看，哪个模型的Accuracy最高？",
+    "gold_answers": ["RNN-Strong", "RNN-Strong (BiLSTM)", "BiLSTM-Strong"],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 3
+  },
+  {
+    "id": "q14",
+    "document": "大数据报告（电影评论情感二分类）.pdf",
+    "question": "从柱状图来看，TF-IDF+LogisticRegression和TF-IDF+LinearSVM的F1分数差距大吗？",
+    "gold_answers": ["差距很小", "几乎相同", "差距不大", "非常接近"],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 3
+  },
+  {
+    "id": "q15",
+    "document": "大数据报告（电影评论情感二分类）.pdf",
+    "question": "从RNN训练损失曲线来看，模型大约在第几个Epoch后Loss趋于平稳？",
+    "gold_answers": ["3", "第3个", "3个epoch", "2-3"],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 3
+  },
+  {
+    "id": "q16",
+    "document": "大数据报告（电影评论情感二分类）.pdf",
+    "question": "从RNN训练曲线来看，训练集Loss的初始值大约是多少？",
+    "gold_answers": ["0.65", "0.6-0.7", "约0.65"],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 3
+  },
+  {
+    "id": "q17",
+    "document": "大数据报告（电影评论情感二分类）.pdf",
+    "question": "从TF-IDF+LogisticRegression的混淆矩阵来看，negative类被误分为positive的样本数是多少？",
+    "gold_answers": ["1087", "约1087"],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 4
+  },
+  {
+    "id": "q18",
+    "document": "大数据报告（电影评论情感二分类）.pdf",
+    "question": "从TF-IDF+LinearSVM的混淆矩阵来看，哪个类别的分类正确率更高？",
+    "gold_answers": ["positive", "positive类", "正面"],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 4
+  },
+  {
+    "id": "q19",
+    "document": "大数据报告（电影评论情感二分类）.pdf",
+    "question": "从RNN(BiLSTM)的混淆矩阵中，模型对positive类的预测正确数是多少？",
+    "gold_answers": ["5765", "约5765"],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 5
+  },
+  {
+    "id": "q20",
+    "document": "大数据报告（电影评论情感二分类）.pdf",
+    "question": "对比所有模型的混淆矩阵，哪个模型的false positive（把negative误判为positive）数量最少？",
+    "gold_answers": ["RNN-Strong", "RNN-Strong (BiLSTM)", "BiLSTM-Strong"],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 5
+  },
+  {
+    "id": "q21",
+    "document": "大数据报告（电影评论情感二分类）.pdf",
+    "question": "本实验使用了哪些文本特征提取方法？",
+    "gold_answers": ["TF-IDF", "TF-IDF和词嵌入", "TF-IDF、Word Embedding"],
+    "type": "text",
+    "requires_visual": false,
+    "page": 1
+  },
+  {
+    "id": "q22",
+    "document": "大数据报告（电影评论情感二分类）.pdf",
+    "question": "RNN模型使用的是什么网络结构？",
+    "gold_answers": ["BiLSTM", "双向LSTM", "Bidirectional LSTM"],
+    "type": "text",
+    "requires_visual": false,
+    "page": 2
+  },
+  {
+    "id": "q23",
+    "document": "大数据报告（电影评论情感二分类）.pdf",
+    "question": "实验使用的数据集是什么？包含多少条评论？",
+    "gold_answers": ["IMDB", "IMDB数据集，50000条", "IMDB，5万条"],
+    "type": "text",
+    "requires_visual": false,
+    "page": 1
+  },
+  {
+    "id": "q24",
+    "document": "大数据报告（电影评论情感二分类）.pdf",
+    "question": "从RNN训练曲线来看，验证集Loss是否出现过拟合现象（先下降后上升）？",
+    "gold_answers": ["没有", "未出现明显过拟合", "验证Loss持续下降或平稳"],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 3
+  },
+  {
+    "id": "q25",
+    "document": "大数据报告（电影评论情感二分类）.pdf",
+    "question": "从所有混淆矩阵结果来看，深度学习方法（RNN）相比传统方法（TF-IDF）在哪方面有明显优势？",
+    "gold_answers": ["整体准确率更高", "误分类更少", "RNN的对角线数值更大", "正确预测数更多"],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 5
   }
 ]

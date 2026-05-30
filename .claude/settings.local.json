@@ -26,7 +26,9 @@
       "Bash(PYTHONIOENCODING=utf-8 HF_HUB_DISABLE_SYMLINKS=1 conda run -n multimodalQA python -c \"from backend.services import get_document_list, document_stores; docs=get_document_list\\(\\); print\\(f'Documents: {len\\(docs\\)}'\\); [print\\(f'  {d[\\\\\"id\\\\\"]}: {d[\\\\\"filename\\\\\"]} \\({d[\\\\\"status\\\\\"]}\\)'\\) for d in docs]; print\\(f'Stores loaded: {list\\(document_stores.keys\\(\\)\\)}'\\)\")",
       "Bash(PYTHONIOENCODING=utf-8 HF_HUB_DISABLE_SYMLINKS=1 conda run -n multimodalQA python -c \"from backend.main import app; print\\('Backend OK'\\)\")",
       "Bash(PYTHONIOENCODING=utf-8 HF_HUB_DISABLE_SYMLINKS=1 conda run -n multimodalQA python -c \"from backend.services import get_document_list; docs=get_document_list\\(\\); print\\(f'Documents found: {len\\(docs\\)}'\\); [print\\(f'  {d[\\\\\"id\\\\\"]}: {d[\\\\\"filename\\\\\"]} \\({d[\\\\\"status\\\\\"]}\\)'\\) for d in docs]\")",
-      "Bash(PYTHONIOENCODING=utf-8 HF_HUB_DISABLE_SYMLINKS=1 conda run -n multimodalQA python -c \"from backend.main import app; print\\('OK'\\)\")"
+      "Bash(PYTHONIOENCODING=utf-8 HF_HUB_DISABLE_SYMLINKS=1 conda run -n multimodalQA python -c \"from backend.main import app; print\\('OK'\\)\")",
+      "Bash(dir /s /b \"C:\\\\Users\\\\12077\\\\Desktop\\\\college\\\\大三下\\\\多模态大作业\\\\MultimodalQA\\\\backend\\\\chroma_data\")",
+      "Bash(findstr /c:\".\")"
     ]
   }
 }

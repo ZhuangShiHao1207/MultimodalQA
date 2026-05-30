@@ -275,7 +275,27 @@ def process_document_sync(task_id: str, doc_id: str, pdf_path: str):
         elements = summarizer.summarize_elements(elements)
         tracker.update("summarizing", 70, f"Summarized {visual_count} visual elements")
 
-        # Stage 4: Build vector index (persistent ChromaDB)
+        # Stage 4: Copy images to final location BEFORE indexing
+        # (so image_path in ChromaDB metadata points to persistent paths, not temp docling_output)
+        tracker.update("embedding", 72, "Copying images to persistent storage...")
+        (doc_dir / "pages").mkdir(exist_ok=True)
+        for elem in elements:
+            if elem.image_path and Path(elem.image_path).exists():
+                if elem.type == ElementType.PAGE_IMAGE:
+                    # Page images go to pages/ for citation preview
+                    dest = doc_dir / "pages" / Path(elem.image_path).name
+                    if not dest.exists():
+                        shutil.copy2(elem.image_path, dest)
+                    elem.image_path = str(dest)
+                else:
+                    # Figures/tables go to images/ for inline display
+                    dest = doc_dir / "images" / Path(elem.image_path).name
+                    if not dest.exists():
+                        shutil.copy2(elem.image_path, dest)
+                    elem.image_path = str(dest)  # Update to persistent path!
+
+        # Stage 5: Build vector index (persistent ChromaDB)
+        # Now image_path in metadata will point to backend/documents/{id}/images/ (correct)
         tracker.update("embedding", 75, "Embedding with BGE-M3...")
         embedder = get_embedder()
         collection_name = f"doc_{doc_id}"
@@ -285,20 +305,6 @@ def process_document_sync(task_id: str, doc_id: str, pdf_path: str):
             collection_name=collection_name,
         )
         tracker.update("embedding", 90, f"Indexed {store.size} vectors (persistent)")
-
-        # Stage 5: Save metadata and finalize
-        # Copy images and pages to accessible location
-        (doc_dir / "pages").mkdir(exist_ok=True)
-        for elem in elements:
-            if elem.image_path and Path(elem.image_path).exists():
-                dest = doc_dir / "images" / Path(elem.image_path).name
-                if not dest.exists():
-                    shutil.copy2(elem.image_path, dest)
-            # Also copy page images for citation preview
-            if elem.type == ElementType.PAGE_IMAGE and elem.image_path and Path(elem.image_path).exists():
-                dest = doc_dir / "pages" / Path(elem.image_path).name
-                if not dest.exists():
-                    shutil.copy2(elem.image_path, dest)
 
         # Cleanup: remove docling_output/ (intermediate files, everything needed is already copied)
         docling_out = doc_dir / "docling_output"

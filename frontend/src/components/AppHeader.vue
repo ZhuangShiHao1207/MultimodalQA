@@ -12,12 +12,14 @@ const emit = defineEmits(['update:mode'])
     <div class="header-right">
       <span class="mode-label">RAG Mode:</span>
       <el-switch
-        :model-value="mode === 'multimodal'"
+        :model-value="mode"
+        active-value="multimodal"
+        inactive-value="text_only"
         active-text="Multimodal"
         inactive-text="Text Only"
         active-color="#409eff"
         inactive-color="#909399"
-        @change="emit('update:mode', $event ? 'multimodal' : 'text_only')"
+        @update:model-value="emit('update:mode', $event)"
       />
     </div>
   </div>
