@@ -1,51 +1,43 @@
 # ============================================
 # MultimodalQA - Document Intelligence Assistant
-# Python 3.10 | CUDA 12.x | RTX 4070 (8GB)
+# Python 3.10+ | CUDA 12.x (Linux/Win) or MPS (macOS) | optional CPU
 # ============================================
+# Version pins are minimums verified to work; newer should be fine.
+# To regenerate exactly what's installed: pip freeze > requirements.lock.txt
 
 # --- Core: PyTorch ---
-# Windows (CUDA): pip install torch torchvision --index-url https://download.pytorch.org/whl/cu126
-# macOS (MPS):    pip install torch torchvision
-# Linux (CPU):    pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
-torch
-torchvision
+# Install ONE of the following BEFORE running `pip install -r requirements.txt`:
+#   Windows/Linux (CUDA 12.x): pip install torch --index-url https://download.pytorch.org/whl/cu126
+#   macOS (Apple Silicon/MPS): pip install torch
+#   Linux/CPU only:            pip install torch --index-url https://download.pytorch.org/whl/cpu
+torch>=2.5.0
+
+# --- Hugging Face stack (transformers monkey-patch + FlagEmbedding's tokenizer) ---
+transformers>=4.45.0       # Direct import in src/indexing/embedder.py for CVE-2025-32434 patch
 
 # --- Document Parsing ---
 docling>=2.31.0            # IBM Docling: PDF layout analysis + text/table/image extraction
 
 # --- Embedding Model (BGE-M3) ---
-FlagEmbedding>=1.3.4       # BAAI BGE-M3 model wrapper
-sentence-transformers>=3.4.0
+FlagEmbedding>=1.3.4       # BAAI BGE-M3 model wrapper (1024-dim dense vectors)
 
 # --- Vector Store ---
 chromadb>=1.0.0            # Persistent vector database (replaced FAISS)
 
 # --- LLM API (Zhipu GLM-4.6V) ---
-zhipuai>=2.1.0             # Zhipu AI official SDK (stable, well-maintained)
+zhipuai>=2.1.0             # Zhipu AI official SDK
 
-# --- RAG Orchestration ---
-langchain>=0.3.0
-langchain-community>=0.3.0
-langchain-core>=0.3.0
+# --- Web Backend (FastAPI + Uvicorn) ---
+fastapi>=0.115.0           # REST API + SSE streaming endpoints (backend/routes.py)
+uvicorn>=0.32.0            # ASGI server, used as `uvicorn backend.main:app`
+pydantic>=2.0.0            # Request/response models (BaseModel in routes.py)
+python-multipart>=0.0.18   # REQUIRED by FastAPI's UploadFile (PDF upload endpoint)
 
-# --- Image Processing ---
-Pillow>=10.0.0
-pdf2image>=1.16.0          # PDF page to image conversion (requires poppler)
-
-# --- Data Processing ---
-numpy>=1.24.0
-pandas>=2.0.0
-
-# --- Web Frontend ---
-gradio>=5.0.0
+# --- Numerics ---
+numpy>=1.24.0              # Embedding arrays (src/indexing/embedder.py)
 
 # --- Utilities ---
-pyyaml>=6.0
-python-dotenv>=1.0.0       # Load .env files for API keys
-tqdm>=4.66.0
-uuid6>=2024.1.12           # UUID generation for DocStore
-rich>=13.0.0               # Pretty console output
+python-dotenv>=1.0.0       # Load .env files (API keys in src/generation, src/indexing)
 
 # --- Evaluation ---
-python-Levenshtein>=0.25.0 # For ANLS metric computation
-datasets>=3.0.0            # HuggingFace datasets (DocVQA loading)
+python-Levenshtein>=0.25.0 # ANLS metric in evaluation/metrics.py

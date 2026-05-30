@@ -41,10 +41,10 @@ ingestion:
 # Vector Store
 # ============================================
 vector_store:
-  backend: "faiss"           # faiss | chromadb
-  index_type: "FlatIP"       # FlatIP (inner product) for cosine similarity
-  dimension: 1024            # BGE-M3 dense embedding dimension
-  persist_dir: "./vector_store"
+  backend: "chromadb"         # ChromaDB (persistent); FAISS support removed in 2026-05
+  metric: "cosine"            # ChromaDB cosine similarity (hnsw:space)
+  dimension: 1024             # BGE-M3 dense embedding dimension
+  persist_dir: "./backend/chroma_data"
 
 # ============================================
 # Retrieval
