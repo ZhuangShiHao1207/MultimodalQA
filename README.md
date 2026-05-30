@@ -201,7 +201,7 @@ graph TD
 
 | 层级 | 技术 | 用途 |
 |------|------|------|
-| **前端** | Vue 3 + Vite + Element Plus | 现代化 Web 交互界面 |
+| **前端** | Vue 3 + Vite + Element Plus + KaTeX | 现代化 Web 交互界面 + LaTeX 公式渲染 |
 | **后端** | FastAPI (Python) | REST API + SSE 流式响应 |
 | **文档解析** | IBM Docling 2.95 | GPU 加速的 PDF 版面分析 |
 | **向量模型** | BAAI/BGE-M3 (569M) | 1024 维 dense embedding，支持 8192 tokens |

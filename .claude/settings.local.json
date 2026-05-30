@@ -35,7 +35,12 @@
       "Bash(pip install *)",
       "Bash(python -c \"import sys; print\\(sys.executable\\); print\\(sys.version\\)\")",
       "Bash(where python *)",
-      "Bash(conda env *)"
+      "Bash(conda env *)",
+      "Bash(npx vite *)",
+      "Bash(node -e ' *)",
+      "Bash(node test_format.js)",
+      "Bash(mv \"C:/Users/12077/Desktop/college/大三下/多模态大作业/MultimodalQA/frontend/test_format.js\" \"C:/Users/12077/Desktop/college/大三下/多模态大作业/MultimodalQA/frontend/test_format.cjs\")",
+      "Bash(node test_format.cjs)"
     ]
   }
 }
