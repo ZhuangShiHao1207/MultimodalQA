@@ -1,0 +1,524 @@
+{
+  "timestamp": "2026-05-30T16:08:31.998307",
+  "dataset": "self_built_qa (corrected)",
+  "model": "glm-4.6v",
+  "total_questions": 25,
+  "documents_evaluated": [
+    "测试数据（某次实验报告）.pdf",
+    "大数据报告（电影评论情感二分类）.pdf"
+  ],
+  "overall": {
+    "multimodal_anls": 1.0,
+    "text_only_anls": 0.56,
+    "multimodal_accuracy": 1.0,
+    "text_only_accuracy": 0.56,
+    "anls_improvement": 0.43999999999999995,
+    "accuracy_improvement": 0.43999999999999995
+  },
+  "by_type": {
+    "figure": {
+      "count": 11,
+      "multimodal_anls": 1.0,
+      "text_only_anls": 0.09090909090909091,
+      "mm_accuracy": 1.0,
+      "to_accuracy": 0.09090909090909091
+    },
+    "table": {
+      "count": 7,
+      "multimodal_anls": 1.0,
+      "text_only_anls": 1.0,
+      "mm_accuracy": 1.0,
+      "to_accuracy": 1.0
+    },
+    "text": {
+      "count": 7,
+      "multimodal_anls": 1.0,
+      "text_only_anls": 0.8571428571428571,
+      "mm_accuracy": 1.0,
+      "to_accuracy": 0.8571428571428571
+    }
+  },
+  "visual_questions": {
+    "count": 11,
+    "multimodal_anls": 1.0,
+    "text_only_anls": 0.09090909090909091,
+    "mm_accuracy": 1.0,
+    "to_accuracy": 0.09090909090909091
+  },
+  "non_visual_questions": {
+    "count": 14,
+    "multimodal_anls": 1.0,
+    "text_only_anls": 0.9285714285714286,
+    "mm_accuracy": 1.0,
+    "to_accuracy": 0.9285714285714286
+  },
+  "details": [
+    {
+      "id": "q01",
+      "document": "测试数据（某次实验报告）.pdf",
+      "question": "K-Means算法的目标函数是什么？",
+      "type": "text",
+      "requires_visual": false,
+      "gold_answers": [
+        "目标函数为簇内距离之和最小化",
+        "最小化簇内样本到聚类中心的距离之和",
+        "最小化簇内平方距离和"
+      ],
+      "multimodal_answer": "K-Means算法的目标函数（损失函数）为最小化簇内平方距离和，通过迭代优化使目标函数值不断减小，最终收敛到局部最优解。",
+      "text_only_answer": "K-Means算法的目标函数（损失函数）是使簇内平方距离和最小化，算法通过迭代优化使目标函数值不断减小，最终收敛到局部最优解。",
+      "multimodal_anls": 1.0,
+      "text_only_anls": 0.0,
+      "mm_correct": true,
+      "to_correct": false
+    },
+    {
+      "id": "q02",
+      "document": "测试数据（某次实验报告）.pdf",
+      "question": "K-Means++初始化需要多少次迭代收敛？",
+      "type": "table",
+      "requires_visual": false,
+      "gold_answers": [
+        "46",
+        "46次",
+        "46次迭代"
+      ],
+      "multimodal_answer": "K-Means++初始化需要46次迭代收敛。",
+      "text_only_answer": "K-Means++初始化需要46次迭代收敛。",
+      "multimodal_anls": 1.0,
+      "text_only_anls": 1.0,
+      "mm_correct": true,
+      "to_correct": true
+    },
+    {
+      "id": "q03",
+      "document": "测试数据（某次实验报告）.pdf",
+      "question": "Random初始化的测试集准确率是多少？",
+      "type": "table",
+      "requires_visual": false,
+      "gold_answers": [
+        "0.5937",
+        "59.37%",
+        "0.5937"
+      ],
+      "multimodal_answer": "Random初始化的测试集准确率为59.37%（即0.5937）。",
+      "text_only_answer": "Random初始化的测试集准确率为59.37%。",
+      "multimodal_anls": 1.0,
+      "text_only_anls": 1.0,
+      "mm_correct": true,
+      "to_correct": true
+    },
+    {
+      "id": "q04",
+      "document": "测试数据（某次实验报告）.pdf",
+      "question": "从训练损失曲线来看，哪种初始化方法的损失下降更快？",
+      "type": "figure",
+      "requires_visual": true,
+      "gold_answers": [
+        "K-Means++",
+        "KMeans++",
+        "K-Means++初始化"
+      ],
+      "multimodal_answer": "K-Means++ 初始化的损失下降更快。",
+      "text_only_answer": "根据提供的文档内容无法回答此问题",
+      "multimodal_anls": 1.0,
+      "text_only_anls": 0.0,
+      "mm_correct": true,
+      "to_correct": false
+    },
+    {
+      "id": "q05",
+      "document": "测试数据（某次实验报告）.pdf",
+      "question": "三种协方差结构中，哪种的训练准确率最高？",
+      "type": "table",
+      "requires_visual": false,
+      "gold_answers": [
+        "Full",
+        "完全协方差",
+        "full"
+      ],
+      "multimodal_answer": "Full协方差结构的训练准确率最高，其训练集准确率为0.5666。",
+      "text_only_answer": "Full协方差结构的训练准确率最高，其训练集准确率为0.5666。",
+      "multimodal_anls": 1.0,
+      "text_only_anls": 1.0,
+      "mm_correct": true,
+      "to_correct": true
+    },
+    {
+      "id": "q06",
+      "document": "测试数据（某次实验报告）.pdf",
+      "question": "Spherical协方差结构的测试ACC是多少？",
+      "type": "table",
+      "requires_visual": false,
+      "gold_answers": [
+        "0.5376",
+        "53.76%"
+      ],
+      "multimodal_answer": "Spherical协方差结构的测试ACC为0.5376。",
+      "text_only_answer": "Spherical协方差结构的测试ACC为0.5376。",
+      "multimodal_anls": 1.0,
+      "text_only_anls": 1.0,
+      "mm_correct": true,
+      "to_correct": true
+    },
+    {
+      "id": "q07",
+      "document": "测试数据（某次实验报告）.pdf",
+      "question": "GMM（Full协方差+Random初始化）的测试集准确率是多少？",
+      "type": "table",
+      "requires_visual": false,
+      "gold_answers": [
+        "0.6350",
+        "63.50%",
+        "0.635"
+      ],
+      "multimodal_answer": "GMM（Full协方差+Random初始化）的测试集准确率为63.50%。",
+      "text_only_answer": "GMM（Full协方差+Random初始化）的测试集准确率为63.50%。",
+      "multimodal_anls": 1.0,
+      "text_only_anls": 1.0,
+      "mm_correct": true,
+      "to_correct": true
+    },
+    {
+      "id": "q08",
+      "document": "测试数据（某次实验报告）.pdf",
+      "question": "在GMM初始化方法对比中（Full协方差），Random和K-Means++哪种初始化得到的聚类结果更接近Ground Truth标签？",
+      "type": "table",
+      "requires_visual": false,
+      "gold_answers": [
+        "Random",
+        "随机初始化",
+        "Random初始化",
+        "随机"
+      ],
+      "multimodal_answer": "在GMM初始化方法对比中（Full协方差），Random初始化得到的聚类结果更接近Ground Truth标签。原因是K-Means++初始化虽然能找到更高的对数似然，但其对应的簇划分可能与真实标签的对应关系较差；而随机初始化可能偶然落入一个对数似然稍低、但簇与标签对齐更好的局部极值。",
+      "text_only_answer": "在GMM（Full协方差）初始化方法对比中，Random初始化得到的聚类结果更接近Ground Truth标签。",
+      "multimodal_anls": 1.0,
+      "text_only_anls": 1.0,
+      "mm_correct": true,
+      "to_correct": true
+    },
+    {
+      "id": "q09",
+      "document": "测试数据（某次实验报告）.pdf",
+      "question": "K-Means和GMM哪种方法的聚类准确率更高？",
+      "type": "text",
+      "requires_visual": false,
+      "gold_answers": [
+        "GMM",
+        "GMM更高",
+        "GMM方法"
+      ],
+      "multimodal_answer": "GMM的聚类准确率更高。在MNIST手写数字数据集上，GMM（Full协方差+Random初始化）的测试集聚类精度为63.50%，显著高于K-Means的59.37%。",
+      "text_only_answer": "GMM的聚类准确率更高。在MNIST手写数字数据集上，GMM（Full协方差+Random初始化）的测试集聚类精度为63.50%，显著高于K-Means的59.37%。",
+      "multimodal_anls": 1.0,
+      "text_only_anls": 1.0,
+      "mm_correct": true,
+      "to_correct": true
+    },
+    {
+      "id": "q10",
+      "document": "测试数据（某次实验报告）.pdf",
+      "question": "Full协方差结构的训练时间是多少秒？",
+      "type": "table",
+      "requires_visual": false,
+      "gold_answers": [
+        "126.15",
+        "126.15秒",
+        "126.15s"
+      ],
+      "multimodal_answer": "Full协方差结构的训练时间是126.15秒。",
+      "text_only_answer": "Full协方差结构的训练时间是126.15秒。",
+      "multimodal_anls": 1.0,
+      "text_only_anls": 1.0,
+      "mm_correct": true,
+      "to_correct": true
+    },
+    {
+      "id": "q11",
+      "document": "测试数据（某次实验报告）.pdf",
+      "question": "从Log-Likelihood曲线来看，三种协方差结构最终收敛时的对数似然值大小顺序是什么？",
+      "type": "figure",
+      "requires_visual": true,
+      "gold_answers": [
+        "Full > Diagonal > Spherical",
+        "full最高spherical最低",
+        "Full最高，Spherical最低"
+      ],
+      "multimodal_answer": "从Log-Likelihood曲线来看，三种协方差结构最终收敛时的对数似然值大小顺序为：Full协方差 > Diagonal协方差 > Spherical协方差。",
+      "text_only_answer": "三种协方差结构最终收敛时的对数似然值大小顺序为：Full 协方差（-308797.24）> Diagonal 协方差（-518806.90）> Spherical 协方差（-592049.07）。",
+      "multimodal_anls": 1.0,
+      "text_only_anls": 1.0,
+      "mm_correct": true,
+      "to_correct": true
+    },
+    {
+      "id": "q12",
+      "document": "测试数据（某次实验报告）.pdf",
+      "question": "GMM使用EM算法训练时，E步计算的是什么？",
+      "type": "text",
+      "requires_visual": false,
+      "gold_answers": [
+        "后验概率",
+        "责任度",
+        "每个样本属于第j个高斯分量的后验概率"
+      ],
+      "multimodal_answer": "GMM使用EM算法训练时，E步计算的是每个样本 \\( x_i \\) 属于第 \\( j \\) 个高斯分量的后验概率（责任度）。",
+      "text_only_answer": "GMM使用EM算法训练时，E步计算的是每个样本 \\( x_i \\) 属于第 \\( j \\) 个高斯分量的后验概率（责任度）。",
+      "multimodal_anls": 1.0,
+      "text_only_anls": 1.0,
+      "mm_correct": true,
+      "to_correct": true
+    },
+    {
+      "id": "q13",
+      "document": "大数据报告（电影评论情感二分类）.pdf",
+      "question": "从模型对比柱状图（IMDB Model Comparison）来看，哪个模型的Accuracy最高？",
+      "type": "figure",
+      "requires_visual": true,
+      "gold_answers": [
+        "TF-IDF + LogisticRegression",
+        "TF-IDF+LogisticRegression",
+        "Logistic Regression",
+        "LR",
+        "TF-IDF+LR"
+      ],
+      "multimodal_answer": "TF-IDF + LogisticRegression模型的Accuracy最高，为0.883。",
+      "text_only_answer": "根据提供的文档内容无法回答此问题",
+      "multimodal_anls": 1.0,
+      "text_only_anls": 0.0,
+      "mm_correct": true,
+      "to_correct": false
+    },
+    {
+      "id": "q14",
+      "document": "大数据报告（电影评论情感二分类）.pdf",
+      "question": "从柱状图来看，TF-IDF+LogisticRegression和TF-IDF+LinearSVM的F1分数差距大吗？",
+      "type": "figure",
+      "requires_visual": true,
+      "gold_answers": [
+        "差距很小",
+        "几乎相同",
+        "差距不大",
+        "非常接近",
+        "差距小"
+      ],
+      "multimodal_answer": "从柱状图（Figure 1）来看，TF-IDF + LogisticRegression的F1分数为0.883，TF-IDF + LinearSVM的F1分数为0.872，两者差距为0.011，差距不大。",
+      "text_only_answer": "根据提供的文档内容无法回答此问题，因为文档中未包含柱状图，仅提供了表格（Table 1）和文本片段，未提及柱状图的相关信息。",
+      "multimodal_anls": 1.0,
+      "text_only_anls": 0.0,
+      "mm_correct": true,
+      "to_correct": false
+    },
+    {
+      "id": "q15",
+      "document": "大数据报告（电影评论情感二分类）.pdf",
+      "question": "从RNN训练损失曲线来看，验证集Loss在第几个Epoch左右达到最低值？",
+      "type": "figure",
+      "requires_visual": true,
+      "gold_answers": [
+        "4",
+        "第4个",
+        "epoch 4",
+        "4-6",
+        "约第4个epoch"
+      ],
+      "multimodal_answer": "根据Figure 2的“RNN Loss Curve”图表，验证集Loss（Val Loss）在第4个Epoch左右达到最低值。",
+      "text_only_answer": "根据提供的文档内容无法回答此问题",
+      "multimodal_anls": 1.0,
+      "text_only_anls": 0.0,
+      "mm_correct": true,
+      "to_correct": false
+    },
+    {
+      "id": "q16",
+      "document": "大数据报告（电影评论情感二分类）.pdf",
+      "question": "从RNN训练曲线来看，训练集Loss的初始值（第1个Epoch）大约是多少？",
+      "type": "figure",
+      "requires_visual": true,
+      "gold_answers": [
+        "0.63",
+        "0.6-0.7",
+        "约0.63",
+        "0.65",
+        "0.6"
+      ],
+      "multimodal_answer": "根据Figure 2的“RNN Loss Curve”显示，训练集Loss在第1个Epoch的初始值大约为0.65。",
+      "text_only_answer": "根据提供的文档内容无法回答此问题",
+      "multimodal_anls": 1.0,
+      "text_only_anls": 0.0,
+      "mm_correct": true,
+      "to_correct": false
+    },
+    {
+      "id": "q17",
+      "document": "大数据报告（电影评论情感二分类）.pdf",
+      "question": "从TF-IDF+LogisticRegression的混淆矩阵来看，true label为negative但被预测为positive的样本数是多少？",
+      "type": "figure",
+      "requires_visual": true,
+      "gold_answers": [
+        "1480",
+        "约1480"
+      ],
+      "multimodal_answer": "1480",
+      "text_only_answer": "根据提供的文档内容无法回答此问题。",
+      "multimodal_anls": 1.0,
+      "text_only_anls": 0.0,
+      "mm_correct": true,
+      "to_correct": false
+    },
+    {
+      "id": "q18",
+      "document": "大数据报告（电影评论情感二分类）.pdf",
+      "question": "从TF-IDF+LinearSVM的混淆矩阵来看，按召回率(recall)计算，哪个类别的分类正确率更高？",
+      "type": "figure",
+      "requires_visual": true,
+      "gold_answers": [
+        "negative",
+        "negative类",
+        "负面",
+        "负类"
+      ],
+      "multimodal_answer": "从TF - IDF + LinearSVM的混淆矩阵（Figure 4）计算召回率：  \n- 对于negative类别，召回率为 \\( \\frac{11044}{11044 + 1456} = \\frac{11044}{12500} \\approx 0.8835 \\)；  \n- 对于positive类别，召回率为 \\( \\frac{10778}{10778 + 1722} = \\frac{10778}{12500} \\approx 0.8622 \\)。  \n\n因此，negative类别的分类正确率（召回率）更高。",
+      "text_only_answer": "根据提供的文档内容无法回答此问题，因为文档中未提供TF-IDF+LinearSVM的混淆矩阵数据。",
+      "multimodal_anls": 1.0,
+      "text_only_anls": 0.0,
+      "mm_correct": true,
+      "to_correct": false
+    },
+    {
+      "id": "q19",
+      "document": "大数据报告（电影评论情感二分类）.pdf",
+      "question": "从RNN(BiLSTM, PyTorch)的混淆矩阵中，模型对positive类的预测正确数（true positive）是多少？",
+      "type": "figure",
+      "requires_visual": true,
+      "gold_answers": [
+        "10756",
+        "约10756",
+        "10000多"
+      ],
+      "multimodal_answer": "10756",
+      "text_only_answer": "根据提供的文档内容无法回答此问题",
+      "multimodal_anls": 1.0,
+      "text_only_anls": 0.0,
+      "mm_correct": true,
+      "to_correct": false
+    },
+    {
+      "id": "q20",
+      "document": "大数据报告（电影评论情感二分类）.pdf",
+      "question": "对比所有模型的混淆矩阵，哪个模型的false positive（把negative误判为positive）数量最少？",
+      "type": "figure",
+      "requires_visual": true,
+      "gold_answers": [
+        "TF-IDF + LinearSVM",
+        "LinearSVM",
+        "SVM",
+        "TF-IDF+LinearSVM"
+      ],
+      "multimodal_answer": "TF - IDF + LinearSVM模型的false positive数量最少，为1456。",
+      "text_only_answer": "根据提供的文档内容无法回答此问题",
+      "multimodal_anls": 1.0,
+      "text_only_anls": 0.0,
+      "mm_correct": true,
+      "to_correct": false
+    },
+    {
+      "id": "q21",
+      "document": "大数据报告（电影评论情感二分类）.pdf",
+      "question": "本实验使用了哪些文本特征提取方法？",
+      "type": "text",
+      "requires_visual": false,
+      "gold_answers": [
+        "TF-IDF",
+        "TF-IDF和词嵌入",
+        "TF-IDF、Word Embedding",
+        "TF-IDF以及词向量"
+      ],
+      "multimodal_answer": "本实验使用的文本特征提取方法是TF-IDF。",
+      "text_only_answer": "本实验使用的文本特征提取方法是TF-IDF。",
+      "multimodal_anls": 1.0,
+      "text_only_anls": 1.0,
+      "mm_correct": true,
+      "to_correct": true
+    },
+    {
+      "id": "q22",
+      "document": "大数据报告（电影评论情感二分类）.pdf",
+      "question": "RNN模型使用的是什么网络结构？",
+      "type": "text",
+      "requires_visual": false,
+      "gold_answers": [
+        "BiLSTM",
+        "双向LSTM",
+        "Bidirectional LSTM"
+      ],
+      "multimodal_answer": "RNN模型使用的是双向长短期记忆网络（BiLSTM）。",
+      "text_only_answer": "根据提供的文档内容，RNN模型使用的是双向BiLSTM（双向长短期记忆网络）结构，具有2层结构，隐层维度为256。",
+      "multimodal_anls": 1.0,
+      "text_only_anls": 1.0,
+      "mm_correct": true,
+      "to_correct": true
+    },
+    {
+      "id": "q23",
+      "document": "大数据报告（电影评论情感二分类）.pdf",
+      "question": "实验使用的数据集是什么？训练集和测试集各包含多少条评论？",
+      "type": "text",
+      "requires_visual": false,
+      "gold_answers": [
+        "IMDB，训练集25000测试集25000",
+        "IMDB，各25000条",
+        "IMDB，5万条",
+        "IMDB，训练25000测试25000"
+      ],
+      "multimodal_answer": "实验使用的数据集是IMDB电影评论数据集，训练集和测试集各包含25000条评论。",
+      "text_only_answer": "实验使用的数据集是IMDB电影评论数据集。训练集包含25000条评论，测试集也包含25000条评论。",
+      "multimodal_anls": 1.0,
+      "text_only_anls": 1.0,
+      "mm_correct": true,
+      "to_correct": true
+    },
+    {
+      "id": "q24",
+      "document": "大数据报告（电影评论情感二分类）.pdf",
+      "question": "从RNN训练曲线来看，验证集Loss是否出现过拟合现象（先下降后上升）？",
+      "type": "figure",
+      "requires_visual": true,
+      "gold_answers": [
+        "是",
+        "是的",
+        "出现过拟合",
+        "有过拟合",
+        "明显过拟合",
+        "验证Loss先降后升"
+      ],
+      "multimodal_answer": "是的，从RNN训练曲线来看，验证集Loss出现过拟合现象（先下降后上升）。",
+      "text_only_answer": "根据提供的文档内容无法回答此问题",
+      "multimodal_anls": 1.0,
+      "text_only_anls": 0.0,
+      "mm_correct": true,
+      "to_correct": false
+    },
+    {
+      "id": "q25",
+      "document": "大数据报告（电影评论情感二分类）.pdf",
+      "question": "在本次实验中，传统方法（TF-IDF+LR/SVM）和深度学习方法（RNN/BiLSTM）相比，哪个的整体Accuracy更高？",
+      "type": "text",
+      "requires_visual": false,
+      "gold_answers": [
+        "传统方法",
+        "TF-IDF",
+        "传统方法更高",
+        "TF-IDF更高",
+        "TF-IDF+LR",
+        "LR最高"
+      ],
+      "multimodal_answer": "传统方法（TF-IDF+LR/SVM）的整体Accuracy更高。其中，TF-IDF + LogisticRegression的Accuracy为0.883，TF-IDF + LinearSVM的Accuracy为0.873；而深度学习方法RNN (BiLSTM, PyTorch)的Accuracy为0.828，RNN-Strong (BiLSTM)的Accuracy为0.837，均低于传统方法。",
+      "text_only_answer": "根据提供的文档内容无法回答此问题，因为文档中未提供传统方法（TF-IDF+LR/SVM）与深度学习方法（RNN/BiLSTM）在Accuracy指标上的具体对比数据，仅提及F1值等指标。",
+      "multimodal_anls": 1.0,
+      "text_only_anls": 1.0,
+      "mm_correct": true,
+      "to_correct": true
+    }
+  ]
+}

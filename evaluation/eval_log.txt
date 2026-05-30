@@ -1,0 +1,235 @@
+2026-05-30 16:02:44,662 [INFO] Loaded 25 QA pairs
+2026-05-30 16:02:44,977 [INFO] VectorStore initialized: collection='doc_2e9530b9', persist=yes (C:\Users\12077\Desktop\college\大三下\多模态大作业\MultimodalQA\backend\chroma_data), existing_vectors=33
+2026-05-30 16:02:44,977 [INFO] Loaded index for '测试数据（某次实验报告）.pdf' (id=2e9530b9, vectors=33)
+2026-05-30 16:02:45,003 [INFO] VectorStore initialized: collection='doc_ca5aef99', persist=yes (C:\Users\12077\Desktop\college\大三下\多模态大作业\MultimodalQA\backend\chroma_data), existing_vectors=17
+2026-05-30 16:02:45,003 [INFO] Loaded index for '大数据报告（电影评论情感二分类）.pdf' (id=ca5aef99, vectors=17)
+2026-05-30 16:02:45,194 [INFO] BGEEmbedder configured: device=cuda
+2026-05-30 16:02:45,209 [INFO] 
+[1/25] q01 (text) Q: K-Means算法的目标函数是什么？
+2026-05-30 16:02:45,209 [INFO] Loading BGE-M3 model: BAAI/bge-m3 (device=cuda)...
+2026-05-30 16:02:46,574 [INFO] HTTP Request: HEAD https://hf-mirror.com/BAAI/bge-m3/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-05-30 16:02:46,670 [INFO] HTTP Request: HEAD https://hf-mirror.com/api/resolve-cache/models/BAAI/bge-m3/5617a9f61b028005a4858fdac845db406aefb181/config.json "HTTP/1.1 200 OK"
+2026-05-30 16:02:46,941 [INFO] HTTP Request: HEAD https://hf-mirror.com/BAAI/bge-m3/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-05-30 16:02:47,026 [INFO] HTTP Request: HEAD https://hf-mirror.com/api/resolve-cache/models/BAAI/bge-m3/5617a9f61b028005a4858fdac845db406aefb181/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-05-30 16:02:47,295 [INFO] HTTP Request: GET https://hf-mirror.com/api/models/BAAI/bge-m3/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+2026-05-30 16:02:47,547 [INFO] HTTP Request: GET https://hf-mirror.com/api/models/BAAI/bge-m3/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+2026-05-30 16:02:49,578 [INFO] HTTP Request: GET https://hf-mirror.com/api/models/BAAI/bge-m3 "HTTP/1.1 200 OK"
+2026-05-30 16:02:49,846 [INFO] HTTP Request: GET https://hf-mirror.com/api/models/BAAI/bge-m3/revision/main "HTTP/1.1 200 OK"
+Fetching 30 files:   0%|          | 0/30 [00:00<?, ?it/s]Fetching 30 files: 100%|██████████| 30/30 [00:00<00:00, 3395.65it/s]
+Loading weights:   0%|          | 0/391 [00:00<?, ?it/s]Loading weights:   1%|▏         | 5/391 [00:00<01:15,  5.11it/s]Loading weights: 100%|██████████| 391/391 [00:00<00:00, 396.06it/s]
+2026-05-30 16:02:51,717 [INFO] loading existing colbert_linear and sparse_linear---------
+2026-05-30 16:02:51,723 [INFO] BGE-M3 model loaded successfully.
+2026-05-30 16:02:58,490 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:03:03,300 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:03:03,303 [INFO]   MM[ANLS=0.000]: K-Means算法的目标函数（损失函数）为最小化簇内平方距离和，通过迭代优化使目标函数值不断减小，最终收敛到局部最优解。
+2026-05-30 16:03:03,303 [INFO]   TO[ANLS=0.000]: K-Means算法的目标函数（损失函数）是使簇内平方距离和最小化，算法通过迭代优化使目标函数值不断减小，最终收敛到局部最优解。
+2026-05-30 16:03:03,303 [INFO] 
+[2/25] q02 (table) Q: K-Means++初始化需要多少次迭代收敛？
+2026-05-30 16:03:06,759 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:03:09,879 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:03:09,880 [INFO]   MM[ANLS=0.000]: K-Means++初始化需要46次迭代收敛。
+2026-05-30 16:03:09,880 [INFO]   TO[ANLS=0.000]: K-Means++初始化需要46次迭代收敛。
+2026-05-30 16:03:09,880 [INFO] 
+[3/25] q03 (table) Q: Random初始化的测试集准确率是多少？
+2026-05-30 16:03:13,761 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:03:18,949 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:03:18,951 [INFO]   MM[ANLS=0.000]: Random初始化的测试集准确率为59.37%（即0.5937）。
+2026-05-30 16:03:18,951 [INFO]   TO[ANLS=0.000]: Random初始化的测试集准确率为59.37%。
+2026-05-30 16:03:18,951 [INFO] 
+[4/25] q04 (figure) Q: 从训练损失曲线来看，哪种初始化方法的损失下降更快？
+2026-05-30 16:03:28,487 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:03:42,700 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:03:42,708 [INFO]   MM[ANLS=0.571]: K-Means++ 初始化的损失下降更快。
+2026-05-30 16:03:42,709 [INFO]   TO[ANLS=0.000]: 根据提供的文档内容无法回答此问题
+2026-05-30 16:03:42,709 [INFO] 
+[5/25] q05 (table) Q: 三种协方差结构中，哪种的训练准确率最高？
+2026-05-30 16:03:45,525 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:03:49,172 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:03:49,179 [INFO]   MM[ANLS=0.000]: Full协方差结构的训练准确率最高，其训练集准确率为0.5666。
+2026-05-30 16:03:49,179 [INFO]   TO[ANLS=0.000]: Full协方差结构的训练准确率最高，其训练集准确率为0.5666。
+2026-05-30 16:03:49,179 [INFO] 
+[6/25] q06 (table) Q: Spherical协方差结构的测试ACC是多少？
+2026-05-30 16:03:52,630 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:03:55,346 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:03:55,352 [INFO]   MM[ANLS=0.000]: Spherical协方差结构的测试ACC为0.5376。
+2026-05-30 16:03:55,352 [INFO]   TO[ANLS=0.000]: Spherical协方差结构的测试ACC为0.5376。
+2026-05-30 16:03:55,352 [INFO] 
+[7/25] q07 (table) Q: GMM（Full协方差+Random初始化）的测试集准确率是多少？
+2026-05-30 16:04:02,133 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:04:08,195 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:04:08,200 [INFO]   MM[ANLS=0.000]: GMM（Full协方差+Random初始化）的测试集准确率为63.50%。
+2026-05-30 16:04:08,201 [INFO]   TO[ANLS=0.000]: GMM（Full协方差+Random初始化）的测试集准确率为63.50%。
+2026-05-30 16:04:08,201 [INFO] 
+[8/25] q08 (table) Q: 在GMM初始化方法对比中（Full协方差），Random和K-Means++哪种初始化得到的聚类结果更接近Ground Truth标签？
+2026-05-30 16:04:31,270 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:04:39,540 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:04:39,546 [INFO]   MM[ANLS=0.000]: 在GMM初始化方法对比中（Full协方差），Random初始化得到的聚类结果更接近Ground Truth标签。原因是K-Means++初始化虽然能找到更高的对数似然，但其对应的簇划分可能与真实标签的对应关系较差；而随机初始化可能偶然落入一
+2026-05-30 16:04:39,546 [INFO]   TO[ANLS=0.000]: 在GMM（Full协方差）初始化方法对比中，Random初始化得到的聚类结果更接近Ground Truth标签。
+2026-05-30 16:04:39,547 [INFO] 
+[9/25] q09 (text) Q: K-Means和GMM哪种方法的聚类准确率更高？
+2026-05-30 16:04:50,407 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:04:56,860 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:04:56,865 [INFO]   MM[ANLS=0.000]: GMM的聚类准确率更高。在MNIST手写数字数据集上，GMM（Full协方差+Random初始化）的测试集聚类精度为63.50%，显著高于K-Means的59.37%。
+2026-05-30 16:04:56,865 [INFO]   TO[ANLS=0.000]: GMM的聚类准确率更高。在MNIST手写数字数据集上，GMM（Full协方差+Random初始化）的测试集聚类精度为63.50%，显著高于K-Means的59.37%。
+2026-05-30 16:04:56,868 [INFO] 
+[10/25] q10 (table) Q: Full协方差结构的训练时间是多少秒？
+2026-05-30 16:05:01,639 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:05:07,097 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:05:07,103 [INFO]   MM[ANLS=0.000]: Full协方差结构的训练时间是126.15秒。
+2026-05-30 16:05:07,104 [INFO]   TO[ANLS=0.000]: Full协方差结构的训练时间是126.15秒。
+2026-05-30 16:05:07,104 [INFO] 
+[11/25] q11 (figure) Q: 从Log-Likelihood曲线来看，三种协方差结构最终收敛时的对数似然值大小顺序是什么？
+2026-05-30 16:05:16,620 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:05:32,762 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:05:32,768 [INFO]   MM[ANLS=0.000]: 从Log-Likelihood曲线来看，三种协方差结构最终收敛时的对数似然值大小顺序为：Full协方差 > Diagonal协方差 > Spherical协方差。
+2026-05-30 16:05:32,769 [INFO]   TO[ANLS=0.000]: 三种协方差结构最终收敛时的对数似然值大小顺序为：Full 协方差（-308797.24）> Diagonal 协方差（-518806.90）> Spherical 协方差（-592049.07）。
+2026-05-30 16:05:32,770 [INFO] 
+[12/25] q12 (text) Q: GMM使用EM算法训练时，E步计算的是什么？
+2026-05-30 16:05:36,955 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:05:44,084 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:05:44,092 [INFO]   MM[ANLS=0.000]: GMM使用EM算法训练时，E步计算的是每个样本 \( x_i \) 属于第 \( j \) 个高斯分量的后验概率（责任度）。
+2026-05-30 16:05:44,092 [INFO]   TO[ANLS=0.000]: GMM使用EM算法训练时，E步计算的是每个样本 \( x_i \) 属于第 \( j \) 个高斯分量的后验概率（责任度）。
+2026-05-30 16:05:44,092 [INFO] 
+[13/25] q13 (figure) Q: 从模型对比柱状图（IMDB Model Comparison）来看，哪个模型的Accuracy最高？
+2026-05-30 16:05:51,376 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:05:56,518 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:05:56,525 [INFO]   MM[ANLS=0.562]: TF-IDF + LogisticRegression模型的Accuracy最高，为0.883。
+2026-05-30 16:05:56,525 [INFO]   TO[ANLS=0.000]: 根据提供的文档内容无法回答此问题
+2026-05-30 16:05:56,526 [INFO] 
+[14/25] q14 (figure) Q: 从柱状图来看，TF-IDF+LogisticRegression和TF-IDF+LinearSVM的F1分数差距大吗？
+2026-05-30 16:06:02,155 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:06:08,118 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:06:08,124 [INFO]   MM[ANLS=0.000]: 从柱状图（Figure 1）来看，TF-IDF + LogisticRegression的F1分数为0.883，TF-IDF + LinearSVM的F1分数为0.872，两者差距为0.011，差距不大。
+2026-05-30 16:06:08,124 [INFO]   TO[ANLS=0.000]: 根据提供的文档内容无法回答此问题，因为文档中未包含柱状图，仅提供了表格（Table 1）和文本片段，未提及柱状图的相关信息。
+2026-05-30 16:06:08,125 [INFO] 
+[15/25] q15 (figure) Q: 从RNN训练损失曲线来看，验证集Loss在第几个Epoch左右达到最低值？
+2026-05-30 16:06:18,044 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:06:22,491 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:06:22,495 [INFO]   MM[ANLS=0.000]: 根据Figure 2的“RNN Loss Curve”图表，验证集Loss（Val Loss）在第4个Epoch左右达到最低值。
+2026-05-30 16:06:22,495 [INFO]   TO[ANLS=0.000]: 根据提供的文档内容无法回答此问题
+2026-05-30 16:06:22,495 [INFO] 
+[16/25] q16 (figure) Q: 从RNN训练曲线来看，训练集Loss的初始值（第1个Epoch）大约是多少？
+2026-05-30 16:06:33,429 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:06:36,213 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:06:36,219 [INFO]   MM[ANLS=0.000]: 根据Figure 2的“RNN Loss Curve”显示，训练集Loss在第1个Epoch的初始值大约为0.65。
+2026-05-30 16:06:36,219 [INFO]   TO[ANLS=0.000]: 根据提供的文档内容无法回答此问题
+2026-05-30 16:06:36,220 [INFO] 
+[17/25] q17 (figure) Q: 从TF-IDF+LogisticRegression的混淆矩阵来看，true label为negative但被预测为positive的样本数是多少？
+2026-05-30 16:06:41,298 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:06:45,093 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:06:45,099 [INFO]   MM[ANLS=1.000]: 1480
+2026-05-30 16:06:45,099 [INFO]   TO[ANLS=0.000]: 根据提供的文档内容无法回答此问题。
+2026-05-30 16:06:45,099 [INFO] 
+[18/25] q18 (figure) Q: 从TF-IDF+LinearSVM的混淆矩阵来看，按召回率(recall)计算，哪个类别的分类正确率更高？
+2026-05-30 16:06:59,484 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:07:02,512 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:07:02,517 [INFO]   MM[ANLS=0.000]: 从TF - IDF + LinearSVM的混淆矩阵（Figure 4）计算召回率：  
+- 对于negative类别，召回率为 \( \frac{11044}{11044 + 1456} = \frac{11044}{12500} \ap
+2026-05-30 16:07:02,518 [INFO]   TO[ANLS=0.000]: 根据提供的文档内容无法回答此问题，因为文档中未提供TF-IDF+LinearSVM的混淆矩阵数据。
+2026-05-30 16:07:02,518 [INFO] 
+[19/25] q19 (figure) Q: 从RNN(BiLSTM, PyTorch)的混淆矩阵中，模型对positive类的预测正确数（true positive）是多少？
+2026-05-30 16:07:07,547 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:07:11,460 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:07:11,467 [INFO]   MM[ANLS=1.000]: 10756
+2026-05-30 16:07:11,467 [INFO]   TO[ANLS=0.000]: 根据提供的文档内容无法回答此问题
+2026-05-30 16:07:11,468 [INFO] 
+[20/25] q20 (figure) Q: 对比所有模型的混淆矩阵，哪个模型的false positive（把negative误判为positive）数量最少？
+2026-05-30 16:07:18,745 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:07:21,693 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:07:21,700 [INFO]   MM[ANLS=0.000]: TF - IDF + LinearSVM模型的false positive数量最少，为1456。
+2026-05-30 16:07:21,700 [INFO]   TO[ANLS=0.000]: 根据提供的文档内容无法回答此问题
+2026-05-30 16:07:21,700 [INFO] 
+[21/25] q21 (text) Q: 本实验使用了哪些文本特征提取方法？
+2026-05-30 16:07:25,473 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:07:31,785 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:07:31,791 [INFO]   MM[ANLS=0.000]: 本实验使用的文本特征提取方法是TF-IDF。
+2026-05-30 16:07:31,792 [INFO]   TO[ANLS=0.000]: 本实验使用的文本特征提取方法是TF-IDF。
+2026-05-30 16:07:31,792 [INFO] 
+[22/25] q22 (text) Q: RNN模型使用的是什么网络结构？
+2026-05-30 16:07:38,969 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:07:43,508 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:07:43,515 [INFO]   MM[ANLS=0.000]: RNN模型使用的是双向长短期记忆网络（BiLSTM）。
+2026-05-30 16:07:43,515 [INFO]   TO[ANLS=0.000]: 根据提供的文档内容，RNN模型使用的是双向BiLSTM（双向长短期记忆网络）结构，具有2层结构，隐层维度为256。
+2026-05-30 16:07:43,516 [INFO] 
+[23/25] q23 (text) Q: 实验使用的数据集是什么？训练集和测试集各包含多少条评论？
+2026-05-30 16:07:47,506 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:07:52,900 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:07:52,908 [INFO]   MM[ANLS=0.000]: 实验使用的数据集是IMDB电影评论数据集，训练集和测试集各包含25000条评论。
+2026-05-30 16:07:52,909 [INFO]   TO[ANLS=0.000]: 实验使用的数据集是IMDB电影评论数据集。训练集包含25000条评论，测试集也包含25000条评论。
+2026-05-30 16:07:52,909 [INFO] 
+[24/25] q24 (figure) Q: 从RNN训练曲线来看，验证集Loss是否出现过拟合现象（先下降后上升）？
+2026-05-30 16:08:00,199 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:08:05,978 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:08:05,985 [INFO]   MM[ANLS=0.000]: 是的，从RNN训练曲线来看，验证集Loss出现过拟合现象（先下降后上升）。
+2026-05-30 16:08:05,985 [INFO]   TO[ANLS=0.000]: 根据提供的文档内容无法回答此问题
+2026-05-30 16:08:05,985 [INFO] 
+[25/25] q25 (text) Q: 在本次实验中，传统方法（TF-IDF+LR/SVM）和深度学习方法（RNN/BiLSTM）相比，哪个的整体Accuracy更高？
+2026-05-30 16:08:16,120 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:08:31,987 [INFO] HTTP Request: POST https://open.bigmodel.cn/api/paas/v4/chat/completions "HTTP/1.1 200 OK"
+2026-05-30 16:08:31,995 [INFO]   MM[ANLS=0.000]: 传统方法（TF-IDF+LR/SVM）的整体Accuracy更高。其中，TF-IDF + LogisticRegression的Accuracy为0.883，TF-IDF + LinearSVM的Accuracy为0.873；而深度学习方法
+2026-05-30 16:08:31,996 [INFO]   TO[ANLS=0.000]: 根据提供的文档内容无法回答此问题，因为文档中未提供传统方法（TF-IDF+LR/SVM）与深度学习方法（RNN/BiLSTM）在Accuracy指标上的具体对比数据，仅提及F1值等指标。
+2026-05-30 16:08:32,003 [INFO] 
+======================================================================
+2026-05-30 16:08:32,003 [INFO] EVALUATION RESULTS (Multi-document, Corrected QA)
+2026-05-30 16:08:32,003 [INFO] ======================================================================
+2026-05-30 16:08:32,003 [INFO] 
+Overall:
+2026-05-30 16:08:32,003 [INFO]   Multimodal RAG: ANLS=0.1254  Acc=16.00%
+2026-05-30 16:08:32,003 [INFO]   Text-only  RAG: ANLS=0.0000  Acc=0.00%
+2026-05-30 16:08:32,003 [INFO]   Improvement:    +0.1254 ANLS, +16.0pp Acc
+2026-05-30 16:08:32,003 [INFO] 
+By Question Type:
+2026-05-30 16:08:32,003 [INFO]   figure     (11): MM=0.285/36%  TO=0.000/0%
+2026-05-30 16:08:32,003 [INFO]   table      (7): MM=0.000/0%  TO=0.000/0%
+2026-05-30 16:08:32,006 [INFO]   text       (7): MM=0.000/0%  TO=0.000/0%
+2026-05-30 16:08:32,006 [INFO] 
+Visual vs Non-Visual:
+2026-05-30 16:08:32,006 [INFO]   Visual    (11): MM=0.285/36%  TO=0.000/0%
+2026-05-30 16:08:32,006 [INFO]   NonVisual (14): MM=0.000/0%  TO=0.000/0%
+2026-05-30 16:08:32,006 [INFO] 
+Multimodal RAG FAILURES (21/25):
+2026-05-30 16:08:32,006 [INFO]   q01 [text] expected: 目标函数为簇内距离之和最小化
+2026-05-30 16:08:32,006 [INFO]             got: K-Means算法的目标函数（损失函数）为最小化簇内平方距离和，通过迭代优化使目标函数值不断减小，最终收敛到局部最优解。
+2026-05-30 16:08:32,006 [INFO]   q02 [table] expected: 46
+2026-05-30 16:08:32,006 [INFO]             got: K-Means++初始化需要46次迭代收敛。
+2026-05-30 16:08:32,010 [INFO]   q03 [table] expected: 0.5937
+2026-05-30 16:08:32,010 [INFO]             got: Random初始化的测试集准确率为59.37%（即0.5937）。
+2026-05-30 16:08:32,010 [INFO]   q05 [table] expected: Full
+2026-05-30 16:08:32,010 [INFO]             got: Full协方差结构的训练准确率最高，其训练集准确率为0.5666。
+2026-05-30 16:08:32,010 [INFO]   q06 [table] expected: 0.5376
+2026-05-30 16:08:32,010 [INFO]             got: Spherical协方差结构的测试ACC为0.5376。
+2026-05-30 16:08:32,010 [INFO]   q07 [table] expected: 0.6350
+2026-05-30 16:08:32,010 [INFO]             got: GMM（Full协方差+Random初始化）的测试集准确率为63.50%。
+2026-05-30 16:08:32,010 [INFO]   q08 [table] expected: Random
+2026-05-30 16:08:32,010 [INFO]             got: 在GMM初始化方法对比中（Full协方差），Random初始化得到的聚类结果更接近Ground Truth标签。原因是K-Means++初始化虽然能找到更高的对数似然，但其对应的簇划分可能与真实标签的对应关系较差；而随机初始化可能偶然落入一
+2026-05-30 16:08:32,010 [INFO]   q09 [text] expected: GMM
+2026-05-30 16:08:32,010 [INFO]             got: GMM的聚类准确率更高。在MNIST手写数字数据集上，GMM（Full协方差+Random初始化）的测试集聚类精度为63.50%，显著高于K-Means的59.37%。
+2026-05-30 16:08:32,010 [INFO]   q10 [table] expected: 126.15
+2026-05-30 16:08:32,010 [INFO]             got: Full协方差结构的训练时间是126.15秒。
+2026-05-30 16:08:32,010 [INFO]   q11 [figure] expected: Full > Diagonal > Spherical
+2026-05-30 16:08:32,010 [INFO]             got: 从Log-Likelihood曲线来看，三种协方差结构最终收敛时的对数似然值大小顺序为：Full协方差 > Diagonal协方差 > Spherical协方差。
+2026-05-30 16:08:32,010 [INFO]   q12 [text] expected: 后验概率
+2026-05-30 16:08:32,010 [INFO]             got: GMM使用EM算法训练时，E步计算的是每个样本 \( x_i \) 属于第 \( j \) 个高斯分量的后验概率（责任度）。
+2026-05-30 16:08:32,010 [INFO]   q14 [figure] expected: 差距很小
+2026-05-30 16:08:32,010 [INFO]             got: 从柱状图（Figure 1）来看，TF-IDF + LogisticRegression的F1分数为0.883，TF-IDF + LinearSVM的F1分数为0.872，两者差距为0.011，差距不大。
+2026-05-30 16:08:32,010 [INFO]   q15 [figure] expected: 4
+2026-05-30 16:08:32,010 [INFO]             got: 根据Figure 2的“RNN Loss Curve”图表，验证集Loss（Val Loss）在第4个Epoch左右达到最低值。
+2026-05-30 16:08:32,010 [INFO]   q16 [figure] expected: 0.63
+2026-05-30 16:08:32,010 [INFO]             got: 根据Figure 2的“RNN Loss Curve”显示，训练集Loss在第1个Epoch的初始值大约为0.65。
+2026-05-30 16:08:32,010 [INFO]   q18 [figure] expected: negative
+2026-05-30 16:08:32,010 [INFO]             got: 从TF - IDF + LinearSVM的混淆矩阵（Figure 4）计算召回率：  
+- 对于negative类别，召回率为 \( \frac{11044}{11044 + 1456} = \frac{11044}{12500} \ap
+2026-05-30 16:08:32,010 [INFO]   q20 [figure] expected: TF-IDF + LinearSVM
+2026-05-30 16:08:32,017 [INFO]             got: TF - IDF + LinearSVM模型的false positive数量最少，为1456。
+2026-05-30 16:08:32,017 [INFO]   q21 [text] expected: TF-IDF
+2026-05-30 16:08:32,017 [INFO]             got: 本实验使用的文本特征提取方法是TF-IDF。
+2026-05-30 16:08:32,017 [INFO]   q22 [text] expected: BiLSTM
+2026-05-30 16:08:32,017 [INFO]             got: RNN模型使用的是双向长短期记忆网络（BiLSTM）。
+2026-05-30 16:08:32,017 [INFO]   q23 [text] expected: IMDB，训练集25000测试集25000
+2026-05-30 16:08:32,017 [INFO]             got: 实验使用的数据集是IMDB电影评论数据集，训练集和测试集各包含25000条评论。
+2026-05-30 16:08:32,017 [INFO]   q24 [figure] expected: 是
+2026-05-30 16:08:32,017 [INFO]             got: 是的，从RNN训练曲线来看，验证集Loss出现过拟合现象（先下降后上升）。
+2026-05-30 16:08:32,017 [INFO]   q25 [text] expected: 传统方法
+2026-05-30 16:08:32,017 [INFO]             got: 传统方法（TF-IDF+LR/SVM）的整体Accuracy更高。其中，TF-IDF + LogisticRegression的Accuracy为0.883，TF-IDF + LinearSVM的Accuracy为0.873；而深度学习方法
+2026-05-30 16:08:32,029 [INFO] 
+Full results saved to: C:\Users\12077\Desktop\college\大三下\多模态大作业\MultimodalQA\evaluation\results.json

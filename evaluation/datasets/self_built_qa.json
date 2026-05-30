@@ -3,7 +3,7 @@
     "id": "q01",
     "document": "测试数据（某次实验报告）.pdf",
     "question": "K-Means算法的目标函数是什么？",
-    "gold_answers": ["目标函数为簇内距离之和最小化", "最小化簇内样本到聚类中心的距离之和"],
+    "gold_answers": ["目标函数为簇内距离之和最小化", "最小化簇内样本到聚类中心的距离之和", "最小化簇内平方距离和"],
     "type": "text",
     "requires_visual": false,
     "page": 1
@@ -65,11 +65,11 @@
   {
     "id": "q08",
     "document": "测试数据（某次实验报告）.pdf",
-    "question": "从聚类可视化散点图来看，Ground Truth、Random和K-Means++的聚类效果有什么区别？",
-    "gold_answers": ["K-Means++的聚类结果更接近Ground Truth", "kmeans++更接近真实分布"],
-    "type": "figure",
-    "requires_visual": true,
-    "page": 7
+    "question": "在GMM初始化方法对比中（Full协方差），Random和K-Means++哪种初始化得到的聚类结果更接近Ground Truth标签？",
+    "gold_answers": ["Random", "随机初始化", "Random初始化", "随机"],
+    "type": "table",
+    "requires_visual": false,
+    "page": 6
   },
   {
     "id": "q09",
@@ -93,7 +93,7 @@
     "id": "q11",
     "document": "测试数据（某次实验报告）.pdf",
     "question": "从Log-Likelihood曲线来看，三种协方差结构最终收敛时的对数似然值大小顺序是什么？",
-    "gold_answers": ["Full > Diagonal > Spherical", "full最高spherical最低"],
+    "gold_answers": ["Full > Diagonal > Spherical", "full最高spherical最低", "Full最高，Spherical最低"],
     "type": "figure",
     "requires_visual": true,
     "page": 6
@@ -110,8 +110,8 @@
   {
     "id": "q13",
     "document": "大数据报告（电影评论情感二分类）.pdf",
-    "question": "从模型对比柱状图来看，哪个模型的Accuracy最高？",
-    "gold_answers": ["RNN-Strong", "RNN-Strong (BiLSTM)", "BiLSTM-Strong"],
+    "question": "从模型对比柱状图（IMDB Model Comparison）来看，哪个模型的Accuracy最高？",
+    "gold_answers": ["TF-IDF + LogisticRegression", "TF-IDF+LogisticRegression", "Logistic Regression", "LR", "TF-IDF+LR"],
     "type": "figure",
     "requires_visual": true,
     "page": 3
@@ -120,7 +120,7 @@
     "id": "q14",
     "document": "大数据报告（电影评论情感二分类）.pdf",
     "question": "从柱状图来看，TF-IDF+LogisticRegression和TF-IDF+LinearSVM的F1分数差距大吗？",
-    "gold_answers": ["差距很小", "几乎相同", "差距不大", "非常接近"],
+    "gold_answers": ["差距很小", "几乎相同", "差距不大", "非常接近", "差距小"],
     "type": "figure",
     "requires_visual": true,
     "page": 3
@@ -128,8 +128,8 @@
   {
     "id": "q15",
     "document": "大数据报告（电影评论情感二分类）.pdf",
-    "question": "从RNN训练损失曲线来看，模型大约在第几个Epoch后Loss趋于平稳？",
-    "gold_answers": ["3", "第3个", "3个epoch", "2-3"],
+    "question": "从RNN训练损失曲线来看，验证集Loss在第几个Epoch左右达到最低值？",
+    "gold_answers": ["4", "第4个", "epoch 4", "4-6", "约第4个epoch"],
     "type": "figure",
     "requires_visual": true,
     "page": 3
@@ -137,8 +137,8 @@
   {
     "id": "q16",
     "document": "大数据报告（电影评论情感二分类）.pdf",
-    "question": "从RNN训练曲线来看，训练集Loss的初始值大约是多少？",
-    "gold_answers": ["0.65", "0.6-0.7", "约0.65"],
+    "question": "从RNN训练曲线来看，训练集Loss的初始值（第1个Epoch）大约是多少？",
+    "gold_answers": ["0.63", "0.6-0.7", "约0.63", "0.65", "0.6"],
     "type": "figure",
     "requires_visual": true,
     "page": 3
@@ -146,8 +146,8 @@
   {
     "id": "q17",
     "document": "大数据报告（电影评论情感二分类）.pdf",
-    "question": "从TF-IDF+LogisticRegression的混淆矩阵来看，negative类被误分为positive的样本数是多少？",
-    "gold_answers": ["1087", "约1087"],
+    "question": "从TF-IDF+LogisticRegression的混淆矩阵来看，true label为negative但被预测为positive的样本数是多少？",
+    "gold_answers": ["1480", "约1480"],
     "type": "figure",
     "requires_visual": true,
     "page": 4
@@ -155,8 +155,8 @@
   {
     "id": "q18",
     "document": "大数据报告（电影评论情感二分类）.pdf",
-    "question": "从TF-IDF+LinearSVM的混淆矩阵来看，哪个类别的分类正确率更高？",
-    "gold_answers": ["positive", "positive类", "正面"],
+    "question": "从TF-IDF+LinearSVM的混淆矩阵来看，按召回率(recall)计算，哪个类别的分类正确率更高？",
+    "gold_answers": ["negative", "negative类", "负面", "负类"],
     "type": "figure",
     "requires_visual": true,
     "page": 4
@@ -164,8 +164,8 @@
   {
     "id": "q19",
     "document": "大数据报告（电影评论情感二分类）.pdf",
-    "question": "从RNN(BiLSTM)的混淆矩阵中，模型对positive类的预测正确数是多少？",
-    "gold_answers": ["5765", "约5765"],
+    "question": "从RNN(BiLSTM, PyTorch)的混淆矩阵中，模型对positive类的预测正确数（true positive）是多少？",
+    "gold_answers": ["10756", "约10756", "10000多"],
     "type": "figure",
     "requires_visual": true,
     "page": 5
@@ -174,7 +174,7 @@
     "id": "q20",
     "document": "大数据报告（电影评论情感二分类）.pdf",
     "question": "对比所有模型的混淆矩阵，哪个模型的false positive（把negative误判为positive）数量最少？",
-    "gold_answers": ["RNN-Strong", "RNN-Strong (BiLSTM)", "BiLSTM-Strong"],
+    "gold_answers": ["TF-IDF + LinearSVM", "LinearSVM", "SVM", "TF-IDF+LinearSVM"],
     "type": "figure",
     "requires_visual": true,
     "page": 5
@@ -183,7 +183,7 @@
     "id": "q21",
     "document": "大数据报告（电影评论情感二分类）.pdf",
     "question": "本实验使用了哪些文本特征提取方法？",
-    "gold_answers": ["TF-IDF", "TF-IDF和词嵌入", "TF-IDF、Word Embedding"],
+    "gold_answers": ["TF-IDF", "TF-IDF和词嵌入", "TF-IDF、Word Embedding", "TF-IDF以及词向量"],
     "type": "text",
     "requires_visual": false,
     "page": 1
@@ -200,8 +200,8 @@
   {
     "id": "q23",
     "document": "大数据报告（电影评论情感二分类）.pdf",
-    "question": "实验使用的数据集是什么？包含多少条评论？",
-    "gold_answers": ["IMDB", "IMDB数据集，50000条", "IMDB，5万条"],
+    "question": "实验使用的数据集是什么？训练集和测试集各包含多少条评论？",
+    "gold_answers": ["IMDB，训练集25000测试集25000", "IMDB，各25000条", "IMDB，5万条", "IMDB，训练25000测试25000"],
     "type": "text",
     "requires_visual": false,
     "page": 1
@@ -210,7 +210,7 @@
     "id": "q24",
     "document": "大数据报告（电影评论情感二分类）.pdf",
     "question": "从RNN训练曲线来看，验证集Loss是否出现过拟合现象（先下降后上升）？",
-    "gold_answers": ["没有", "未出现明显过拟合", "验证Loss持续下降或平稳"],
+    "gold_answers": ["是", "是的", "出现过拟合", "有过拟合", "明显过拟合", "验证Loss先降后升"],
     "type": "figure",
     "requires_visual": true,
     "page": 3
@@ -218,10 +218,10 @@
   {
     "id": "q25",
     "document": "大数据报告（电影评论情感二分类）.pdf",
-    "question": "从所有混淆矩阵结果来看，深度学习方法（RNN）相比传统方法（TF-IDF）在哪方面有明显优势？",
-    "gold_answers": ["整体准确率更高", "误分类更少", "RNN的对角线数值更大", "正确预测数更多"],
-    "type": "figure",
-    "requires_visual": true,
-    "page": 5
+    "question": "在本次实验中，传统方法（TF-IDF+LR/SVM）和深度学习方法（RNN/BiLSTM）相比，哪个的整体Accuracy更高？",
+    "gold_answers": ["传统方法", "TF-IDF", "传统方法更高", "TF-IDF更高", "TF-IDF+LR", "LR最高"],
+    "type": "text",
+    "requires_visual": false,
+    "page": 8
   }
 ]
