@@ -432,7 +432,9 @@ async def chat_stream(
             yield f"data: {json.dumps({'type': 'citation', **citation}, ensure_ascii=False)}\n\n"
 
         # Done
-        yield f"data: {json.dumps({'type': 'done', 'mode': result.get('mode', mode)})}\n\n"
+        # Always echo the USER-REQUESTED mode for the frontend badge — see
+        # comment in chat_direct() for why.
+        yield f"data: {json.dumps({'type': 'done', 'mode': mode, 'executed_mode': result.get('mode', mode)})}\n\n"
         logger.info(f"[Chat] Complete.")
 
     except Exception as e:
@@ -509,7 +511,11 @@ async def chat_direct(
             "images": images_for_frontend,
             "citations": citations,
             "pages": context.get("all_pages", []),
-            "mode": result.get("mode", mode),
+            # Always report the USER-REQUESTED mode, not generator's actual exec
+            # path. A multimodal question with 0 retrieved images is still
+            # "multimodal mode" — the system just had no images to attach.
+            "mode": mode,
+            "executed_mode": result.get("mode", mode),  # for debug/analytics
             "error": False,
         }
 

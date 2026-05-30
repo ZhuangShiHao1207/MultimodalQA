@@ -65,6 +65,9 @@ export function useChat() {
       assistantMsg.images = result.images || []
       assistantMsg.citations = result.citations || []
       assistantMsg.pages = result.pages || []
+      // Prefer the user-requested mode for the badge display. Backend now
+      // returns this in `mode`, but fall back to the local `mode` arg if a
+      // proxy strips the field.
       assistantMsg.mode = result.mode || mode
 
       // Typing animation
