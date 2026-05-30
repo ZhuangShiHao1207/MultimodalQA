@@ -40,7 +40,10 @@
       "Bash(node -e ' *)",
       "Bash(node test_format.js)",
       "Bash(mv \"C:/Users/12077/Desktop/college/大三下/多模态大作业/MultimodalQA/frontend/test_format.js\" \"C:/Users/12077/Desktop/college/大三下/多模态大作业/MultimodalQA/frontend/test_format.cjs\")",
-      "Bash(node test_format.cjs)"
+      "Bash(node test_format.cjs)",
+      "Bash(node test_dollar_math.cjs)",
+      "Bash(rm \"C:/Users/12077/Desktop/college/大三下/多模态大作业/MultimodalQA/frontend/test_dollar_math.cjs\")",
+      "Bash(rm -rf \"C:/Users/12077/Desktop/college/大三下/多模态大作业/MultimodalQA/scripts/_formula_test_out\")"
     ]
   }
 }

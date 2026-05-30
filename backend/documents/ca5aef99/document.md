@@ -96,6 +96,8 @@ Precision 与 Recall 的调和平均
 
 其中：
 
+$$F 1 = 2 \cdot \frac { P r e c i s i o n \cdot R e c a l l } { P r e c i s i o n + R e c a l l }$$
+
 ## 五、实验设置与运行
 
 环境：

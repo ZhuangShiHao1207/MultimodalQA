@@ -57,8 +57,8 @@ function handleKeydown(e) {
     <div ref="chatContainer" class="chat-messages">
       <div v-if="!messages.length" class="chat-empty">
         <el-icon size="48" color="#c0c4cc"><ChatDotSquare /></el-icon>
-        <p v-if="disabled">Please upload and select a document to start</p>
-        <p v-else>Ask a question about the document</p>
+        <p v-if="disabled">请先上传或选择一个文档以开始对话</p>
+        <p v-else>对该文档提个问题吧</p>
       </div>
 
       <MessageBubble
@@ -71,7 +71,7 @@ function handleKeydown(e) {
       <!-- Streaming indicator -->
       <div v-if="isStreaming" class="streaming-indicator">
         <el-icon class="is-loading"><Loading /></el-icon>
-        <span>Generating...</span>
+        <span>生成中…</span>
       </div>
     </div>
 
@@ -81,7 +81,7 @@ function handleKeydown(e) {
         v-model="inputText"
         type="textarea"
         :autosize="{ minRows: 1, maxRows: 4 }"
-        :placeholder="disabled ? 'Select a document first...' : 'Ask a question about the document...'"
+        :placeholder="disabled ? '请先选择一个文档…' : '对该文档提个问题…'"
         :disabled="disabled || isStreaming"
         @keydown="handleKeydown"
       />
@@ -91,7 +91,7 @@ function handleKeydown(e) {
         :disabled="disabled || isStreaming || !inputText.trim()"
         @click="handleSend"
       >
-        Send
+        发送
       </el-button>
     </div>
   </div>

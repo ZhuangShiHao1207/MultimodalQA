@@ -22,14 +22,14 @@ function handleBeforeUpload(file) {
         drag
       >
         <el-icon size="28"><UploadFilled /></el-icon>
-        <div class="upload-text">Upload PDF</div>
-        <div class="upload-hint">Click or drag file here</div>
+        <div class="upload-text">上传 PDF</div>
+        <div class="upload-hint">点击或将文件拖到此处</div>
       </el-upload>
     </div>
 
     <!-- Document List -->
     <div class="doc-list-header">
-      <span>Documents</span>
+      <span>文档列表</span>
       <el-tag size="small" type="info">{{ documents.length }}</el-tag>
     </div>
 
@@ -49,8 +49,9 @@ function handleBeforeUpload(file) {
           <span class="doc-name">{{ doc.filename }}</span>
         </div>
         <div class="doc-meta">
-          <span v-if="doc.page_count">{{ doc.page_count }} pages</span>
-          <span v-else-if="doc.status === 'pending'" class="pending-hint">Not processed</span>
+          <span v-if="doc.page_count">{{ doc.page_count }} 页</span>
+          <span v-else-if="doc.status === 'pending'" class="pending-hint">未处理</span>
+          <span v-else-if="doc.status === 'processing'" class="processing-hint">处理中…</span>
           <div class="doc-actions">
             <el-button
               v-if="doc.status === 'pending'"
@@ -75,8 +76,13 @@ function handleBeforeUpload(file) {
 
       <el-empty v-if="!documents.length" :image-size="60">
         <template #description>
-          <p>No documents yet</p>
-          <p class="empty-hint">Upload a PDF or wait ~1 min for backend to detect files in data/ folder</p>
+          <p>暂无文档</p>
+          <p class="empty-hint">
+            上传 PDF，或将文件放入 <code>data/</code> 目录后重启后端（约 2 分钟检测完成）。
+          </p>
+          <p class="empty-hint tip">
+            💡 建议先用页数较少的 PDF（&lt; 10 页）测试，处理速度更快。
+          </p>
         </template>
       </el-empty>
     </div>
@@ -164,9 +170,26 @@ function handleBeforeUpload(file) {
   color: #c0c4cc;
   font-style: italic;
 }
+.processing-hint {
+  font-size: 11px;
+  color: #e6a23c;
+  font-style: italic;
+}
 .empty-hint {
   font-size: 11px;
   color: #c0c4cc;
   margin-top: 4px;
+  line-height: 1.5;
+}
+.empty-hint code {
+  background: #f0f2f5;
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-family: ui-monospace, "Consolas", monospace;
+  font-size: 10px;
+}
+.empty-hint.tip {
+  color: #67c23a;
+  margin-top: 8px;
 }
 </style>

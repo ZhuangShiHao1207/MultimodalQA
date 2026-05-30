@@ -36,6 +36,7 @@ class DoclingParser:
         generate_page_images: bool = True,
         images_scale: float = 2.0,
         table_mode: str = "accurate",
+        extract_formulas: bool = True,
     ):
         """
         Initialize the Docling parser.
@@ -47,6 +48,10 @@ class DoclingParser:
             generate_page_images: Whether to generate page-level images
             images_scale: Scale factor for extracted images (2.0 = high-res)
             table_mode: Table extraction mode ('accurate' or 'fast')
+            extract_formulas: Whether to OCR formulas to LaTeX (slower first run —
+                downloads CodeFormulaPredictor weights, but ~50ms per formula after).
+                When False, formulas appear as `<!-- formula-not-decoded -->`
+                placeholders and are unsearchable.
         """
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
@@ -63,6 +68,8 @@ class DoclingParser:
             generate_picture_images=extract_images,
             generate_page_images=generate_page_images,
             images_scale=images_scale,
+            # Formula OCR: emit LaTeX instead of `<!-- formula-not-decoded -->`
+            do_formula_enrichment=extract_formulas,
         )
 
         # Create converter
@@ -75,8 +82,12 @@ class DoclingParser:
         self.extract_images = extract_images
         self.extract_tables = extract_tables
         self.generate_page_images = generate_page_images
+        self.extract_formulas = extract_formulas
 
-        logger.info(f"DoclingParser initialized. Output dir: {self.output_dir}")
+        logger.info(
+            f"DoclingParser initialized. Output dir: {self.output_dir} | "
+            f"formula_enrichment={extract_formulas}"
+        )
 
     def parse(self, pdf_path: str) -> Tuple[List[DocumentElement], str]:
         """
@@ -185,8 +196,11 @@ class DoclingParser:
                 # Don't create a separate element for headings - they'll be part of chunks
                 continue
 
-            # Skip very short text fragments
-            if len(text.strip()) < 10:
+            # Skip very short text fragments — but keep formulas (which are often
+            # short LaTeX strings like `\pi` or `E=mc^2`) and equations.
+            is_formula = "formula" in label_str.lower() or "equation" in label_str.lower()
+            min_len = 3 if is_formula else 10
+            if len(text.strip()) < min_len:
                 continue
 
             element = DocumentElement(
@@ -197,6 +211,7 @@ class DoclingParser:
                 bbox=bbox,
                 text_content=text.strip(),
                 heading_context=current_heading,
+                inferred_label="Formula" if is_formula else "",
             )
             elements.append(element)
 
