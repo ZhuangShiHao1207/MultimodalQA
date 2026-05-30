@@ -271,10 +271,21 @@ docstore/
 processed/
 output/
 results/
+# Per-document parsed content (regenerated on PDF processing)
+backend/documents/
 
 # --- Docling Cache & Intermediate Files ---
 docling_output/
 .docling_cache/
+
+# --- Stale test/dev artifacts ---
+# Early ChromaDB sandbox, no longer used
+test_chroma/
+# Claude Code local settings (per-developer)
+.claude/settings.local.json
+# Frontend test scripts (not part of the production app)
+frontend/test_*.cjs
+frontend/test_*.js
 
 # --- Extracted Assets (regenerable) ---
 extracted_images/
@@ -296,6 +307,11 @@ logs/
 tmp/
 temp/
 .tmp/
+# Eval run logs (large, regenerable)
+evaluation/eval_log.txt
+# Stale ad-hoc debug script (recreated as needed during development)
+scripts/test_formula_extraction.py
+scripts/test_output.log
 
 # --- OS-specific ---
 Thumbs.db

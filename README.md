@@ -14,6 +14,26 @@
 - 智谱 AI API Key（[注册地址](https://open.bigmodel.cn/)）
 - 开发时的系统是windows（有显卡），有对linux与mac做适配但是不一定可用（未测试）
 
+### 仓库初始状态说明
+
+为了让评测者能体验完整的"上传 → 解析 → 索引 → 问答"流程，本仓库**故意不附带**以下运行时产物，它们会在你按照下面步骤启动系统时**自动生成**：
+
+| 路径 | 性质 | 何时生成 |
+|---|---|---|
+| `backend/documents/` | 上传 PDF 的副本 + 提取的图片/页面渲染 + 元数据 | 处理 PDF 时自动建立 |
+| `backend/chroma_data/` | ChromaDB 持久化的向量索引（约 1~2 MB / 文档） | 处理 PDF 时自动建立 |
+| `docling_output/` | Docling 解析的中间文件（处理完会被自动清理） | 处理 PDF 时临时建立 |
+| `frontend/node_modules/` | 前端 npm 依赖（约 140 MB） | `npm install` 时安装 |
+| `frontend/dist/` | 前端构建产物 | `npm run build` 时生成 |
+| `**/__pycache__/` | Python 字节码缓存 | 自动生成 |
+| `~/.cache/huggingface/` | BGE-M3 / Docling / 公式 OCR 模型权重（约 3~4 GB） | 首次启动时从 HuggingFace 下载 |
+
+> **⚠️ 关于 `data/` 目录**：仓库里**保留了**两份测试 PDF（K-Means/GMM 实验报告 + IMDB 情感分类报告），方便评测者直接用 ▶ 触发处理来体验全流程。如果想测自己的 PDF，把它们放进 `data/` 即可（重启后端自动检测）。
+
+> **⚠️ 关于 `.env`**：仓库里只有 `.env.example` 模板。请按照下面"配置 API Key"小节复制一份并填入你自己的智谱 API Key（**绝对不要把含 key 的 `.env` 提交到 git**）。
+
+如果你看到磁盘上有上述目录，那是开发过程的本地副本，**不会**进入仓库（已在 `.gitignore` 里）。第一次拉取代码后**不需要任何手动清理**，直接按顺序执行下面的步骤即可。
+
 ### 1. 安装 Python 依赖
 
 ```bash
