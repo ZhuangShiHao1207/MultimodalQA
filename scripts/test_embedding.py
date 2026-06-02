@@ -10,6 +10,11 @@ import os
 import numpy as np
 from typing import Dict, List
 
+# Hugging Face cache settings (show progress, avoid Windows symlink issues)
+if sys.platform == "win32":
+    os.environ.setdefault("HF_HUB_DISABLE_SYMLINKS", "1")
+os.environ.setdefault("HF_HUB_DISABLE_PROGRESS_BARS", "0")
+
 # 处理Windows终端编码问题
 if sys.platform == 'win32':
     import io
@@ -22,6 +27,7 @@ def test_model_loading():
     print("=" * 60)
     
     try:
+        _prefetch_bge_model()
         from FlagEmbedding import BGEM3FlagModel
         print("✓ FlagEmbedding库导入成功")
         
@@ -33,6 +39,19 @@ def test_model_loading():
     except Exception as e:
         print(f"✗ 模型加载失败: {str(e)}")
         sys.exit(1)
+
+
+def _prefetch_bge_model():
+    """Pre-download model weights with progress output when possible."""
+    try:
+        from huggingface_hub import snapshot_download, logging as hf_logging
+
+        hf_logging.set_verbosity_info()
+        print("\nPrefetching Hugging Face model weights (shows progress)...")
+        snapshot_download("BAAI/bge-m3", resume_download=True)
+        print("✓ Model weights are ready in cache")
+    except Exception as e:
+        print(f"✗ Prefetch failed (will try direct load): {e}")
 
 def test_dense_embedding(model):
     """测试Dense Embedding功能"""
