@@ -40,18 +40,30 @@
 # 创建 conda 环境
 conda create -n multimodalQA python=3.10 -y
 conda activate multimodalQA
-
-# 安装 PyTorch (根据平台选择一个)
-# Windows (CUDA):
-pip install torch torchvision --index-url https://download.pytorch.org/whl/cu126
-# macOS (MPS):
-pip install torch torchvision
-# Linux (CPU only):
-pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
-
-# 安装其他依赖
-pip install -r requirements.txt
 ```
+
+**第一步：先单独安装 PyTorch（必须用带 CUDA 标签的 wheel，不能走普通 PyPI 镜像）**
+
+```bash
+# Windows / Linux（CUDA 12.4，推荐，阿里云镜像加速，有显卡用户必装）：
+pip install torch==2.5.1+cu124 torchvision==0.20.1+cu124 -f https://mirrors.aliyun.com/pytorch-wheels/cu124
+
+# macOS（Apple Silicon / MPS）：
+pip install torch torchvision
+
+# Linux / CPU only：
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+```
+
+> ⚠️ **不要**用 `pip install torch -i https://mirrors.aliyun.com/pypi/simple/`（普通 PyPI 镜像只有 CPU 版，会装成 `2.5.1+cpu`，导致模型推理极慢）。
+
+**第二步：安装其余依赖**
+
+```bash
+pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/
+```
+
+> ⚠️ **Windows DLL 冲突说明**：torch 和 pyarrow 都会加载 Intel OpenMP（`libiomp5md.dll`），在 Windows 上若加载顺序不对会触发 access violation 崩溃。`requirements.txt` 已通过固定 `pyarrow>=17.0.0` + `fsspec<=2026.2.0` 解决版本冲突；入口脚本（`test_embedding.py` / `backend/main.py`）已在顶部预先 import pyarrow 并设置 `KMP_DUPLICATE_LIB_OK=TRUE`，无需额外操作。
 
 ### 2. 安装前端依赖
 
@@ -68,6 +80,13 @@ ZHIPUAI_API_KEY=your_api_key_here
 ```
 
 ### 4. 启动服务
+在正式启动服务运行之前，强烈建议先对embedding下载+测试：
+```bash
+python -u .\scripts\test_embedding.py
+
+# 这可以评估embedding模型的能力，测试的时候可以不用
+# python -u test_embedding.py --eval true
+```
 
 ```bash
 # 终端 1: 启动后端 (FastAPI)

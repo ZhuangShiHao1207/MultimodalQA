@@ -3,8 +3,21 @@ FastAPI application entry point.
 Sets up CORS, routes, and static file serving.
 """
 import sys
+import os
 import logging
 from pathlib import Path
+
+# ── Windows DLL conflict fix ─────────────────────────────────────────────────
+# torch and pyarrow both load Intel OpenMP (libiomp5md.dll). On Windows this
+# causes an access violation if pyarrow is loaded AFTER torch. Pre-loading
+# pyarrow here (before any torch import happens transitively) prevents the crash.
+os.environ.setdefault("KMP_DUPLICATE_LIB_OK", "TRUE")
+try:
+    import pyarrow  # noqa: F401  must come before torch / FlagEmbedding
+except Exception:
+    pass
+# ─────────────────────────────────────────────────────────────────────────────
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
