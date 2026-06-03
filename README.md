@@ -65,7 +65,15 @@ pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/
 
 > ⚠️ **Windows DLL 冲突说明**：torch 和 pyarrow 都会加载 Intel OpenMP（`libiomp5md.dll`），在 Windows 上若加载顺序不对会触发 access violation 崩溃。`requirements.txt` 已通过固定 `pyarrow>=17.0.0` + `fsspec<=2026.2.0` 解决版本冲突；入口脚本（`test_embedding.py` / `backend/main.py`）已在顶部预先 import pyarrow 并设置 `KMP_DUPLICATE_LIB_OK=TRUE`，无需额外操作。
 
-### 2. 安装前端依赖
+**第三步：修复 FlagEmbedding 与新版 transformers 的兼容性（一次性操作）**
+
+`FlagEmbedding 1.3.x/1.4.x` 的 Gemma reranker 代码引用了 `transformers 4.52+` 中已被删除的常量（`GEMMA2_START_DOCSTRING` / `GEMMA2_INPUTS_DOCSTRING`），需要手动 patch 一次：
+
+```bash
+python scripts/patch_flagembedding.py
+```
+
+> 该脚本会自动定位并修改 conda 环境中 FlagEmbedding 的对应文件，添加 `try/except` 兼容回退，不影响任何功能。
 
 ```bash
 cd frontend

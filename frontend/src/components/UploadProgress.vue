@@ -25,7 +25,7 @@ const stageHint = computed(() => {
     case 'uploading':
       return '正在上传文件…'
     case 'parsing':
-      return '正在用 Docling 做版面分析（最耗时阶段）。整体处理通常需要约 2~5 分钟，PDF 页数/图片越多耗时越久。'
+      return '正在用 Docling 做版面分析（最耗时阶段，约3~5分钟），PDF 页数/图片越多耗时越久。'
     case 'chunking':
       return '正在按语义切分文本…'
     case 'summarizing':
@@ -37,7 +37,7 @@ const stageHint = computed(() => {
     case 'error':
       return '处理失败，请查看后端日志或重试。'
     default:
-      return '请耐心等待，首次启动会下载模型权重。'
+      return '请耐心等待，若是首次启动会下载模型权重，除开下载时间整个文本处理流程通常需要4~7分钟。'
   }
 })
 </script>
