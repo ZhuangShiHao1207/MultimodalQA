@@ -4,7 +4,6 @@
 *.log
 *.gz
 *.pdf
-*.png
 *.jpg
 
 # Allow demo/test PDFs in data/ to be tracked (they're the user's own
