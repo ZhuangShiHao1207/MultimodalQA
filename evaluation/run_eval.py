@@ -8,6 +8,7 @@ import os
 import json
 import logging
 import hashlib
+import time
 from pathlib import Path
 from datetime import datetime
 
@@ -101,22 +102,28 @@ def run_evaluation():
 
         # Multimodal RAG (with images)
         try:
+            t0 = time.time()
             context_mm = retriever.retrieve_with_context(question, max_images=3)
             result_mm = generator.generate(question, context_mm)
+            latency_mm = round(time.time() - t0, 2)
             answer_mm = result_mm.get("answer", "")
         except Exception as e:
             logger.error(f"  MM error: {e}")
             answer_mm = ""
+            latency_mm = -1.0
 
         # Text-only RAG (strip images)
         try:
+            t0 = time.time()
             context_text = retriever.retrieve_with_context(question, max_images=0)
             context_text["image_contexts"] = []
             result_text = generator.generate(question, context_text)
+            latency_to = round(time.time() - t0, 2)
             answer_text = result_text.get("answer", "")
         except Exception as e:
             logger.error(f"  TO error: {e}")
             answer_text = ""
+            latency_to = -1.0
 
         # Compute ANLS scores
         score_mm = anls_score(answer_mm, gold_answers)
@@ -135,10 +142,13 @@ def run_evaluation():
             "text_only_anls": score_text,
             "mm_correct": score_mm >= 0.5,
             "to_correct": score_text >= 0.5,
+            "latency_mm_sec": latency_mm,
+            "latency_to_sec": latency_to,
+            "num_images_sent": len(context_mm.get("image_contexts", [])),
         })
 
-        logger.info(f"  MM[ANLS={score_mm:.3f}]: {answer_mm[:120]}")
-        logger.info(f"  TO[ANLS={score_text:.3f}]: {answer_text[:120]}")
+        logger.info(f"  MM[ANLS={score_mm:.3f}, {latency_mm:.1f}s, {len(context_mm.get('image_contexts',[]))}img]: {answer_mm[:100]}")
+        logger.info(f"  TO[ANLS={score_text:.3f}, {latency_to:.1f}s]: {answer_text[:100]}")
 
     # ─── Aggregate metrics ─────────────────────────────────
     n = len(results)
@@ -146,6 +156,13 @@ def run_evaluation():
     to_avg = sum(r["text_only_anls"] for r in results) / max(n, 1)
     mm_acc = sum(1 for r in results if r["mm_correct"]) / max(n, 1)
     to_acc = sum(1 for r in results if r["to_correct"]) / max(n, 1)
+
+    # Latency stats (exclude failed calls marked as -1)
+    valid_mm_lat = [r["latency_mm_sec"] for r in results if r["latency_mm_sec"] >= 0]
+    valid_to_lat = [r["latency_to_sec"] for r in results if r["latency_to_sec"] >= 0]
+    avg_lat_mm  = round(sum(valid_mm_lat) / len(valid_mm_lat), 2) if valid_mm_lat else -1
+    avg_lat_to  = round(sum(valid_to_lat) / len(valid_to_lat), 2) if valid_to_lat else -1
+    avg_img_cnt = round(sum(r["num_images_sent"] for r in results) / max(n, 1), 2)
 
     # By question type
     types = sorted(set(r["type"] for r in results))
@@ -178,6 +195,12 @@ def run_evaluation():
             "anls_improvement": mm_avg - to_avg,
             "accuracy_improvement": mm_acc - to_acc,
         },
+        "latency": {
+            "mm_avg_sec": avg_lat_mm,
+            "to_avg_sec": avg_lat_to,
+            "avg_images_per_query": avg_img_cnt,
+            "overhead_sec": round(avg_lat_mm - avg_lat_to, 2) if avg_lat_mm >= 0 and avg_lat_to >= 0 else -1,
+        },
         "by_type": type_metrics,
         "visual_questions": {
             "count": len(visual),
@@ -204,6 +227,11 @@ def run_evaluation():
     logger.info(f"  Multimodal RAG: ANLS={mm_avg:.4f}  Acc={mm_acc:.2%}")
     logger.info(f"  Text-only  RAG: ANLS={to_avg:.4f}  Acc={to_acc:.2%}")
     logger.info(f"  Improvement:    +{mm_avg - to_avg:.4f} ANLS, +{(mm_acc - to_acc)*100:.1f}pp Acc")
+
+    logger.info(f"\nLatency (avg per question):")
+    logger.info(f"  Multimodal RAG: {avg_lat_mm:.1f}s  (avg {avg_img_cnt:.1f} images/query)")
+    logger.info(f"  Text-only  RAG: {avg_lat_to:.1f}s")
+    logger.info(f"  Image overhead: +{summary['latency']['overhead_sec']:.1f}s/query")
 
     logger.info(f"\nBy Question Type:")
     for t, m in type_metrics.items():
