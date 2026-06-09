@@ -5,6 +5,7 @@
 *.gz
 *.pdf
 *.jpg
+*.toc
 
 # Allow demo/test PDFs in data/ to be tracked (they're the user's own
 # coursework reports, intentionally shipped so the TA can run the full

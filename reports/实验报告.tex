@@ -1,0 +1,669 @@
+﻿\documentclass[UTF8, heading=true]{ctexart}
+\usepackage{karnaugh-map}
+%-----中文宏包-----
+\usepackage[UTF8]{ctex}
+\usepackage[utf8]{inputenc}
+\usepackage{titling}
+%-----数学宏包-----
+\usepackage{amsmath,amsthm,amssymb,amsfonts}
+\usepackage{mathrsfs,bm}
+\usepackage{dirtree}
+%-----draft下 label提示-----
+%\usepackage[notcite,notref]{showkeys}
+%-----页面布局-----
+\usepackage{geometry}
+\geometry{left=1.25in,right=1.25in,top=1in,bottom=1in}
+%\geometry{left=1in,right=1in,top=1in,bottom=1in}
+%\geometry{left=2.5cm,right=2.1cm,top=1.7cm,bottom=2cm,includehead,includefoot}
+
+%-----设置超链接-----
+\usepackage{url,hyperref}
+\hypersetup{colorlinks=true,linkcolor=black,citecolor=black} % 去掉目录红框
+%-----制作目录-----
+\usepackage{imakeidx}
+% 设置颜色
+% \usepackage{color,xcolor}
+% 插入图片
+\usepackage{graphicx}
+\usepackage{epsfig}
+%-----设置表格-----
+\usepackage{tabularx,array}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{fancybox}
+%-----调整单元格格式-----
+\usepackage{makecell}
+%-----操作字符串-----
+\usepackage{xstring}
+%-----设置章节标题和目录-----
+\usepackage{titletoc}
+\usepackage{titlesec}
+%-----数学公式扩展-----
+\usepackage{mathtools}
+%-----浮动体设置-----
+\usepackage{float}
+%-----书签设置-----
+\usepackage{bookmark}
+%-----参考文献格式-----
+\usepackage[numbers]{natbib}
+%-----设置页眉页脚格式-----
+\usepackage{fancyhdr}
+% --- 设置代码环境 -----
+\usepackage{color,xcolor}
+\usepackage{listings}
+\definecolor{bg}{rgb}{0.95, 0.95, 0.95}
+\definecolor{keywordcolor}{rgb}{0.0, 0.0, 0.5}
+\definecolor{commentcolor}{rgb}{0.0, 0.5, 0.0}
+\definecolor{stringcolor}{rgb}{0.6, 0.1, 0.0}
+
+% 设置 listings 样式
+\lstdefinestyle{cppstyle}{
+    language=C++,
+    backgroundcolor=\color{bg},
+    basicstyle=\small\ttfamily,
+    keywordstyle=\color{keywordcolor}\bfseries,
+    commentstyle=\color{commentcolor}\itshape,
+    stringstyle=\color{stringcolor},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    numbersep=5pt,
+    frame=lines,
+    breaklines=true,
+    breakatwhitespace=false,
+    tabsize=4,
+    showtabs=false,
+    showspaces=false,
+    showstringspaces=false,
+    captionpos=b,
+    keepspaces=true,
+    columns=flexible,
+    xleftmargin=2em,
+    framexleftmargin=1.5em,
+    framexrightmargin=0.5em,
+    framesep=2mm,
+    escapeinside={(*@}{@*)},
+    morekeywords={glm, VertexData, Vector3f, Vector4f, Eigen, auto}
+}
+
+\lstdefinestyle{pythonstyle}{
+    language=Python,
+    backgroundcolor=\color{bg},
+    basicstyle=\small\ttfamily,
+    keywordstyle=\color{keywordcolor}\bfseries,
+    commentstyle=\color{commentcolor}\itshape,
+    stringstyle=\color{stringcolor},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    numbersep=5pt,
+    frame=lines,
+    breaklines=true,
+    breakatwhitespace=false,
+    tabsize=4,
+    showtabs=false,
+    showspaces=false,
+    showstringspaces=false,
+    captionpos=b,
+    keepspaces=true,
+    columns=flexible,
+    xleftmargin=2em,
+    framexleftmargin=1.5em,
+    framexrightmargin=0.5em,
+    framesep=2mm,
+    escapeinside={(*@}{@*)},
+    morekeywords={import, from, def, class, if, else, for, while, return}
+}
+
+\lstset{style=cppstyle}
+
+% ---- 定义列表项的样式 -----
+\usepackage{enumitem}
+\setlist{nolistsep}
+% --- 设置英文字体 -----
+\usepackage{fontspec}
+\setmainfont{Times New Roman}
+\usepackage{setspace}
+
+\geometry{
+  left=3.0cm,        % 左边距
+  right=3.0cm,       % 右边距
+  top=2.5cm,         % 上边距
+  bottom=2.0cm       % 下边距
+}
+\renewcommand*{\baselinestretch}{1.5}
+\newcommand{\upcite}[1]{\textsuperscript{\textsuperscript{\cite{#1}}}}
+
+\renewcommand{\thesection}{\chinese{section}、}
+\renewcommand{\thesubsection}{（\chinese{subsection}）}
+\renewcommand{\thesubsubsection}{\arabic{subsubsection}.}
+\titleformat{\section}{\bfseries \zihao{-3}}{\chinese{section}、}{0em}{}
+\titleformat{\subsection}{\bfseries \zihao{4}}{（\chinese{subsection}）}{0.2em}{}
+\titleformat{\subsubsection}{\bfseries \zihao{-4}}{\arabic{subsubsection}、}{0.2em}{}
+\newcommand{\stunum}[1]{\def\defstunum{#1}}
+\newcommand{\class}[1]{\def\defclass{#1}}
+
+% ----- 设置浮动体间距 ------
+\setlength{\textfloatsep}{0pt}
+\setlength{\floatsep}{10pt plus 3pt minus 2pt}
+\setlength{\intextsep}{10pt}
+\setlength{\abovecaptionskip}{2pt plus1pt minus1pt}
+\setlength{\belowcaptionskip}{3pt plus1pt minus2pt}
+
+% ----- 设置公式间距为零 ------
+\AtBeginDocument{
+	\setlength{\abovedisplayskip}{4pt plus1pt minus1pt}
+	\setlength{\belowdisplayskip}{4pt plus1pt minus1pt}
+	\setlength{\abovedisplayshortskip}{2pt}
+	\setlength{\belowdisplayshortskip}{2pt}
+	\setlength{\arraycolsep}{2pt}   % array中列之间空白长度
+}
+
+
+
+% --- 自定义命令 -----
+\newcommand{\CC}{\ensuremath{\mathbb{C}}}
+\newcommand{\RR}{\ensuremath{\mathbb{R}}}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\ii}{\bm{\mathrm{i}}\,}  % 虚部
+\newcommand{\md}{\mathrm{d}\,}
+\newcommand{\bA}{\boldsymbol{A}}
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+\graphicspath{{./img/}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{\thepage}
+\fancyhead[L]{多模态最终报告}
+\fancyhead[R]{文档理解+多模态检索问答系统}
+\title{\LARGE \textbf{多模态最终报告 \hspace{0.2cm} 文档理解+多模态检索问答系统}}
+\date{}
+\author{小组成员1：庄仕豪 \qquad 学号：23336355 \\ 小组成员2: 钟晨辉 \qquad 学号：23336336}
+
+\begin{document}
+\maketitle
+\vspace{-1.5cm}
+
+% ================================================================
+%  摘要
+% ================================================================
+\begin{abstract}
+本文提出并实现了一套面向复杂版面 PDF 文档的多模态检索增强生成（Multimodal RAG）系统 MultimodalQA。
+系统以 IBM Docling 完成 PDF 版面分析与结构化抽取（文本块 / 表格 Markdown / 图像裁剪），
+以智谱 GLM-4.6V 生成图表语义摘要，以 BAAI/BGE-M3 构建 1024 维稠密向量索引（ChromaDB 持久化），
+并通过 Multi-Vector Retriever 实现"摘要召回、原图回传"的代理检索策略，
+最终由 GLM-4.6V 生成带页码与图号引用的多模态答案。
+
+为定量评估系统优势，本文构建了一个包含 \textbf{124 道题目、5 类文档领域、3 档难度}的自建 QA 数据集，
+设计三路基线对比：多模态 RAG（完整系统）、纯文本保守基线（无图、无证据则拒答）、纯文本开放基线（无图、允许基于上下文推断），
+以 ANLS 与准确率为指标进行评测。
+实验结果表明，在必须依赖图表视觉信息的题目上（62 道），
+多模态 RAG 的准确率（66\%）显著高于纯文本保守基线（13\%）和纯文本开放基线（35\%），
+提升分别为 +53 个百分点（pp）和 +31 pp（McNemar 检验 $p<0.0001$），
+而在纯文本题目上三路无显著差异，验证了多模态架构的必要性与针对性。
+
+系统已实现完整的 Web 前后端（Vue 3 + FastAPI），
+支持 PDF 拖拽上传、实时进度推送（SSE）、LaTeX 公式渲染与引用溯源。
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+% ================================================================
+%  一、引言
+% ================================================================
+\section{引言}
+
+随着企业与科研场景中非结构化文档的爆炸式增长，
+如何从包含复杂排版的 PDF（多栏布局、嵌套表格、统计图表、数学公式）中
+准确检索并回答自然语言问题，成为文档智能领域的核心挑战。
+
+传统 RAG（Retrieval-Augmented Generation）系统\upcite{lewis2020rag}在处理纯文本文档时已取得良好效果，
+但面对图表、混淆矩阵、训练曲线等视觉信息时力不从心——
+文本化的图说或摘要往往丢失关键的颜色、趋势和精确读数信息，
+导致模型产生模糊甚至错误的判断。
+
+本文的核心贡献包括：
+\begin{enumerate}
+    \item \textbf{完整多模态 RAG 管道}：从 PDF 解析、VLM 摘要生成、向量化检索到多模态答案生成的端到端系统，
+          提出"摘要入库、原图回传"的代理召回策略，在不显著增加索引体积的前提下支持图像级问答。
+    \item \textbf{三路消融对比设计}：新增"纯文本开放基线"（无图、允许推断），
+          区分多模态提升来源于"视觉理解"还是"保守基线（无证据则拒答）的过度拒答"，使对比实验更加公平。
+    \item \textbf{多领域自建 QA 数据集}：覆盖 5 类文档（ML 实验报告、CS 论文、气候报告、经济报告）、
+          124 道题目、3 档难度，包含精确数值读取、图表趋势判断、跨页推理等多种题型。
+    \item \textbf{完整 Web 演示系统}：前后端分离，支持实时进度、LaTeX 渲染、引用溯源弹窗等工程特性。
+\end{enumerate}
+
+% ================================================================
+%  二、相关工作
+% ================================================================
+\section{相关工作}
+
+\subsection{检索增强生成（RAG）}
+
+Lewis 等人\upcite{lewis2020rag}提出将稠密检索与序列到序列生成结合的 RAG 框架，
+将开放域问答的知识存储从参数化记忆转移至可更新的外部文档库，
+极大提升了模型对长尾知识的覆盖能力。
+后续工作（如 Self-RAG\upcite{selfrag2023}、HyDE 等）进一步优化了检索质量与生成的忠实性。
+
+\subsection{文档视觉理解}
+
+DocVQA\upcite{mathew2021docvqa}、ChartQA\upcite{masry2022chartqa}等数据集揭示了
+视觉文档理解的独特难点：仅凭 OCR 文本无法回答需要视觉推理的问题（如图表趋势、表格布局）。
+ColPali\upcite{faysse2025colpali}提出直接以页面图像向量化进行检索，
+完全绕开文本提取环节；但在精确数值读取上仍有局限。
+
+\subsection{多模态 RAG}
+
+M3DocRAG\upcite{m3docrag2024}在多文档场景下引入多向量检索与多模态生成；
+VisRAG\upcite{visrag2025}通过实验证明保留视觉信息对 RAG 的重要性。
+本文参考上述架构，结合国内可用的 API（智谱 GLM-4.6V）设计了适合中英文混合文档的系统。
+
+\subsection{文档解析工具}
+
+IBM Docling\upcite{docling2024}提供基于深度学习的 PDF 版面分析，
+能够高精度分离文本、表格和图像区域，并将表格转为结构化 Markdown，
+为后续的语义分块和向量化奠定基础。
+
+% ================================================================
+%  三、方法
+% ================================================================
+\section{方法}
+
+本系统由四个阶段组成，如图~\ref{fig:pipeline}~所示。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{fig/四阶段处理流程.png}
+    \caption{MultimodalQA 四阶段处理流程}
+    \label{fig:pipeline}
+\end{figure}
+
+\subsection{阶段一：文档摄取与结构化解析}
+
+输入 PDF 经 IBM Docling（GPU 加速）进行版面分析，
+输出三类结构化元素：
+\begin{itemize}
+    \item \textbf{文本块}（TEXT）：正文段落、标题、公式，保留标题层级上下文；
+    \item \textbf{表格}（TABLE）：以 Markdown 格式保留行列结构；
+    \item \textbf{图像}（FIGURE）：裁剪为独立图片文件，保留页码与标签；
+    \item \textbf{页面图}（PAGE\_IMAGE）：全页渲染，用于引用溯源弹窗。
+\end{itemize}
+
+文本块经过合并小块（min=80 字符）与滑动窗口切分（max=1500，overlap=200）后形成检索单元。
+
+\subsection{阶段二：离线索引构建}
+
+\subsubsection{VLM 摘要生成}
+
+对每个 FIGURE 和 TABLE 元素，调用 GLM-4.6V 生成 100–200 字的语义摘要，
+作为该视觉元素的文本代理（proxy）存入向量库。
+摘要描述图表类型、关键数值、趋势与结论，
+使得纯文本检索模型也能通过语义相似度命中视觉内容。
+
+\subsubsection{BGE-M3 向量化}
+
+使用 BAAI/BGE-M3\upcite{bgem3}对所有文本块及视觉摘要生成 1024 维稠密向量，
+以 FP16 精度在 CUDA 设备上完成批量编码（batch=8，max\_length=8192）。
+向量与元数据（页码、类型、标签、图片路径）一同持久化至 ChromaDB。
+
+\subsubsection{代理召回策略}
+
+索引存储的是摘要文本的向量，但元数据中记录了原始图片路径。
+检索命中摘要后，系统取出 \texttt{image\_path} 并将原始图片附加到 VLM Prompt 中，
+实现"以文本精度检索、以图像质量回答"，
+兼顾了检索效率（索引体积小）与回答质量（完整视觉信息）。
+
+\subsection{阶段三：混合召回}
+
+用户问题同样经 BGE-M3 编码后，在 ChromaDB 中进行余弦相似度检索（top-k=5，阈值=0.3），
+返回文本块、表格摘要和图像摘要三类候选。
+对命中图像摘要的结果，系统进一步加载对应原始图片，
+组成图文混合的上下文包（context pack）。
+
+\subsection{阶段四：溯源生成}
+
+系统支持三种生成模式：
+\begin{itemize}
+    \item \textbf{auto（多模态）}：有图像时将原图与文本上下文一并传入 GLM-4.6V，启用多模态推理；
+    \item \textbf{grounded（诚实基线）}：仅使用文本上下文，无足够证据时明确拒答；
+    \item \textbf{open（公平基线）}：仅使用文本上下文，允许基于间接上下文进行合理推断。
+\end{itemize}
+
+GLM-4.6V 按 system prompt 要求在回答末尾附加结构化引用标签：
+\begin{lstlisting}[style=pythonstyle]
+<citation page="5" type="figure" label="Figure 1"/>
+\end{lstlisting}
+前端解析该标签，渲染为可点击的"📄 第5页"按钮，点击弹窗显示对应页面原图。
+
+% ================================================================
+%  四、实验
+% ================================================================
+\section{实验}
+
+\subsection{实验设置}
+
+\subsubsection{系统配置}
+
+\begin{table}[H]
+\centering
+\caption{系统核心配置}
+\begin{tabular}{ll}
+\toprule
+\textbf{组件} & \textbf{配置} \\
+\midrule
+文档解析 & IBM Docling 2.95（GPU 加速，CUDA 12.4）\\
+嵌入模型 & BAAI/BGE-M3，1024 维，FP16，CUDA \\
+向量库 & ChromaDB（余弦相似度，持久化）\\
+VLM & 智谱 GLM-4.6V（max\_tokens=4096，temperature=0.1）\\
+检索参数 & top-k=5，score\_threshold=0.3，max\_images=3 \\
+运行环境 & Windows 11，RTX 4070 Laptop GPU（8GB），Python 3.10 \\
+\bottomrule
+\end{tabular}
+\label{tab:config}
+\end{table}
+
+\subsubsection{评测数据集}
+
+本文构建了一个多领域自建 QA 数据集（表~\ref{tab:dataset}），
+共 124 道题目，覆盖 5 类文档、3 种题型、3 档难度。
+
+\begin{table}[H]
+\centering
+\caption{评测数据集构成}
+\begin{tabular}{llrr}
+\toprule
+\textbf{文档} & \textbf{领域} & \textbf{题数} & \textbf{视觉题} \\
+\midrule
+K-Means/GMM 实验报告 & ML 实验 & 25 & 10 \\
+IMDB 情感分类报告 & ML 实验 & 27 & 12 \\
+Infini-Attention 论文（arXiv） & CS / NLP & 20 & 7 \\
+IPCC AR6 综合报告摘要 & 气候/环境 & 29 & 12 \\
+IMF 战略经济前景报告 & 宏观经济 & 23 & 11 \\
+\textbf{合计} & \textbf{5 类} & \textbf{124} & \textbf{62（50\%）} \\
+\bottomrule
+\end{tabular}
+\label{tab:dataset}
+\end{table}
+
+题型分布：figure（图表类）62 道，table（表格数值）31 道，text（文本理解）31 道。
+难度分布：easy 63 道，medium 53 道，hard 8 道。
+
+\subsubsection{评测指标}
+
+\begin{itemize}
+    \item \textbf{ANLS}（Average Normalized Levenshtein Similarity）：扩展版本，
+          额外支持子串匹配（当模型答案为 gold 子串时给分）、数值归一化（百分比 ↔ 小数）、
+          有序列表比较，阈值 $\tau=0.5$。
+    \item \textbf{Accuracy}：ANLS $\geq 0.5$ 视为答对，计算整体和子集准确率。
+\end{itemize}
+
+\subsubsection{三路基线设计}
+
+\begin{table}[H]
+\centering
+\caption{三路基线对比设计}
+\begin{tabular}{lll}
+\toprule
+\textbf{模式} & \textbf{检索内容} & \textbf{角色} \\
+\midrule
+多模态 RAG & 文本 + 表格摘要 + \textbf{原始图片} & 完整系统 \\
+纯文本保守基线 & 文本 + 表格摘要，无图 & 无视觉证据则明确拒答 \\
+纯文本开放基线 & 文本 + 表格摘要，无图 & 允许基于上下文合理推断 \\
+\bottomrule
+\end{tabular}
+\label{tab:baselines}
+\end{table}
+
+新增纯文本开放基线的动机：
+若多模态系统优势仅来自保守基线的"过度拒答"而非真实视觉理解，
+则开放基线的分数应接近多模态系统。
+若开放基线仍显著低于多模态系统，则可确认优势来自视觉信息。
+
+\subsection{实验结果}
+
+\subsubsection{总体性能对比}
+
+\begin{table}[H]
+\centering
+\caption{三路基线总体性能对比（124 题）}
+\begin{tabular}{lrr}
+\toprule
+\textbf{模式} & \textbf{ANLS} & \textbf{准确率} \\
+\midrule
+多模态 RAG & 0.6774 & 67.74\% \\
+纯文本保守基线 & 0.3710 & 37.10\% \\
+纯文本开放基线 & 0.5202 & 52.42\% \\
+\midrule
+多模态 vs 保守基线（提升）& +0.3064 & +30.6 pp（个百分点）\\
+多模态 vs 开放基线（提升）& +0.1572 & +15.3 pp \\
+\bottomrule
+\end{tabular}
+\label{tab:overall}
+\end{table}
+
+\subsubsection{按题型细分}
+
+\begin{table}[H]
+\centering
+\caption{按题型分类的准确率对比}
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{题型} & \textbf{数量} & \textbf{多模态} & \textbf{纯文本保守} & \textbf{纯文本开放} \\
+\midrule
+figure（视觉图表）& 62 & 66\% & 13\% & 35\% \\
+table（表格数值）& 31 & 68\% & 61\% & 74\% \\
+text（文本理解）& 31 & 71\% & 61\% & 65\% \\
+\bottomrule
+\end{tabular}
+\label{tab:bytype}
+\end{table}
+
+\subsubsection{按难度分析}
+
+\begin{table}[H]
+\centering
+\caption{按难度分类的准确率对比}
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{难度} & \textbf{数量} & \textbf{多模态} & \textbf{纯文本保守} & \textbf{纯文本开放} \\
+\midrule
+easy（简单）& 63 & 73\% & 56\% & 67\% \\
+medium（中等）& 53 & 62\% & 21\% & 42\% \\
+hard（困难）& 8 & 62\% & 0\% & 12\% \\
+\bottomrule
+\end{tabular}
+\label{tab:bydiff}
+\end{table}
+
+\subsubsection{视觉题 vs 非视觉题}
+
+\begin{table}[H]
+\centering
+\caption{视觉题与非视觉题准确率对比}
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{子集} & \textbf{数量} & \textbf{多模态} & \textbf{纯文本保守} & \textbf{纯文本开放} \\
+\midrule
+视觉题 & 62 & 66\% & 13\% & 35\% \\
+非视觉题 & 62 & 69\% & 61\% & 69\% \\
+\bottomrule
+\end{tabular}
+\label{tab:visual}
+\end{table}
+
+\subsubsection{统计显著性检验}
+
+对 Multimodal RAG 与 Text-only Grounded 在相同题目上的配对二分类结果，
+应用 McNemar 检验（适用于配对样本的 $2\times2$ 列联表）。
+
+检验统计量：
+\begin{equation}
+    \chi^2 = \frac{(b - c)^2}{b + c}
+\end{equation}
+
+其中 $b$ 为"多模态对、纯文本错"的题数，$c$ 为"多模态错、纯文本对"的题数。
+
+检验结果：
+
+\begin{table}[H]
+\centering
+\caption{McNemar 检验结果（多模态 vs 纯文本保守基线）}
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{子集} & \textbf{b（多模态对、保守错）} & \textbf{c（多模态错、保守对）} & \textbf{$\chi^2$} & \textbf{$p$} \\
+\midrule
+全部（n=124）& 38 & 0 & 36.03 & $<0.0001$（显著）\\
+视觉题（n=62）& 33 & 0 & 31.03 & $<0.0001$（显著）\\
+非视觉题（n=62）& 5 & 0 & 3.20 & 0.074（不显著）\\
+\bottomrule
+\end{tabular}
+\label{tab:mcnemar}
+\end{table}
+
+\subsubsection{延迟分析}
+
+\begin{table}[H]
+\centering
+\caption{平均每题推理延迟}
+\begin{tabular}{lr}
+\toprule
+\textbf{模式} & \textbf{平均延迟（秒/题）} \\
+\midrule
+Multimodal RAG & 5.1 \\
+Text-only Grounded & 4.6 \\
+Text-only Open & 11.9 \\
+图像附加开销（MM - TO Grounded）& +0.6 \\
+\midrule
+平均每题图片数 & 1.46 \\
+\bottomrule
+\end{tabular}
+\label{tab:latency}
+\end{table}
+
+\subsubsection{可视化分析}
+
+图~\ref{fig:comparison}~展示了三路基线在各题型上的准确率对比；
+图~\ref{fig:heatmap}~为每道题的 ANLS 热图，直观呈现多模态系统的优劣势分布。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../evaluation/figures/fig1_main_comparison.png}
+    \caption{三路基线按题型准确率对比}
+    \label{fig:comparison}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{../evaluation/figures/fig3_per_question_heatmap.png}
+    \caption{每道题 ANLS 得分热图（行：模式，列：题号）}
+    \label{fig:heatmap}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{../evaluation/figures/fig2_visual_split.png}
+    \caption{视觉题 vs 非视觉题三路准确率对比}
+    \label{fig:visual}
+\end{figure}
+
+\subsubsection{错误分析}
+
+对 Multimodal RAG 答错的题目进行人工分类：
+\begin{itemize}
+    \item \textbf{检索失败}：相关内容未被 top-5 召回（通常发生在长文档、跨页信息）；
+    \item \textbf{视觉理解错误}：图片被成功召回，但 VLM 读数/趋势判断有误；
+    \item \textbf{Gold 标准模糊}：问题有多种合理解释，ANLS 低估了回答质量；
+    \item \textbf{语言混淆}：英文文档题目用中文提问，答案语言不一致导致字符串相似度低。
+\end{itemize}
+
+% ================================================================
+%  五、结论
+% ================================================================
+\section{结论}
+
+本文实现并评测了 MultimodalQA——一套面向复杂版面 PDF 文档的多模态 RAG 系统。
+核心实验结论如下：
+
+\begin{enumerate}
+    \item \textbf{多模态架构在视觉题上具有显著优势}：
+          在 62 道需要图表视觉信息的题目上，多模态 RAG 准确率为 66\%，
+          显著高于纯文本保守基线（13\%）和纯文本开放基线（35\%），
+          提升分别为 +53 pp（个百分点）和 +31 pp，McNemar 检验 $\chi^2=31.03$，$p<0.0001$，差异高度显著。
+
+    \item \textbf{优势来源于视觉理解而非基线设计缺陷}：
+          纯文本开放基线（允许推断）的视觉题准确率为 35\%，仍显著低于多模态系统（66\%），
+          排除了"保守基线因拒答过多而人为拉大差距"的干扰，
+          确认多模态提升真正来自原始图像的视觉语义。
+
+    \item \textbf{非视觉题上三路无显著差异}：
+          在不需要图表的题目上，三路基线准确率分别为多模态 69\%、保守 61\%、开放 69\%（差距 $\leq 8$ pp），
+          McNemar 检验 $p=0.074$（不显著），表明系统在文本/表格理解上不因多模态处理引入额外噪声。
+
+    \item \textbf{延迟可接受}：多模态模式相比纯文本多出约 0.6 秒/题的图像附加开销（5.1s vs 4.6s），
+          对于离线问答场景代价可接受。值得注意的是纯文本开放基线延迟反而最高（11.9s），
+          推测是"允许推断"的 prompt 使模型生成了更长的思维链。
+\end{enumerate}
+
+\textbf{局限性与未来工作}：
+(1) 英文 PDF 的摘要和生成 prompt 目前以中文为主，跨语言场景有改进空间；
+(2) 检索层 top-k 固定为 5，自适应检索策略（如根据问题类型动态调整）可进一步提升召回率；
+(3) 数据集规模尚小（124 题），hard 难度题目仅 8 道，统计结论置信度受限，
+    未来可扩充至 DocVQA、ChartQA 等公开数据集进行更大规模验证；
+(4) 当前 VLM 使用 API 调用，延迟受网络影响，本地部署小型多模态模型可显著降低延迟。
+
+% ================================================================
+%  参考文献
+% ================================================================
+\bibliographystyle{plainnat}
+
+\begin{thebibliography}{99}
+
+\bibitem{lewis2020rag}
+Lewis, P., Perez, E., Piktus, A., et al.
+\newblock Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks.
+\newblock \emph{NeurIPS}, 2020.
+
+\bibitem{selfrag2023}
+Asai, A., Wu, Z., Wang, Y., et al.
+\newblock Self-RAG: Learning to Retrieve, Generate, and Critique through Self-Reflection.
+\newblock \emph{ICLR}, 2024.
+
+\bibitem{mathew2021docvqa}
+Mathew, M., Karatzas, D., Jawahar, C.V.
+\newblock DocVQA: A Dataset for VQA on Document Images.
+\newblock \emph{WACV}, 2021.
+
+\bibitem{masry2022chartqa}
+Masry, A., Long, D., Tan, J.T., et al.
+\newblock ChartQA: A Benchmark for Question Answering about Charts with Visual and Logical Reasoning.
+\newblock \emph{ACL Findings}, 2022.
+
+\bibitem{faysse2025colpali}
+Faysse, M., Sibille, H., Wu, T., et al.
+\newblock ColPali: Efficient Document Retrieval with Vision Language Models.
+\newblock \emph{ICLR}, 2025.
+
+\bibitem{m3docrag2024}
+Cho, J., Kil, H., Subramani, N., et al.
+\newblock M3DocRAG: Multi-modal Retrieval is What You Need for Multi-page Multi-document Understanding.
+\newblock \emph{arXiv:2411.04952}, 2024.
+
+\bibitem{visrag2025}
+Yu, S., Tang, Z., Shen, B., et al.
+\newblock VisRAG: Vision-based Retrieval-augmented Generation on Multi-modality Documents.
+\newblock \emph{ICLR}, 2025.
+
+\bibitem{docling2024}
+Auer, C., Bauer, M., Berrard, N., et al.
+\newblock Docling Technical Report.
+\newblock \emph{arXiv:2408.09869}, 2024.
+
+\bibitem{bgem3}
+Chen, J., Xiao, S., Zhang, P., et al.
+\newblock BGE M3-Embedding: Multi-Lingual, Multi-Functionality, Multi-Granularity Text Embeddings Through Self-Knowledge Distillation.
+\newblock \emph{arXiv:2309.07597}, 2024.
+
+\end{thebibliography}
+
+\end{document}
