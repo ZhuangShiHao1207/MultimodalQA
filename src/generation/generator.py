@@ -27,6 +27,15 @@ SYSTEM_PROMPT = """你是一个专业的文档问答助手。根据提供的文�
 4. 如果文档内容无法回答问题，请明确说明"根据提供的文档内容无法回答此问题"
 5. 回答要简洁准确，突出关键数据和结论"""
 
+# Third baseline: allows inference when document lacks direct evidence
+OPEN_SYSTEM_PROMPT = """你是一个专业的文档问答助手。根据提供的文档内容（包括文本片段、表格和图片），尽力回答用户的问题。
+
+**要求**：
+1. 优先根据文档内容直接回答
+2. 若文档没有直接信息，可基于文档中的相关上下文进行合理推断，并在回答末尾注明"（推断）"
+3. 回答要简洁准确，突出关键数据和结论
+4. 即使不确定，也要给出最可能的答案，不要直接拒答"""
+
 
 class GroundedGenerator:
     """
@@ -50,38 +59,45 @@ class GroundedGenerator:
         self.temperature = temperature
         self.max_tokens = max_tokens
 
-    def generate(self, query: str, context: dict) -> dict:
+    def generate(self, query: str, context: dict, mode: str = "auto") -> dict:
         """
         Generate a grounded answer from retrieval context.
 
         Args:
-            query: User's question
+            query:   User's question
             context: Output from MultiVectorRetriever.retrieve_with_context()
+            mode:    "auto"      - multimodal if images present, else grounded text-only
+                     "grounded"  - text-only, refuses to answer without evidence (default TO baseline)
+                     "open"      - text-only, allowed to infer when evidence is indirect
 
         Returns:
-            dict with:
-                - answer: Generated answer text
-                - citations: List of parsed citation dicts
-                - raw_response: Full API response text
-                - mode: "multimodal" or "text_only"
+            dict with answer, citations, raw_response, mode
         """
         has_images = bool(context.get("image_contexts"))
 
-        if has_images:
-            response = self._generate_multimodal(query, context)
-            mode = "multimodal"
+        if mode == "auto":
+            if has_images:
+                response = self._generate_multimodal(query, context)
+                used_mode = "multimodal"
+            else:
+                response = self._generate_text_only(query, context, SYSTEM_PROMPT)
+                used_mode = "text_only_grounded"
+        elif mode == "grounded":
+            response = self._generate_text_only(query, context, SYSTEM_PROMPT)
+            used_mode = "text_only_grounded"
+        elif mode == "open":
+            response = self._generate_text_only(query, context, OPEN_SYSTEM_PROMPT)
+            used_mode = "text_only_open"
         else:
-            response = self._generate_text_only(query, context)
-            mode = "text_only"
+            raise ValueError(f"Unknown mode: {mode!r}. Use 'auto', 'grounded', or 'open'.")
 
-        # Parse citations from response
         citations = self._parse_citations(response)
 
         return {
             "answer": self._clean_answer(response),
             "citations": citations,
             "raw_response": response,
-            "mode": mode,
+            "mode": used_mode,
             "referenced_pages": context.get("all_pages", []),
         }
 
@@ -114,12 +130,12 @@ class GroundedGenerator:
 
         return self._call_api(messages)
 
-    def _generate_text_only(self, query: str, context: dict) -> str:
+    def _generate_text_only(self, query: str, context: dict, system_prompt: str) -> str:
         """Generate answer using only text context (no images)."""
         context_text = self._build_context_text(context)
 
         prompt = (
-            f"{SYSTEM_PROMPT}\n\n---\n\n"
+            f"{system_prompt}\n\n---\n\n"
             f"**文档上下文：**\n{context_text}\n\n---\n\n"
             f"**用户问题：** {query}"
         )

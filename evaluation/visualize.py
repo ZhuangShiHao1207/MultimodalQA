@@ -1,12 +1,13 @@
 """
 evaluation/visualize.py
 Generate evaluation charts from results.json.
-Produces 5 figures saved to evaluation/figures/:
-  fig1_main_comparison.png   - MM vs TO accuracy by question type (bar)
-  fig2_visual_split.png      - MM vs TO accuracy: visual vs non-visual (bar)
-  fig3_per_question.png      - Per-question ANLS heatmap
-  fig4_to_failure_pie.png    - Text-only failure mode breakdown (pie)
-  fig5_mcnemar.png           - McNemar test result summary table
+Produces 6 figures saved to evaluation/figures/:
+  fig1_main_comparison.png  - MM vs TO-Grounded vs TO-Open by question type (3-way bar)
+  fig2_visual_split.png     - 3-way: visual vs non-visual split
+  fig3_per_question.png     - Per-question ANLS heatmap (2 or 3 rows depending on data)
+  fig4_to_failure_pie.png   - Text-only Grounded failure mode breakdown (pie)
+  fig5_mcnemar.png          - McNemar test result summary table (MM vs TO)
+  fig7_difficulty.png       - Accuracy by difficulty level (3-way bar, if available)
 
 Run with:
   python3 -m evaluation.visualize          (from project root)
@@ -53,56 +54,74 @@ OUT_DIR = _HERE / "figures"
 OUT_DIR.mkdir(exist_ok=True)
 
 COLORS = {
-    "mm":  "#4C72B0",   # blue  – Multimodal RAG
-    "to":  "#DD8452",   # orange – Text-only RAG
-    "ok":  "#55A868",   # green
-    "err": "#C44E52",   # red
-    "mid": "#8172B2",   # purple
+    "mm":   "#4C72B0",   # blue    – Multimodal RAG
+    "to":   "#DD8452",   # orange  – Text-only Grounded
+    "open": "#55A868",   # green   – Text-only Open
+    "ok":   "#55A868",
+    "err":  "#C44E52",   # red
+    "mid":  "#8172B2",   # purple
 }
+
+def _has_open(data: dict) -> bool:
+    """Check whether results.json contains text_open scores (3-way eval)."""
+    overall = data.get("overall", {})
+    return "text_open_accuracy" in overall
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# Fig 1 – Main comparison bar chart (by question type)
+# Fig 1 – Main comparison bar chart (by question type) — 2-way or 3-way
 # ═══════════════════════════════════════════════════════════════════════════════
 def fig1_main_comparison(data: dict, out_dir: Path):
     by_type = data["by_type"]
     overall = data["overall"]
+    three   = _has_open(data)
 
     type_labels = {
         "figure": "figure\n(视觉图表)",
         "table":  "table\n(表格数据)",
         "text":   "text\n(纯文本)",
     }
-    type_keys = ["figure", "table", "text"]
+    type_keys  = [k for k in ["figure", "table", "text"] if k in by_type]
+    categories = [type_labels.get(t, t) for t in type_keys] + ["整体\n(Overall)"]
+    counts     = [by_type[t]["count"] for t in type_keys] + [data["total_questions"]]
 
-    mm_acc = [by_type[t]["mm_accuracy"] for t in type_keys] + [overall["multimodal_accuracy"]]
-    to_acc = [by_type[t]["to_accuracy"] for t in type_keys] + [overall["text_only_accuracy"]]
+    mm_acc   = [by_type[t]["mm_accuracy"]   for t in type_keys] + [overall["multimodal_accuracy"]]
+    to_acc   = [by_type[t]["to_accuracy"]   for t in type_keys] + [overall["text_only_accuracy"]]
+    open_acc = ([by_type[t].get("open_accuracy", 0) for t in type_keys]
+                + [overall.get("text_open_accuracy", 0)]) if three else None
 
-    categories = [type_labels[t] for t in type_keys] + ["整体\n(Overall)"]
-    counts      = [by_type[t]["count"] for t in type_keys] + [data["total_questions"]]
-    x = np.arange(len(categories))
-    w = 0.35
+    x   = np.arange(len(categories))
+    n_bars = 3 if three else 2
+    w   = 0.25 if three else 0.35
+    offsets = ([-w, 0, w] if three else [-w/2, w/2])
 
-    fig, ax = plt.subplots(figsize=(10, 5.5))
-    b1 = ax.bar(x - w/2, mm_acc, w, label="Multimodal RAG", color=COLORS["mm"], alpha=0.88, zorder=3)
-    b2 = ax.bar(x + w/2, to_acc, w, label="Text-only RAG",  color=COLORS["to"], alpha=0.88, zorder=3)
+    fig, ax = plt.subplots(figsize=(11 if three else 10, 5.5))
 
-    for bar in list(b1) + list(b2):
-        h = bar.get_height()
-        ax.text(bar.get_x() + bar.get_width() / 2, h + 0.015,
-                f"{h:.0%}", ha="center", va="bottom", fontsize=10, fontweight="bold")
+    bars = []
+    for idx, (vals, label, color) in enumerate([
+        (mm_acc,   "Multimodal RAG",        COLORS["mm"]),
+        (to_acc,   "Text-only Grounded",    COLORS["to"]),
+        *( [(open_acc, "Text-only Open", COLORS["open"])] if three else [] ),
+    ]):
+        b = ax.bar(x + offsets[idx], vals, w, label=label, color=color, alpha=0.88, zorder=3)
+        bars.append(b)
+        for bar in b:
+            h = bar.get_height()
+            ax.text(bar.get_x() + bar.get_width() / 2, h + 0.012,
+                    f"{h:.0%}", ha="center", va="bottom", fontsize=9, fontweight="bold")
 
-    # count annotation below x-axis
-    for i, (n, c) in enumerate(zip(counts, categories)):
+    for i, (n, _) in enumerate(zip(counts, categories)):
         ax.text(i, -0.08, f"n={n}", ha="center", va="top", fontsize=9,
                 color="gray", transform=ax.get_xaxis_transform())
 
-    ax.set_ylim(0, 1.18)
+    ax.set_ylim(0, 1.20)
     ax.set_xticks(x)
     ax.set_xticklabels(categories, fontsize=11)
     ax.set_ylabel("Accuracy", fontsize=12)
-    ax.set_title("Multimodal RAG vs Text-only RAG  —  按题目类型对比", fontsize=13, pad=12)
-    ax.legend(fontsize=11, loc="upper left")
+    title = ("三路对比  —  按题目类型" if three else
+             "Multimodal RAG vs Text-only RAG  —  按题目类型对比")
+    ax.set_title(title, fontsize=13, pad=12)
+    ax.legend(fontsize=10, loc="upper left")
     ax.yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(xmax=1))
     ax.grid(axis="y", linestyle="--", alpha=0.4, zorder=0)
     ax.spines["top"].set_visible(False)
@@ -116,46 +135,57 @@ def fig1_main_comparison(data: dict, out_dir: Path):
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# Fig 2 – Visual vs Non-visual split
+# Fig 2 – Visual vs Non-visual split — 2-way or 3-way
 # ═══════════════════════════════════════════════════════════════════════════════
 def fig2_visual_split(data: dict, out_dir: Path):
-    vq  = data["visual_questions"]
-    nvq = data["non_visual_questions"]
+    vq    = data["visual_questions"]
+    nvq   = data["non_visual_questions"]
+    three = _has_open(data)
 
     labels = [
-        f"需要视觉理解\n(Visual, n={vq['count']})",
-        f"无需视觉\n(Non-visual, n={nvq['count']})",
+        f"视觉题\n(Visual, n={vq['count']})",
+        f"非视觉题\n(Non-visual, n={nvq['count']})",
     ]
-    mm_vals = [vq["mm_accuracy"],  nvq["mm_accuracy"]]
-    to_vals = [vq["to_accuracy"],  nvq["to_accuracy"]]
+    mm_vals   = [vq["mm_accuracy"],           nvq["mm_accuracy"]]
+    to_vals   = [vq["to_accuracy"],           nvq["to_accuracy"]]
+    open_vals = ([vq.get("open_accuracy", 0), nvq.get("open_accuracy", 0)]
+                 if three else None)
 
     x = np.arange(len(labels))
-    w = 0.30
+    w = 0.22 if three else 0.30
+    offsets = ([-w, 0, w] if three else [-w/2, w/2])
 
-    fig, ax = plt.subplots(figsize=(8, 5))
-    b1 = ax.bar(x - w/2, mm_vals, w, label="Multimodal RAG", color=COLORS["mm"], alpha=0.88, zorder=3)
-    b2 = ax.bar(x + w/2, to_vals, w, label="Text-only RAG",  color=COLORS["to"], alpha=0.88, zorder=3)
+    fig, ax = plt.subplots(figsize=(9 if three else 8, 5.5))
 
-    for bar in list(b1) + list(b2):
-        h = bar.get_height()
-        ax.text(bar.get_x() + bar.get_width() / 2, h + 0.015,
-                f"{h:.0%}", ha="center", va="bottom", fontsize=11, fontweight="bold")
+    series = [
+        (mm_vals,   "Multimodal RAG",     COLORS["mm"]),
+        (to_vals,   "Text-only Grounded", COLORS["to"]),
+        *( [(open_vals, "Text-only Open", COLORS["open"])] if three else [] ),
+    ]
+    for idx, (vals, label, color) in enumerate(series):
+        b = ax.bar(x + offsets[idx], vals, w, label=label, color=color, alpha=0.88, zorder=3)
+        for bar in b:
+            h = bar.get_height()
+            ax.text(bar.get_x() + bar.get_width() / 2, h + 0.012,
+                    f"{h:.0%}", ha="center", va="bottom", fontsize=10, fontweight="bold")
 
-    # delta annotation
+    # Δ annotation: MM vs best text-only baseline
     for i in range(len(labels)):
-        delta = mm_vals[i] - to_vals[i]
+        best_to = max(to_vals[i], open_vals[i] if three else 0)
+        delta   = mm_vals[i] - best_to
         if abs(delta) > 0.01:
-            mid_x = x[i]
-            mid_y = max(mm_vals[i], to_vals[i]) + 0.07
-            ax.annotate(f"Δ+{delta:.0%}", xy=(mid_x, mid_y),
-                        ha="center", fontsize=10, color=COLORS["ok"], fontweight="bold")
+            top_y = max(mm_vals[i], best_to) + 0.07
+            ax.annotate(f"Δ+{delta:.0%}", xy=(x[i], top_y),
+                        ha="center", fontsize=10, color="#C44E52", fontweight="bold")
 
-    ax.set_ylim(0, 1.22)
+    ax.set_ylim(0, 1.25)
     ax.set_xticks(x)
     ax.set_xticklabels(labels, fontsize=11)
     ax.set_ylabel("Accuracy", fontsize=12)
-    ax.set_title("视觉题 vs 非视觉题  —  两种模式准确率对比", fontsize=13, pad=12)
-    ax.legend(fontsize=11)
+    title = ("三路对比  —  视觉题 vs 非视觉题" if three else
+             "视觉题 vs 非视觉题  —  两种模式准确率对比")
+    ax.set_title(title, fontsize=13, pad=12)
+    ax.legend(fontsize=10)
     ax.yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(xmax=1))
     ax.grid(axis="y", linestyle="--", alpha=0.4, zorder=0)
     ax.spines["top"].set_visible(False)
@@ -172,24 +202,31 @@ def fig2_visual_split(data: dict, out_dir: Path):
 # Fig 3 – Per-question ANLS heatmap
 # ═══════════════════════════════════════════════════════════════════════════════
 def fig3_per_question_heatmap(data: dict, out_dir: Path):
-    details = data["details"]
-    ids       = [r["id"]               for r in details]
-    mm_scores = [r["multimodal_anls"]  for r in details]
-    to_scores = [r["text_only_anls"]   for r in details]
-    vis_flags = [r["requires_visual"]  for r in details]
-    types     = [r["type"]             for r in details]
+    details   = data["details"]
+    three     = _has_open(data)
+    ids       = [r["id"]              for r in details]
+    mm_scores = [r["multimodal_anls"] for r in details]
+    to_scores = [r["text_only_anls"]  for r in details]
+    vis_flags = [r["requires_visual"] for r in details]
 
-    matrix = np.array([mm_scores, to_scores])
+    rows      = [mm_scores, to_scores]
+    row_labels= ["Multimodal\nRAG", "Text-only\nGrounded"]
+    if three:
+        open_scores = [r.get("text_open_anls", 0) for r in details]
+        rows.append(open_scores)
+        row_labels.append("Text-only\nOpen")
 
-    fig, ax = plt.subplots(figsize=(18, 2.8))
+    n_rows = len(rows)
+    matrix = np.array(rows)
+
+    fig, ax = plt.subplots(figsize=(max(18, len(ids) * 0.4), 1.4 * n_rows + 0.6))
     im = ax.imshow(matrix, aspect="auto", cmap="RdYlGn", vmin=0, vmax=1)
 
-    ax.set_yticks([0, 1])
-    ax.set_yticklabels(["Multimodal\nRAG", "Text-only\nRAG"], fontsize=10)
+    ax.set_yticks(range(n_rows))
+    ax.set_yticklabels(row_labels, fontsize=10)
     ax.set_xticks(range(len(ids)))
-    ax.set_xticklabels(ids, rotation=45, ha="right", fontsize=8)
+    ax.set_xticklabels(ids, rotation=45, ha="right", fontsize=7)
 
-    # colour x-tick labels red for visual questions (replaces the out-of-bounds marker hack)
     for tick, v in zip(ax.get_xticklabels(), vis_flags):
         if v:
             tick.set_color(COLORS["err"])
@@ -199,18 +236,19 @@ def fig3_per_question_heatmap(data: dict, out_dir: Path):
     red_patch = mpatches.Patch(color=COLORS["err"], label="视觉题 (requires visual)")
     ax.legend(handles=[red_patch], fontsize=8, loc="upper right")
 
-    # value annotations inside cells
-    for col in range(len(ids)):
-        for row, scores in enumerate([mm_scores, to_scores]):
-            s = scores[col]
-            txt_color = "black" if 0.3 < s < 0.8 else "white"
-            ax.text(col, row, f"{s:.1f}", ha="center", va="center",
-                    fontsize=7, color=txt_color)
+    # value annotations inside cells (skip if too many columns — unreadable)
+    if len(ids) <= 50:
+        for col in range(len(ids)):
+            for row_idx, scores in enumerate(rows):
+                s = scores[col]
+                txt_color = "black" if 0.3 < s < 0.8 else "white"
+                ax.text(col, row_idx, f"{s:.1f}", ha="center", va="center",
+                        fontsize=6, color=txt_color)
 
     cbar = plt.colorbar(im, ax=ax, orientation="vertical", fraction=0.015, pad=0.01)
     cbar.set_label("ANLS", fontsize=9)
 
-    ax.set_title("每道题 ANLS 分数热图  (红色题号 = 需要视觉理解)", fontsize=12, pad=8)
+    ax.set_title("每道题 ANLS 分数热图  (红色题号 = 视觉题)", fontsize=12, pad=8)
     fig.subplots_adjust(bottom=0.25)
     out = out_dir / "fig3_per_question_heatmap.png"
     fig.savefig(out, dpi=150, bbox_inches="tight")
@@ -398,6 +436,60 @@ def fig5_mcnemar_summary(data: dict, out_dir: Path):
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# Fig 7 – Accuracy by difficulty level (3-way, only if by_difficulty present)
+# ═══════════════════════════════════════════════════════════════════════════════
+def fig7_difficulty(data: dict, out_dir: Path):
+    diff_data = data.get("by_difficulty")
+    if not diff_data:
+        print("  [skip] fig7: no by_difficulty in results.json")
+        return
+
+    three = _has_open(data)
+    order = ["easy", "medium", "hard"]
+    keys  = [k for k in order if k in diff_data] + [k for k in diff_data if k not in order]
+
+    labels   = [f"{k}\n(n={diff_data[k]['count']})" for k in keys]
+    mm_acc   = [diff_data[k]["mm_accuracy"]              for k in keys]
+    to_acc   = [diff_data[k]["to_accuracy"]              for k in keys]
+    open_acc = [diff_data[k].get("open_accuracy", 0)     for k in keys] if three else None
+
+    x = np.arange(len(keys))
+    w = 0.22 if three else 0.30
+    offsets = ([-w, 0, w] if three else [-w/2, w/2])
+
+    fig, ax = plt.subplots(figsize=(9, 5))
+    series = [
+        (mm_acc,   "Multimodal RAG",     COLORS["mm"]),
+        (to_acc,   "Text-only Grounded", COLORS["to"]),
+        *( [(open_acc, "Text-only Open", COLORS["open"])] if three else [] ),
+    ]
+    for idx, (vals, label, color) in enumerate(series):
+        b = ax.bar(x + offsets[idx], vals, w, label=label, color=color, alpha=0.88, zorder=3)
+        for bar in b:
+            h = bar.get_height()
+            ax.text(bar.get_x() + bar.get_width() / 2, h + 0.012,
+                    f"{h:.0%}", ha="center", va="bottom", fontsize=10, fontweight="bold")
+
+    ax.set_ylim(0, 1.20)
+    ax.set_xticks(x)
+    ax.set_xticklabels(labels, fontsize=11)
+    ax.set_ylabel("Accuracy", fontsize=12)
+    ax.set_title("按难度分层  —  三路模式对比" if three else "按难度分层  —  准确率对比",
+                 fontsize=13, pad=12)
+    ax.legend(fontsize=10)
+    ax.yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(xmax=1))
+    ax.grid(axis="y", linestyle="--", alpha=0.4, zorder=0)
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+
+    plt.tight_layout()
+    out = out_dir / "fig7_difficulty.png"
+    fig.savefig(out, dpi=150, bbox_inches="tight")
+    plt.close(fig)
+    print(f"  [saved] {out}")
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # Main
 # ═══════════════════════════════════════════════════════════════════════════════
 def main():
@@ -409,7 +501,9 @@ def main():
     with open(RESULTS_PATH, encoding="utf-8") as f:
         data = json.load(f)
 
-    print(f"  {data['total_questions']} questions, model={data['model']}\n")
+    print(f"  {data['total_questions']} questions, model={data['model']}")
+    three = _has_open(data)
+    print(f"  3-way evaluation: {'yes (MM + TO-Grounded + TO-Open)' if three else 'no (MM + TO only)'}\n")
     print(f"Output directory: {OUT_DIR}\n")
 
     print("Generating fig1 – main comparison bar chart ...")
@@ -427,13 +521,25 @@ def main():
     print("Generating fig5 – McNemar test summary ...")
     mcnemar_rows = fig5_mcnemar_summary(data, OUT_DIR)
 
+    print("Generating fig7 – accuracy by difficulty ...")
+    fig7_difficulty(data, OUT_DIR)
+
     # ── Console summary ────────────────────────────────────────────────────────
-    print("\n" + "=" * 60)
-    print("McNemar Test Results")
-    print("=" * 60)
+    ov = data["overall"]
+    print("\n" + "=" * 65)
+    print("Overall Accuracy Summary")
+    print("=" * 65)
+    print(f"  Multimodal RAG    : {ov['multimodal_accuracy']:.0%}")
+    print(f"  Text-only Grounded: {ov['text_only_accuracy']:.0%}")
+    if three:
+        print(f"  Text-only Open    : {ov.get('text_open_accuracy', 0):.0%}")
+
+    print("\n" + "=" * 65)
+    print("McNemar Test Results (MM vs TO-Grounded)")
+    print("=" * 65)
     for r in mcnemar_rows:
-        sig = "[Sig] significant (p<0.05)" if r["sig"] else "[n.s.] not significant"
-        print(f"  {r['label']:20s}  MM={r['mm_acc']:.0%}  TO={r['to_acc']:.0%}"
+        sig = "[Sig] p<0.05" if r["sig"] else "[n.s.]"
+        print(f"  {r['label']:22s}  MM={r['mm_acc']:.0%}  TO={r['to_acc']:.0%}"
               f"  Δ=+{r['delta']:.0%}  p={r['p']:.4f}  {sig}")
 
     print(f"\nAll figures saved to: {OUT_DIR}")

@@ -1,0 +1,340 @@
+[
+  {
+    "id": "q01",
+    "document": "测试数据（某次实验报告）.pdf",
+    "question": "K-Means算法的目标函数是什么？",
+    "gold_answers": ["目标函数为簇内距离之和最小化", "最小化簇内样本到聚类中心的距离之和", "最小化簇内平方距离和"],
+    "type": "text",
+    "requires_visual": false,
+    "page": 1
+  },
+  {
+    "id": "q02",
+    "document": "测试数据（某次实验报告）.pdf",
+    "question": "K-Means++初始化需要多少次迭代收敛？",
+    "gold_answers": ["46", "46次", "46次迭代"],
+    "type": "table",
+    "requires_visual": false,
+    "page": 4
+  },
+  {
+    "id": "q03",
+    "document": "测试数据（某次实验报告）.pdf",
+    "question": "Random初始化的测试集准确率是多少？",
+    "gold_answers": ["0.5937", "59.37%", "0.5937"],
+    "type": "table",
+    "requires_visual": false,
+    "page": 4
+  },
+  {
+    "id": "q04",
+    "document": "测试数据（某次实验报告）.pdf",
+    "question": "从训练损失曲线来看，哪种初始化方法的损失下降更快？",
+    "gold_answers": ["K-Means++", "KMeans++", "K-Means++初始化"],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 5
+  },
+  {
+    "id": "q05",
+    "document": "测试数据（某次实验报告）.pdf",
+    "question": "三种协方差结构中，哪种的训练准确率最高？",
+    "gold_answers": ["Full", "完全协方差", "full"],
+    "type": "table",
+    "requires_visual": false,
+    "page": 5
+  },
+  {
+    "id": "q06",
+    "document": "测试数据（某次实验报告）.pdf",
+    "question": "Spherical协方差结构的测试ACC是多少？",
+    "gold_answers": ["0.5376", "53.76%"],
+    "type": "table",
+    "requires_visual": false,
+    "page": 5
+  },
+  {
+    "id": "q07",
+    "document": "测试数据（某次实验报告）.pdf",
+    "question": "GMM（Full协方差+Random初始化）的测试集准确率是多少？",
+    "gold_answers": ["0.6350", "63.50%", "0.635"],
+    "type": "table",
+    "requires_visual": false,
+    "page": 6
+  },
+  {
+    "id": "q08",
+    "document": "测试数据（某次实验报告）.pdf",
+    "question": "在GMM初始化方法对比中（Full协方差），Random和K-Means++哪种初始化得到的聚类结果更接近Ground Truth标签？",
+    "gold_answers": ["Random", "随机初始化", "Random初始化", "随机"],
+    "type": "table",
+    "requires_visual": false,
+    "page": 6
+  },
+  {
+    "id": "q09",
+    "document": "测试数据（某次实验报告）.pdf",
+    "question": "K-Means和GMM哪种方法的聚类准确率更高？",
+    "gold_answers": ["GMM", "GMM更高", "GMM方法"],
+    "type": "text",
+    "requires_visual": false,
+    "page": 8
+  },
+  {
+    "id": "q10",
+    "document": "测试数据（某次实验报告）.pdf",
+    "question": "Full协方差结构的训练时间是多少秒？",
+    "gold_answers": ["126.15", "126.15秒", "126.15s"],
+    "type": "table",
+    "requires_visual": false,
+    "page": 5
+  },
+  {
+    "id": "q11",
+    "document": "测试数据（某次实验报告）.pdf",
+    "question": "从Log-Likelihood曲线来看，三种协方差结构最终收敛时的对数似然值大小顺序是什么？",
+    "gold_answers": ["Full > Diagonal > Spherical", "full最高spherical最低", "Full最高，Spherical最低"],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 6
+  },
+  {
+    "id": "q12",
+    "document": "测试数据（某次实验报告）.pdf",
+    "question": "GMM使用EM算法训练时，E步计算的是什么？",
+    "gold_answers": ["后验概率", "责任度", "每个样本属于第j个高斯分量的后验概率"],
+    "type": "text",
+    "requires_visual": false,
+    "page": 2
+  },
+  {
+    "id": "q13",
+    "document": "大数据报告（电影评论情感二分类）.pdf",
+    "question": "从模型对比柱状图（IMDB Model Comparison）来看，哪个模型的Accuracy最高？",
+    "gold_answers": ["TF-IDF + LogisticRegression", "TF-IDF+LogisticRegression", "Logistic Regression", "LR", "TF-IDF+LR"],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 3
+  },
+  {
+    "id": "q14",
+    "document": "大数据报告（电影评论情感二分类）.pdf",
+    "question": "从柱状图来看，TF-IDF+LogisticRegression和TF-IDF+LinearSVM的F1分数差距大吗？",
+    "gold_answers": ["差距很小", "几乎相同", "差距不大", "非常接近", "差距小"],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 3
+  },
+  {
+    "id": "q15",
+    "document": "大数据报告（电影评论情感二分类）.pdf",
+    "question": "从RNN训练损失曲线来看，验证集Loss在第几个Epoch左右达到最低值？",
+    "gold_answers": ["4", "第4个", "epoch 4", "4-6", "约第4个epoch"],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 3
+  },
+  {
+    "id": "q16",
+    "document": "大数据报告（电影评论情感二分类）.pdf",
+    "question": "从RNN训练曲线来看，训练集Loss的初始值（第1个Epoch）大约是多少？",
+    "gold_answers": ["0.63", "0.6-0.7", "约0.63", "0.65", "0.6"],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 3
+  },
+  {
+    "id": "q17",
+    "document": "大数据报告（电影评论情感二分类）.pdf",
+    "question": "从TF-IDF+LogisticRegression的混淆矩阵来看，true label为negative但被预测为positive的样本数是多少？",
+    "gold_answers": ["1480", "约1480"],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 4
+  },
+  {
+    "id": "q18",
+    "document": "大数据报告（电影评论情感二分类）.pdf",
+    "question": "从TF-IDF+LinearSVM的混淆矩阵来看，按召回率(recall)计算，哪个类别的分类正确率更高？",
+    "gold_answers": ["negative", "negative类", "负面", "负类"],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 4
+  },
+  {
+    "id": "q19",
+    "document": "大数据报告（电影评论情感二分类）.pdf",
+    "question": "从RNN(BiLSTM, PyTorch)的混淆矩阵中，模型对positive类的预测正确数（true positive）是多少？",
+    "gold_answers": ["10756", "约10756", "10000多"],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 5
+  },
+  {
+    "id": "q20",
+    "document": "大数据报告（电影评论情感二分类）.pdf",
+    "question": "对比所有模型的混淆矩阵，哪个模型的false positive（把negative误判为positive）数量最少？",
+    "gold_answers": ["TF-IDF + LinearSVM", "LinearSVM", "SVM", "TF-IDF+LinearSVM"],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 5
+  },
+  {
+    "id": "q21",
+    "document": "大数据报告（电影评论情感二分类）.pdf",
+    "question": "本实验使用了哪些文本特征提取方法？",
+    "gold_answers": ["TF-IDF", "TF-IDF和词嵌入", "TF-IDF、Word Embedding", "TF-IDF以及词向量"],
+    "type": "text",
+    "requires_visual": false,
+    "page": 1
+  },
+  {
+    "id": "q22",
+    "document": "大数据报告（电影评论情感二分类）.pdf",
+    "question": "RNN模型使用的是什么网络结构？",
+    "gold_answers": ["BiLSTM", "双向LSTM", "Bidirectional LSTM"],
+    "type": "text",
+    "requires_visual": false,
+    "page": 2
+  },
+  {
+    "id": "q23",
+    "document": "大数据报告（电影评论情感二分类）.pdf",
+    "question": "实验使用的数据集是什么？训练集和测试集各包含多少条评论？",
+    "gold_answers": ["IMDB，训练集25000测试集25000", "IMDB，各25000条", "IMDB，5万条", "IMDB，训练25000测试25000"],
+    "type": "text",
+    "requires_visual": false,
+    "page": 1
+  },
+  {
+    "id": "q24",
+    "document": "大数据报告（电影评论情感二分类）.pdf",
+    "question": "从RNN训练曲线来看，验证集Loss是否出现过拟合现象（先下降后上升）？",
+    "gold_answers": ["是", "是的", "出现过拟合", "有过拟合", "明显过拟合", "验证Loss先降后升"],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 3
+  },
+  {
+    "id": "q25",
+    "document": "大数据报告（电影评论情感二分类）.pdf",
+    "question": "在本次实验中，传统方法（TF-IDF+LR/SVM）和深度学习方法（RNN/BiLSTM）相比，哪个的整体Accuracy更高？",
+    "gold_answers": ["传统方法", "TF-IDF", "传统方法更高", "TF-IDF更高", "TF-IDF+LR", "LR最高"],
+    "type": "text",
+    "requires_visual": false,
+    "page": 8
+  },
+
+  {"id":"q26","document":"测试数据（某次实验报告）.pdf","question":"K-Means++初始化相比Random初始化，迭代次数减少了多少次？","gold_answers":["减少了迭代次数","收敛更快","比Random少","更少迭代"],"type":"table","requires_visual":false,"page":4},
+  {"id":"q27","document":"测试数据（某次实验报告）.pdf","question":"GMM的M步中，混合系数π_j是如何更新的？","gold_answers":["用软分配权重的均值更新","r_ij的平均值","N_j除以N"],"type":"text","requires_visual":false,"page":2},
+  {"id":"q28","document":"测试数据（某次实验报告）.pdf","question":"从K-Means的ACC曲线来看，两种初始化方法的测试ACC最终是否收敛到相近的值？","gold_answers":["是","收敛到相近值","最终接近","差距缩小"],"type":"figure","requires_visual":true,"page":5},
+  {"id":"q29","document":"测试数据（某次实验报告）.pdf","question":"Diagonal协方差结构的训练时间大约是多少秒？","gold_answers":["32.47","32.47秒","约32秒","32.47s"],"type":"table","requires_visual":false,"page":5},
+  {"id":"q30","document":"测试数据（某次实验报告）.pdf","question":"本实验中K-Means使用的是哪个数据集？","gold_answers":["MNIST","MNIST手写数字数据集","手写数字MNIST"],"type":"text","requires_visual":false,"page":3},
+
+  {"id":"q31","document":"大数据报告（电影评论情感二分类）.pdf","question":"TF-IDF+LogisticRegression的ROC_AUC是多少？","gold_answers":["0.9526","95.26%","0.9526"],"type":"table","requires_visual":false,"page":3},
+  {"id":"q32","document":"大数据报告（电影评论情感二分类）.pdf","question":"TF-IDF+LinearSVM的Precision是多少？","gold_answers":["0.8647","86.47%","0.8647"],"type":"table","requires_visual":false,"page":3},
+  {"id":"q33","document":"大数据报告（电影评论情感二分类）.pdf","question":"改进后的RNN-Strong相比原始RNN，Accuracy提升了多少？","gold_answers":["0.009","约0.9%","提升了约1%","0.8374比0.8284"],"type":"table","requires_visual":false,"page":3},
+  {"id":"q34","document":"大数据报告（电影评论情感二分类）.pdf","question":"从模型对比柱状图来看，四个模型中Accuracy最低的是哪个？","gold_answers":["RNN","RNN (BiLSTM, PyTorch)","原始RNN","BiLSTM PyTorch"],"type":"figure","requires_visual":true,"page":3},
+  {"id":"q35","document":"大数据报告（电影评论情感二分类）.pdf","question":"BiLSTM模型的隐层维度是多少？","gold_answers":["256","隐层256","hidden size 256"],"type":"text","requires_visual":false,"page":2},
+
+  {"id":"q36","document":"2404.07143v2.pdf","question":"Infini-Transformer与Memorizing Transformers相比，内存压缩比是多少？","gold_answers":["114x","114倍","114x压缩比"],"type":"table","requires_visual":false,"page":5},
+  {"id":"q37","document":"2404.07143v2.pdf","question":"在PG19语言建模任务上，Infini-Transformer(Linear)的困惑度(perplexity)是多少？","gold_answers":["9.65","9.65 perplexity","PG19上9.65"],"type":"table","requires_visual":false,"page":5},
+  {"id":"q38","document":"2404.07143v2.pdf","question":"在BookSum 500K长度书籍摘要任务上，Infini-Transformer(Linear+Delta)的ROUGE-1是多少？","gold_answers":["40.0","40.0 ROUGE-1","40"],"type":"table","requires_visual":false,"page":7},
+  {"id":"q39","document":"2404.07143v2.pdf","question":"Infini-Transformer(Linear+Delta)在BookSum任务上的Overall ROUGE得分是多少？","gold_answers":["18.5","18.5 overall","Overall 18.5"],"type":"table","requires_visual":false,"page":7},
+  {"id":"q40","document":"2404.07143v2.pdf","question":"Infini-attention机制中，gating score接近0.5的注意力头被称为什么类型？","gold_answers":["mixer heads","混合头","mixer attention heads"],"type":"text","requires_visual":false,"page":6},
+  {"id":"q41","document":"2404.07143v2.pdf","question":"从Figure 3来看，Infini-Transformer训练后出现了哪两种类型的注意力头？","gold_answers":["specialized heads和mixer heads","专门化头和混合头","specialized和mixer两种"],"type":"figure","requires_visual":true,"page":6},
+  {"id":"q42","document":"2404.07143v2.pdf","question":"从Figure 4来看，随着输入book文本长度增加，Infini-Transformer的Rouge得分如何变化？","gold_answers":["持续提升","随长度增加而提升","越来越高","正相关"],"type":"figure","requires_visual":true,"page":7},
+  {"id":"q43","document":"2404.07143v2.pdf","question":"Infini-Transformer与Transformer-XL相比，在上下文处理方式上有什么核心区别？","gold_answers":["保留全部历史上下文","Infini保留全部历史而XL只缓存最后一段","不丢弃旧上下文"],"type":"figure","requires_visual":true,"page":3},
+  {"id":"q44","document":"2404.07143v2.pdf","question":"Table 3中，经过微调后Infini-Transformer在1M序列长度的passkey检索任务上，准确率是多少？","gold_answers":["100%","100/100/100","完全准确","全部正确"],"type":"table","requires_visual":false,"page":6},
+  {"id":"q45","document":"2404.07143v2.pdf","question":"本文提出的压缩记忆使用的注意力机制是什么类型？","gold_answers":["linear attention","线性注意力","linear attention mechanism"],"type":"text","requires_visual":false,"page":3},
+
+  {"id":"q46","document":"IPCC_AR6_SYR_SPM.pdf","question":"根据IPCC AR6报告，2011-2020年全球地表温度比1850-1900年基准期高了多少摄氏度？","gold_answers":["1.1°C","约1.1°C","1.1摄氏度","around 1.1°C"],"type":"text","requires_visual":false,"page":4},
+  {"id":"q47","document":"IPCC_AR6_SYR_SPM.pdf","question":"根据A.1.4，2019年全球人为净温室气体排放量约为多少GtCO₂当量？","gold_answers":["59 ± 6.6 GtCO₂-eq","约59 GtCO₂","59GtCO2当量"],"type":"text","requires_visual":false,"page":4},
+  {"id":"q48","document":"IPCC_AR6_SYR_SPM.pdf","question":"从Figure SPM.1的气候条纹图来看，从1900年到2020年，全球温度总体趋势是什么？","gold_answers":["持续升高","整体上升","温度上升趋势","不断升温"],"type":"figure","requires_visual":true,"page":7},
+  {"id":"q49","document":"IPCC_AR6_SYR_SPM.pdf","question":"根据Figure SPM.1 panel (b)，被归因于人为影响且置信度为'Virtually certain'（几乎确定）的气候变化是什么？","gold_answers":["上层海洋增暖","Increase in upper ocean heat content","海洋增暖","海洋热含量增加"],"type":"figure","requires_visual":true,"page":7},
+  {"id":"q50","document":"IPCC_AR6_SYR_SPM.pdf","question":"在Box SPM.1 Table 1中，将升温限制在1.5°C（>50%概率）的情景类别是哪个？","gold_answers":["C1","类别C1","Category C1"],"type":"table","requires_visual":false,"page":10},
+  {"id":"q51","document":"IPCC_AR6_SYR_SPM.pdf","question":"从Figure SPM.2来看，在全球升温4°C情景下，年最高气温日的变化主要集中在哪些区域？","gold_answers":["中纬度和半干旱地区","mid-latitude and semi-arid regions","南美季风区和中纬度","中纬度地区"],"type":"figure","requires_visual":true,"page":14},
+  {"id":"q52","document":"IPCC_AR6_SYR_SPM.pdf","question":"根据Table SPM.1，要将升温限制在1.5°C（>50%），到2030年GHG需要相比2019年减少多少百分比？","gold_answers":["43%","43 [34-60]%","约43%","43% reduction"],"type":"table","requires_visual":false,"page":21},
+  {"id":"q53","document":"IPCC_AR6_SYR_SPM.pdf","question":"从Figure SPM.5的GHG排放路径图来看，当前'已实施政策'路径预计会导致到2100年升温多少摄氏度？","gold_answers":["3.2°C","约3.2°C","3.2摄氏度","2.2到3.5°C"],"type":"figure","requires_visual":true,"page":22},
+  {"id":"q54","document":"IPCC_AR6_SYR_SPM.pdf","question":"根据B.5.2，人类每排放1000 GtCO₂，全球地表温度上升的最佳估计值是多少？","gold_answers":["0.45°C","约0.45°C","0.45摄氏度"],"type":"text","requires_visual":false,"page":19},
+  {"id":"q55","document":"IPCC_AR6_SYR_SPM.pdf","question":"根据A.1.5，2019年约有多少比例的全球人口生活在碳排放超过9吨CO₂当量/人的国家？","gold_answers":["35%","约35%","around 35 percent"],"type":"text","requires_visual":false,"page":5},
+  {"id":"q56","document":"IPCC_AR6_SYR_SPM.pdf","question":"Figure SPM.3中panel (a)展示的是什么气候影响风险？","gold_answers":["物种损失风险","濒危物种比例","species losses risk","动植物物种暴露于危险温度的比例"],"type":"figure","requires_visual":true,"page":16},
+  {"id":"q57","document":"IPCC_AR6_SYR_SPM.pdf","question":"根据B.3.1，在SSP1-1.9低排放情景下，到2100年全球平均海平面预计上升多少米？","gold_answers":["0.15-0.23米","0.15到0.23 m","约0.2米","0.15–0.23 m"],"type":"text","requires_visual":false,"page":18},
+  {"id":"q58","document":"IPCC_AR6_SYR_SPM.pdf","question":"根据A.4.4，若不加强当前政策，预计到2100年全球升温约为多少摄氏度？","gold_answers":["3.2°C","约3.2度","3.2 [2.2 to 3.5]°C","3.2摄氏度"],"type":"text","requires_visual":false,"page":11},
+  {"id":"q59","document":"IPCC_AR6_SYR_SPM.pdf","question":"从Figure SPM.2中，随着全球升温水平从1.5°C增加到4°C，年最湿一天的降水量变化趋势是什么？","gold_answers":["在几乎所有大陆地区增加","持续增加","降水增多","全球大部分地区增加"],"type":"figure","requires_visual":true,"page":14},
+  {"id":"q60","document":"IPCC_AR6_SYR_SPM.pdf","question":"根据A.4.1，从2010年到2019年，已实施的缓解政策使每年排放减少了多少GtCO₂当量？","gold_answers":["1.8 GtCO₂-eq","至少1.8 Gt","约1.8 GtCO2","1.8 Gt CO2-eq per year"],"type":"text","requires_visual":false,"page":10},
+
+  {"id":"q61","document":"战事给全球经济前景蒙上阴影并重塑政策优先事项.pdf","question":"从图表来看，2025年影响全球经济增长的各因素中，哪个因素产生的负面影响最大？","gold_answers":["财政支持","财政支持因素","Fiscal support","财政支持的负面影响最大"],"type":"figure","requires_visual":true,"page":2},
+  {"id":"q62","document":"战事给全球经济前景蒙上阴影并重塑政策优先事项.pdf","question":"根据文章，冲突爆发前2026年全球经济增长率预测上调至多少？","gold_answers":["3.4%","3.4","百分之3.4","3.4%增长"],"type":"text","requires_visual":false,"page":1},
+  {"id":"q63","document":"战事给全球经济前景蒙上阴影并重塑政策优先事项.pdf","question":"从能源价格折线图来看，2026年3月涨幅最大的能源是哪种？","gold_answers":["天然气（亚洲液化天然气市场）","亚洲液化天然气","LNG","天然气"],"type":"figure","requires_visual":true,"page":3},
+  {"id":"q64","document":"战事给全球经济前景蒙上阴影并重塑政策优先事项.pdf","question":"在参考预测情景下，2026年全球经济增长率预测为多少？","gold_answers":["3.1%","3.1","百分之三点一"],"type":"text","requires_visual":false,"page":4},
+  {"id":"q65","document":"战事给全球经济前景蒙上阴影并重塑政策优先事项.pdf","question":"在\"严峻情景\"下，2026年通胀率将超过多少？","gold_answers":["6%","超过6%","逾6%"],"type":"text","requires_visual":false,"page":4},
+  {"id":"q66","document":"战事给全球经济前景蒙上阴影并重塑政策优先事项.pdf","question":"从\"冲突持续时间和规模影响全球经济前景\"图来看，哪种情景下2026年总体通胀最高？","gold_answers":["严峻情景","橙色柱（严峻情景）","严重情景","Severe scenario"],"type":"figure","requires_visual":true,"page":5},
+  {"id":"q67","document":"战事给全球经济前景蒙上阴影并重塑政策优先事项.pdf","question":"从\"战争将产生不均衡的影响\"图来看，哪类国家的GDP增速下调幅度最大？","gold_answers":["中东和北非","受冲突影响国家","中东北非地区","MENA"],"type":"figure","requires_visual":true,"page":6},
+  {"id":"q68","document":"战事给全球经济前景蒙上阴影并重塑政策优先事项.pdf","question":"从能源消费结构折线图来看，自1980年以来可再生能源在全球能源消费中的占比趋势如何？","gold_answers":["持续增长","不断上升","逐年提高","比例上升"],"type":"figure","requires_visual":true,"page":9},
+  {"id":"q69","document":"战事给全球经济前景蒙上阴影并重塑政策优先事项.pdf","question":"文章提到当前能源冲击影响经济的三个主要途径，第一个途径是什么？","gold_answers":["大宗商品价格上涨","负面供给冲击","大宗商品价格飙升","commodity price increases"],"type":"text","requires_visual":false,"page":3},
+  {"id":"q69b","document":"战事给全球经济前景蒙上阴影并重塑政策优先事项.pdf","question":"根据文章，在参考预测中，2026年能源大宗商品价格预计温和上涨多少百分比？","gold_answers":["19%","上涨19%","19","约19%"],"type":"text","requires_visual":false,"page":4},
+  {"id":"q70","document":"战事给全球经济前景蒙上阴影并重塑政策优先事项.pdf","question":"从\"尽管面临不利因素，2025年全球经济增长仍展现了韧性\"柱状图来看，哪个因素的影响是负面最小的？","gold_answers":["技术投资","技术投资因素","Technology investment","技术投资影响最小"],"type":"figure","requires_visual":true,"page":2},
+  {"id":"q71","document":"战事给全球经济前景蒙上阴影并重塑政策优先事项.pdf","question":"文章中提到，从2022年危机中可以看出，各国央行同步收紧货币政策的结果是什么？","gold_answers":["在避免经济衰退的同时成功降低了通胀","成功降通胀且避免衰退","降低通胀未引发衰退","soft landing"],"type":"text","requires_visual":false,"page":6},
+
+  {"id":"q72","document":"战事给全球经济前景蒙上阴影并重塑政策优先事项.pdf","question":"从能源消费结构图来看，在所有能源来源中，2020年代石油的消费占比大约是多少百分比？","gold_answers":["约30%","30%左右","30多%","around 30%"],"type":"figure","requires_visual":true,"page":9},
+  {"id":"q73","document":"战事给全球经济前景蒙上阴影并重塑政策优先事项.pdf","question":"在\"不利情景\"下，2026年全球经济增长率预测约为多少？","gold_answers":["2.5%","约2.5%","2.5"],"type":"text","requires_visual":false,"page":4},
+  {"id":"q74","document":"战事给全球经济前景蒙上阴影并重塑政策优先事项.pdf","question":"从冲突前后对比图来看，与2026年1月《世界经济展望》相比，冲突后参考预测中2026年GDP增速下调了多少个百分点？","gold_answers":["约0.3个百分点","下调约0.3%","0.3pp","大约0.3"],"type":"figure","requires_visual":true,"page":5},
+  {"id":"q75","document":"战事给全球经济前景蒙上阴影并重塑政策优先事项.pdf","question":"文章认为财政政策如何更有效地应对能源冲击？","gold_answers":["精准定向的转移支付","针对性转移支付","targeted transfers","向弱势家庭提供针对性转移支付"],"type":"text","requires_visual":false,"page":8},
+
+  {"id":"q76","document":"IPCC_AR6_SYR_SPM.pdf","question":"根据A.2.1，1901年到2018年间全球平均海平面上升了多少米？","gold_answers":["0.20 m","约0.20米","20厘米","0.20 [0.15 to 0.25] m"],"type":"text","requires_visual":false,"page":5},
+  {"id":"q77","document":"IPCC_AR6_SYR_SPM.pdf","question":"在Figure SPM.3的panel (a)中，对比1.5°C和2°C升温情景，濒危物种比例有何变化趋势？","gold_answers":["随升温增加而增大","升温越高比例越大","风险随温度升高增加","higher warming means more species at risk"],"type":"figure","requires_visual":true,"page":16},
+  {"id":"q78","document":"IPCC_AR6_SYR_SPM.pdf","question":"根据Table SPM.1，限制升温在2°C（>67%概率）的情景下，到2050年GHG需要相比2019年减少多少百分比？","gold_answers":["64 [53-77]%","约64%","64%","64 [53-77]"],"type":"table","requires_visual":false,"page":21},
+  {"id":"q79","document":"IPCC_AR6_SYR_SPM.pdf","question":"根据B.5.4，1850年至2019年间历史累计CO₂净排放约占限制升温1.5°C（50%概率）总碳预算的多少比例？","gold_answers":["约五分之四","约4/5","80%","four fifths"],"type":"text","requires_visual":false,"page":20},
+  {"id":"q80","document":"IPCC_AR6_SYR_SPM.pdf","question":"根据Figure SPM.2 panel (c)，在全球升温背景下，几乎所有大陆地区年最湿一天降水量的变化方向如何？","gold_answers":["增加","都会增加","普遍增大","increases in almost all continental regions"],"type":"figure","requires_visual":true,"page":14},
+  {"id":"q81","document":"IPCC_AR6_SYR_SPM.pdf","question":"IPCC AR6报告指出，当前全球适应融资主要来自哪种来源？","gold_answers":["公共资金","公共来源","public sources","主要来自公共融资"],"type":"text","requires_visual":false,"page":10},
+  {"id":"q82","document":"IPCC_AR6_SYR_SPM.pdf","question":"根据B.3.1，在SSP5-8.5高排放情景下，到2100年全球平均海平面预计上升多少米？","gold_answers":["0.63-1.01 m","0.63到1.01米","约1米","0.63–1.01 m by 2100"],"type":"text","requires_visual":false,"page":18},
+
+  {"id":"q83","document":"2404.07143v2.pdf","question":"在Table 2中，Transformer-XL在PG19基准测试上的困惑度(perplexity)是多少？","gold_answers":["11.88","Transformer-XL PG19 11.88","11.88 perplexity"],"type":"table","requires_visual":false,"page":7},
+  {"id":"q84","document":"2404.07143v2.pdf","question":"在Table 2中，RMT模型的内存压缩比是多少？","gold_answers":["73x","73倍","2.5M (73x)"],"type":"table","requires_visual":false,"page":7},
+  {"id":"q85","document":"2404.07143v2.pdf","question":"从Figure 1的架构图来看，Infini-attention中哪两个模块的输出通过gating机制合并？","gold_answers":["compressive memory和causal dot-product attention","压缩记忆和点积注意力","linear attention和local attention"],"type":"figure","requires_visual":true,"page":1},
+  {"id":"q86","document":"2404.07143v2.pdf","question":"Table 3中，在zero-shot条件下Infini-Transformer(Linear)在32K长度的passkey检索任务上，三个位置（start/middle/end）的准确率分别是什么？","gold_answers":["14/13/98","14, 13, 98","start=14 middle=13 end=98"],"type":"table","requires_visual":false,"page":7},
+  {"id":"q87","document":"2404.07143v2.pdf","question":"在Table 4中，PRIMERA模型在BookSum任务上的ROUGE-L得分是多少？","gold_answers":["15.6","PRIMERA ROUGE-L 15.6","15.6 ROUGE-L"],"type":"table","requires_visual":false,"page":8},
+  {"id":"q88","document":"2404.07143v2.pdf","question":"在Table 4中，BART模型（不加Unlimiformer）的Overall ROUGE分数是多少？","gold_answers":["16.2","BART overall 16.2","16.2 overall"],"type":"table","requires_visual":false,"page":8},
+
+  {"id":"q89","document":"测试数据（某次实验报告）.pdf","question":"K-Means++初始化的训练集准确率(ACC)是多少？","gold_answers":["0.5937","59.37%","0.5937"],"type":"table","requires_visual":false,"page":4},
+  {"id":"q90","document":"测试数据（某次实验报告）.pdf","question":"Diagonal协方差结构的测试集准确率(ACC)是多少？","gold_answers":["0.5516","55.16%","0.5516"],"type":"table","requires_visual":false,"page":5},
+  {"id":"q91","document":"测试数据（某次实验报告）.pdf","question":"GMM（Full协方差+K-Means++初始化）的测试集准确率是多少？","gold_answers":["0.5763","57.63%","0.5763"],"type":"table","requires_visual":false,"page":6},
+  {"id":"q92","document":"大数据报告（电影评论情感二分类）.pdf","question":"TF-IDF+LogisticRegression的Recall是多少？","gold_answers":["0.8849","88.49%","0.8849"],"type":"table","requires_visual":false,"page":3},
+  {"id":"q93","document":"大数据报告（电影评论情感二分类）.pdf","question":"从RNN Loss曲线来看，训练集Loss和验证集Loss在第几个epoch出现明显分叉（过拟合开始）？","gold_answers":["第4个","epoch 4","4","约第4epoch"],"type":"figure","requires_visual":true,"page":3},
+  {"id":"q94","document":"大数据报告（电影评论情感二分类）.pdf","question":"RNN-Strong (BiLSTM)模型的F1分数是多少？","gold_answers":["0.8374","83.74%","0.8374"],"type":"table","requires_visual":false,"page":3},
+  {"id":"q95","document":"大数据报告（电影评论情感二分类）.pdf","question":"从模型对比柱状图来看，RNN和RNN-Strong在Accuracy上相差约多少？","gold_answers":["约0.009","不到1%","0.009","约0.9个百分点"],"type":"figure","requires_visual":true,"page":3},
+
+  {"id":"q96","document":"测试数据（某次实验报告）.pdf","question":"从K-Means的ACC曲线来看，在最终收敛时K-Means++和Random两种初始化的测试ACC是否趋于相近？","gold_answers":["是","相近","基本收敛到同一水平","差距缩小趋于一致"],"type":"figure","requires_visual":true,"page":5},
+  {"id":"q97","document":"测试数据（某次实验报告）.pdf","question":"从图2的GMM协方差结构训练曲线来看，哪种协方差结构的对数似然值在早期迭代阶段上升最快？","gold_answers":["Full","Full协方差","完全协方差","full covariance"],"type":"figure","requires_visual":true,"page":6},
+  {"id":"q98","document":"测试数据（某次实验报告）.pdf","question":"从图3的GMM初始化方法对比曲线来看，K-Means++和Random两种方法最终收敛时的对数似然值哪个更高？","gold_answers":["K-Means++","KMeans++","K-Means++更高","K-means++初始化"],"type":"figure","requires_visual":true,"page":7},
+  {"id":"q99","document":"测试数据（某次实验报告）.pdf","question":"从K-Means损失曲线（图1左）来看，K-Means++初始化的损失曲线在第几次迭代左右趋于平稳？","gold_answers":["约40次","40次左右","大约46次","40-50次"],"type":"figure","requires_visual":true,"page":5},
+  {"id":"q100","document":"测试数据（某次实验报告）.pdf","question":"从GMM三种协方差结构的训练曲线（图2）来看，Spherical协方差与Full协方差相比，最终对数似然值差距大还是小？","gold_answers":["差距很大","差距较大","Spherical明显低于Full","差距明显"],"type":"figure","requires_visual":true,"page":6},
+
+  {"id":"q101","document":"大数据报告（电影评论情感二分类）.pdf","question":"从TF-IDF+LogisticRegression的混淆矩阵来看，true label为negative且被正确预测为negative的样本数（真负例）是多少？","gold_answers":["11020","约11020","11020个"],"type":"figure","requires_visual":true,"page":4},
+  {"id":"q102","document":"大数据报告（电影评论情感二分类）.pdf","question":"从TF-IDF+LinearSVM的混淆矩阵来看，positive样本被错误预测为negative的数量（假负例）是多少？","gold_answers":["1722","约1722","1722个"],"type":"figure","requires_visual":true,"page":4},
+  {"id":"q103","document":"大数据报告（电影评论情感二分类）.pdf","question":"从模型对比柱状图（IMDB Model Comparison）来看，TF-IDF+LinearSVM的F1分数大约是多少？","gold_answers":["0.872","约0.872","0.8715","87.15%"],"type":"figure","requires_visual":true,"page":3},
+  {"id":"q104","document":"大数据报告（电影评论情感二分类）.pdf","question":"从RNN(BiLSTM, PyTorch)混淆矩阵来看，negative样本被错误预测为positive的数量（假正例）是多少？","gold_answers":["2554","约2554","2554个"],"type":"figure","requires_visual":true,"page":5},
+  {"id":"q105","document":"大数据报告（电影评论情感二分类）.pdf","question":"从RNN Loss曲线来看，训练集Loss和验证集Loss大约在第几个Epoch出现明显分叉（过拟合开始）？","gold_answers":["第4个","epoch 4","4","约第4epoch"],"type":"figure","requires_visual":true,"page":3},
+
+  {"id":"q106","document":"2404.07143v2.pdf","question":"从Figure 4来看，Infini-Transformer的Rouge overall分数在16K输入长度时大约是多少？","gold_answers":["约18","18.0","18","around 18"],"type":"figure","requires_visual":true,"page":8},
+  {"id":"q107","document":"2404.07143v2.pdf","question":"从Figure 2的架构对比图来看，Infini-Transformer和Transformer-XL各展示了多少个输入片段（Segment）？","gold_answers":["3个","三个","3 segments","Segment 1到3"],"type":"figure","requires_visual":true,"page":3},
+  {"id":"q108","document":"2404.07143v2.pdf","question":"从Figure 3的gating score热图来看，注意力头的gating分数是均匀分布的，还是明显分成两组？","gold_answers":["明显分成两组","两种明显的分组","two distinct groups","分布不均匀呈两极"],"type":"figure","requires_visual":true,"page":6},
+  {"id":"q109","document":"2404.07143v2.pdf","question":"从Figure 1的Infini-attention架构图来看，最终的注意力输出O是通过什么方式将两路信息合并的？","gold_answers":["gating机制","sigmoid门控","learned gating scalar","sigmoid(β)加权合并"],"type":"figure","requires_visual":true,"page":1},
+
+  {"id":"q110","document":"IPCC_AR6_SYR_SPM.pdf","question":"从Figure SPM.2 panel (a)来看，随着全球升温从1.5°C增加到4°C，年最高气温日变化的颜色深度（强度）如何变化？","gold_answers":["逐渐加深","颜色越来越深","越来越强烈","intensifies with warming"],"type":"figure","requires_visual":true,"page":14},
+  {"id":"q111","document":"IPCC_AR6_SYR_SPM.pdf","question":"从Figure SPM.2 panel (b)来看，在升温情景下，干旱地区（如北非、中亚）的土壤湿度变化颜色是偏蓝还是偏棕/黄？","gold_answers":["偏棕/黄","棕色","土壤湿度减少","drying/brownish"],"type":"figure","requires_visual":true,"page":14},
+  {"id":"q112","document":"IPCC_AR6_SYR_SPM.pdf","question":"从Figure SPM.5 panel (d)来看，对于将升温限制在1.5°C的路径，净零CO₂排放大约在什么年代实现？","gold_answers":["2050年代初","2050年前后","around 2050","early 2050s"],"type":"figure","requires_visual":true,"page":22},
+  {"id":"q113","document":"IPCC_AR6_SYR_SPM.pdf","question":"从Figure SPM.5 panel (a)来看，\"已实施政策\"（红色）路径的GHG排放在2100年仍然高于还是低于净零水平？","gold_answers":["高于净零","仍然为正","远高于净零","above net zero"],"type":"figure","requires_visual":true,"page":22},
+  {"id":"q114","document":"IPCC_AR6_SYR_SPM.pdf","question":"根据Table SPM.1，限制升温在2°C（>67%）的情景下，到2035年GHG需要相比2019年减少多少百分比？","gold_answers":["35 [22-55]%","约35%","35%","35"],"type":"table","requires_visual":false,"page":21},
+  {"id":"q115","document":"IPCC_AR6_SYR_SPM.pdf","question":"从Figure SPM.3 panel (a)来看，对比1.5°C和2°C升温情景，暴露于危险温度条件的物种比例如何变化？","gold_answers":["2°C时更高","升温越高比例越大","随温度增加而增大","higher at 2°C than 1.5°C"],"type":"figure","requires_visual":true,"page":16},
+  {"id":"q116","document":"IPCC_AR6_SYR_SPM.pdf","question":"从Figure SPM.1 panel (c)的气候条纹图来看，1950年以后全球温度变化的整体视觉趋势是什么？","gold_answers":["颜色变深变红","整体变暖","条纹颜色由蓝变红","warming trend visible in colour"],"type":"figure","requires_visual":true,"page":7},
+
+  {"id":"q117","document":"战事给全球经济前景蒙上阴影并重塑政策优先事项.pdf","question":"从能源价格折线图来看，在2025年1月到2026年3月期间，哪种能源价格波动幅度最小、走势最平稳？","gold_answers":["汽油（美国）","美国汽油","gasoline","汽油价格最平稳"],"type":"figure","requires_visual":true,"page":3},
+  {"id":"q118","document":"战事给全球经济前景蒙上阴影并重塑政策优先事项.pdf","question":"从能源价格折线图来看，2025年7月至2025年10月期间，原油（APSP）价格大致处于什么水平（相对于2025年1月基准100）？","gold_answers":["低于100","约75-80","下跌至75左右","below 100 around 75-80"],"type":"figure","requires_visual":true,"page":3},
+  {"id":"q119","document":"战事给全球经济前景蒙上阴影并重塑政策优先事项.pdf","question":"从\"战争将产生不均衡的影响\"柱状图来看，能源出口国中哪类经济体的GDP增速调整幅度为轻微正值？","gold_answers":["新兴市场经济体","emerging markets","新兴市场","深蓝色柱（新兴市场）"],"type":"figure","requires_visual":true,"page":6},
+  {"id":"q120","document":"战事给全球经济前景蒙上阴影并重塑政策优先事项.pdf","question":"从全球能源消费结构折线图来看，煤炭（coal）的消费占比在哪个年代之后趋于平稳甚至略有下降？","gold_answers":["2010年代","2010年后","around 2010","2010年代以后"],"type":"figure","requires_visual":true,"page":9},
+  {"id":"q121","document":"战事给全球经济前景蒙上阴影并重塑政策优先事项.pdf","question":"从\"冲突持续时间和规模影响全球经济\"柱状图来看，2026年严峻情景（橙色）下的通胀预测约为多少百分点？","gold_answers":["约6","接近6%","约5.8-6","近6个百分点"],"type":"figure","requires_visual":true,"page":5},
+  {"id":"q122","document":"战事给全球经济前景蒙上阴影并重塑政策优先事项.pdf","question":"从\"战争将产生不均衡的影响\"图来看，受冲突直接影响国家（中东和北非）的GDP增速调整幅度与其他类别相比如何？","gold_answers":["负向幅度最大","下调最多","降幅最大","far larger negative adjustment"],"type":"figure","requires_visual":true,"page":6},
+  {"id":"q123","document":"战事给全球经济前景蒙上阴影并重塑政策优先事项.pdf","question":"从全球能源消费结构折线图来看，1980年至今消费占比持续单调上升的能源类型是哪种？","gold_answers":["可再生能源","renewables","renewable energy","可再生能源占比持续上升"],"type":"figure","requires_visual":true,"page":9}
+]

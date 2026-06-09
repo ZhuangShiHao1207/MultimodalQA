@@ -100,24 +100,25 @@ def run_evaluation():
 
         logger.info(f"\n[{i+1}/{len(qa_dataset)}] {qa['id']} ({qa['type']}) Q: {question[:80]}")
 
-        # Multimodal RAG (with images)
+        # ── Multimodal RAG (with images) ──────────────────────────────────────
         try:
             t0 = time.time()
             context_mm = retriever.retrieve_with_context(question, max_images=3)
-            result_mm = generator.generate(question, context_mm)
+            result_mm = generator.generate(question, context_mm, mode="auto")
             latency_mm = round(time.time() - t0, 2)
             answer_mm = result_mm.get("answer", "")
         except Exception as e:
             logger.error(f"  MM error: {e}")
             answer_mm = ""
             latency_mm = -1.0
+            context_mm = {"image_contexts": []}
 
-        # Text-only RAG (strip images)
+        # ── Text-only Grounded RAG (refuses when no evidence) ─────────────────
         try:
             t0 = time.time()
             context_text = retriever.retrieve_with_context(question, max_images=0)
             context_text["image_contexts"] = []
-            result_text = generator.generate(question, context_text)
+            result_text = generator.generate(question, context_text, mode="grounded")
             latency_to = round(time.time() - t0, 2)
             answer_text = result_text.get("answer", "")
         except Exception as e:
@@ -125,9 +126,23 @@ def run_evaluation():
             answer_text = ""
             latency_to = -1.0
 
+        # ── Text-only Open RAG (allowed to infer) ─────────────────────────────
+        try:
+            t0 = time.time()
+            context_open = retriever.retrieve_with_context(question, max_images=0)
+            context_open["image_contexts"] = []
+            result_open = generator.generate(question, context_open, mode="open")
+            latency_open = round(time.time() - t0, 2)
+            answer_open = result_open.get("answer", "")
+        except Exception as e:
+            logger.error(f"  Open error: {e}")
+            answer_open = ""
+            latency_open = -1.0
+
         # Compute ANLS scores
-        score_mm = anls_score(answer_mm, gold_answers)
+        score_mm   = anls_score(answer_mm,   gold_answers)
         score_text = anls_score(answer_text, gold_answers)
+        score_open = anls_score(answer_open, gold_answers)
 
         results.append({
             "id": qa["id"],
@@ -135,34 +150,44 @@ def run_evaluation():
             "question": question,
             "type": qa["type"],
             "requires_visual": qa["requires_visual"],
+            "difficulty": qa.get("difficulty", "unknown"),
             "gold_answers": gold_answers,
-            "multimodal_answer": answer_mm,
-            "text_only_answer": answer_text,
-            "multimodal_anls": score_mm,
-            "text_only_anls": score_text,
-            "mm_correct": score_mm >= 0.5,
-            "to_correct": score_text >= 0.5,
-            "latency_mm_sec": latency_mm,
-            "latency_to_sec": latency_to,
-            "num_images_sent": len(context_mm.get("image_contexts", [])),
+            "multimodal_answer":   answer_mm,
+            "text_only_answer":    answer_text,
+            "text_open_answer":    answer_open,
+            "multimodal_anls":     score_mm,
+            "text_only_anls":      score_text,
+            "text_open_anls":      score_open,
+            "mm_correct":          score_mm   >= 0.5,
+            "to_correct":          score_text >= 0.5,
+            "open_correct":        score_open >= 0.5,
+            "latency_mm_sec":      latency_mm,
+            "latency_to_sec":      latency_to,
+            "latency_open_sec":    latency_open,
+            "num_images_sent":     len(context_mm.get("image_contexts", [])),
         })
 
-        logger.info(f"  MM[ANLS={score_mm:.3f}, {latency_mm:.1f}s, {len(context_mm.get('image_contexts',[]))}img]: {answer_mm[:100]}")
-        logger.info(f"  TO[ANLS={score_text:.3f}, {latency_to:.1f}s]: {answer_text[:100]}")
+        logger.info(f"  MM  [ANLS={score_mm:.3f}, {latency_mm:.1f}s, {len(context_mm.get('image_contexts',[]))}img]: {answer_mm[:80]}")
+        logger.info(f"  TO  [ANLS={score_text:.3f}, {latency_to:.1f}s]: {answer_text[:80]}")
+        logger.info(f"  Open[ANLS={score_open:.3f}, {latency_open:.1f}s]: {answer_open[:80]}")
 
     # ─── Aggregate metrics ─────────────────────────────────
     n = len(results)
-    mm_avg = sum(r["multimodal_anls"] for r in results) / max(n, 1)
-    to_avg = sum(r["text_only_anls"] for r in results) / max(n, 1)
-    mm_acc = sum(1 for r in results if r["mm_correct"]) / max(n, 1)
-    to_acc = sum(1 for r in results if r["to_correct"]) / max(n, 1)
+    mm_avg   = sum(r["multimodal_anls"]  for r in results) / max(n, 1)
+    to_avg   = sum(r["text_only_anls"]   for r in results) / max(n, 1)
+    open_avg = sum(r["text_open_anls"]   for r in results) / max(n, 1)
+    mm_acc   = sum(1 for r in results if r["mm_correct"])   / max(n, 1)
+    to_acc   = sum(1 for r in results if r["to_correct"])   / max(n, 1)
+    open_acc = sum(1 for r in results if r["open_correct"]) / max(n, 1)
 
     # Latency stats (exclude failed calls marked as -1)
-    valid_mm_lat = [r["latency_mm_sec"] for r in results if r["latency_mm_sec"] >= 0]
-    valid_to_lat = [r["latency_to_sec"] for r in results if r["latency_to_sec"] >= 0]
-    avg_lat_mm  = round(sum(valid_mm_lat) / len(valid_mm_lat), 2) if valid_mm_lat else -1
-    avg_lat_to  = round(sum(valid_to_lat) / len(valid_to_lat), 2) if valid_to_lat else -1
-    avg_img_cnt = round(sum(r["num_images_sent"] for r in results) / max(n, 1), 2)
+    valid_mm_lat   = [r["latency_mm_sec"]   for r in results if r["latency_mm_sec"]   >= 0]
+    valid_to_lat   = [r["latency_to_sec"]   for r in results if r["latency_to_sec"]   >= 0]
+    valid_open_lat = [r["latency_open_sec"] for r in results if r["latency_open_sec"] >= 0]
+    avg_lat_mm   = round(sum(valid_mm_lat)   / len(valid_mm_lat),   2) if valid_mm_lat   else -1
+    avg_lat_to   = round(sum(valid_to_lat)   / len(valid_to_lat),   2) if valid_to_lat   else -1
+    avg_lat_open = round(sum(valid_open_lat) / len(valid_open_lat), 2) if valid_open_lat else -1
+    avg_img_cnt  = round(sum(r["num_images_sent"] for r in results) / max(n, 1), 2)
 
     # By question type
     types = sorted(set(r["type"] for r in results))
@@ -170,80 +195,108 @@ def run_evaluation():
     for t in types:
         tr = [r for r in results if r["type"] == t]
         type_metrics[t] = {
-            "count": len(tr),
-            "multimodal_anls": sum(r["multimodal_anls"] for r in tr) / len(tr),
-            "text_only_anls": sum(r["text_only_anls"] for r in tr) / len(tr),
-            "mm_accuracy": sum(1 for r in tr if r["mm_correct"]) / len(tr),
-            "to_accuracy": sum(1 for r in tr if r["to_correct"]) / len(tr),
+            "count":           len(tr),
+            "multimodal_anls": sum(r["multimodal_anls"]  for r in tr) / len(tr),
+            "text_only_anls":  sum(r["text_only_anls"]   for r in tr) / len(tr),
+            "text_open_anls":  sum(r["text_open_anls"]   for r in tr) / len(tr),
+            "mm_accuracy":     sum(1 for r in tr if r["mm_correct"])   / len(tr),
+            "to_accuracy":     sum(1 for r in tr if r["to_correct"])   / len(tr),
+            "open_accuracy":   sum(1 for r in tr if r["open_correct"]) / len(tr),
+        }
+
+    # By difficulty
+    difficulties = sorted(set(r.get("difficulty","unknown") for r in results))
+    diff_metrics = {}
+    for d in difficulties:
+        dr = [r for r in results if r.get("difficulty") == d]
+        diff_metrics[d] = {
+            "count":       len(dr),
+            "mm_accuracy": sum(1 for r in dr if r["mm_correct"])   / len(dr),
+            "to_accuracy": sum(1 for r in dr if r["to_correct"])   / len(dr),
+            "open_accuracy":sum(1 for r in dr if r["open_correct"])/ len(dr),
         }
 
     # Visual vs non-visual
-    visual = [r for r in results if r["requires_visual"]]
+    visual     = [r for r in results if r["requires_visual"]]
     non_visual = [r for r in results if not r["requires_visual"]]
 
     summary = {
         "timestamp": datetime.now().isoformat(),
-        "dataset": "self_built_qa (corrected)",
+        "dataset": "self_built_qa (124 questions, 5 domains)",
         "model": "glm-4.6v",
         "total_questions": n,
         "documents_evaluated": list(documents.keys()),
         "overall": {
-            "multimodal_anls": mm_avg,
-            "text_only_anls": to_avg,
+            "multimodal_anls":    mm_avg,
+            "text_only_anls":     to_avg,
+            "text_open_anls":     open_avg,
             "multimodal_accuracy": mm_acc,
-            "text_only_accuracy": to_acc,
-            "anls_improvement": mm_avg - to_avg,
-            "accuracy_improvement": mm_acc - to_acc,
+            "text_only_accuracy":  to_acc,
+            "text_open_accuracy":  open_acc,
+            "mm_vs_to_improvement":   round(mm_acc - to_acc,   4),
+            "mm_vs_open_improvement": round(mm_acc - open_acc, 4),
         },
         "latency": {
-            "mm_avg_sec": avg_lat_mm,
-            "to_avg_sec": avg_lat_to,
+            "mm_avg_sec":          avg_lat_mm,
+            "to_avg_sec":          avg_lat_to,
+            "open_avg_sec":        avg_lat_open,
             "avg_images_per_query": avg_img_cnt,
-            "overhead_sec": round(avg_lat_mm - avg_lat_to, 2) if avg_lat_mm >= 0 and avg_lat_to >= 0 else -1,
+            "mm_overhead_vs_to_sec": round(avg_lat_mm - avg_lat_to, 2) if avg_lat_mm >= 0 and avg_lat_to >= 0 else -1,
         },
-        "by_type": type_metrics,
+        "by_type":       type_metrics,
+        "by_difficulty": diff_metrics,
         "visual_questions": {
-            "count": len(visual),
-            "multimodal_anls": sum(r["multimodal_anls"] for r in visual) / max(len(visual), 1),
-            "text_only_anls": sum(r["text_only_anls"] for r in visual) / max(len(visual), 1),
-            "mm_accuracy": sum(1 for r in visual if r["mm_correct"]) / max(len(visual), 1),
-            "to_accuracy": sum(1 for r in visual if r["to_correct"]) / max(len(visual), 1),
+            "count":           len(visual),
+            "multimodal_anls": sum(r["multimodal_anls"]  for r in visual) / max(len(visual), 1),
+            "text_only_anls":  sum(r["text_only_anls"]   for r in visual) / max(len(visual), 1),
+            "text_open_anls":  sum(r["text_open_anls"]   for r in visual) / max(len(visual), 1),
+            "mm_accuracy":     sum(1 for r in visual if r["mm_correct"])   / max(len(visual), 1),
+            "to_accuracy":     sum(1 for r in visual if r["to_correct"])   / max(len(visual), 1),
+            "open_accuracy":   sum(1 for r in visual if r["open_correct"]) / max(len(visual), 1),
         },
         "non_visual_questions": {
-            "count": len(non_visual),
-            "multimodal_anls": sum(r["multimodal_anls"] for r in non_visual) / max(len(non_visual), 1),
-            "text_only_anls": sum(r["text_only_anls"] for r in non_visual) / max(len(non_visual), 1),
-            "mm_accuracy": sum(1 for r in non_visual if r["mm_correct"]) / max(len(non_visual), 1),
-            "to_accuracy": sum(1 for r in non_visual if r["to_correct"]) / max(len(non_visual), 1),
+            "count":           len(non_visual),
+            "multimodal_anls": sum(r["multimodal_anls"]  for r in non_visual) / max(len(non_visual), 1),
+            "text_only_anls":  sum(r["text_only_anls"]   for r in non_visual) / max(len(non_visual), 1),
+            "text_open_anls":  sum(r["text_open_anls"]   for r in non_visual) / max(len(non_visual), 1),
+            "mm_accuracy":     sum(1 for r in non_visual if r["mm_correct"])   / max(len(non_visual), 1),
+            "to_accuracy":     sum(1 for r in non_visual if r["to_correct"])   / max(len(non_visual), 1),
+            "open_accuracy":   sum(1 for r in non_visual if r["open_correct"]) / max(len(non_visual), 1),
         },
         "details": results,
     }
 
     # ─── Print summary ─────────────────────────────────────
     logger.info("\n" + "=" * 70)
-    logger.info("EVALUATION RESULTS (Multi-document, Corrected QA)")
+    logger.info("EVALUATION RESULTS (5 domains, 124 questions)")
     logger.info("=" * 70)
-    logger.info(f"\nOverall:")
-    logger.info(f"  Multimodal RAG: ANLS={mm_avg:.4f}  Acc={mm_acc:.2%}")
-    logger.info(f"  Text-only  RAG: ANLS={to_avg:.4f}  Acc={to_acc:.2%}")
-    logger.info(f"  Improvement:    +{mm_avg - to_avg:.4f} ANLS, +{(mm_acc - to_acc)*100:.1f}pp Acc")
+    logger.info(f"\nOverall (3-way comparison):")
+    logger.info(f"  Multimodal RAG  : ANLS={mm_avg:.4f}  Acc={mm_acc:.2%}")
+    logger.info(f"  Text-only Grounded: ANLS={to_avg:.4f}  Acc={to_acc:.2%}")
+    logger.info(f"  Text-only Open  : ANLS={open_avg:.4f}  Acc={open_acc:.2%}")
+    logger.info(f"  MM vs TO:   +{(mm_acc-to_acc)*100:.1f}pp  |  MM vs Open: +{(mm_acc-open_acc)*100:.1f}pp")
 
     logger.info(f"\nLatency (avg per question):")
-    logger.info(f"  Multimodal RAG: {avg_lat_mm:.1f}s  (avg {avg_img_cnt:.1f} images/query)")
-    logger.info(f"  Text-only  RAG: {avg_lat_to:.1f}s")
-    logger.info(f"  Image overhead: +{summary['latency']['overhead_sec']:.1f}s/query")
+    logger.info(f"  Multimodal RAG  : {avg_lat_mm:.1f}s  (avg {avg_img_cnt:.1f} images/query)")
+    logger.info(f"  Text-only Grounded: {avg_lat_to:.1f}s")
+    logger.info(f"  Text-only Open  : {avg_lat_open:.1f}s")
+    logger.info(f"  Image overhead (MM vs TO): +{summary['latency']['mm_overhead_vs_to_sec']:.1f}s/query")
 
     logger.info(f"\nBy Question Type:")
     for t, m in type_metrics.items():
-        logger.info(f"  {t:10s} ({m['count']}): MM={m['multimodal_anls']:.3f}/{m['mm_accuracy']:.0%}  TO={m['text_only_anls']:.3f}/{m['to_accuracy']:.0%}")
+        logger.info(f"  {t:8s}({m['count']:3d}): MM={m['mm_accuracy']:.0%}  TO={m['to_accuracy']:.0%}  Open={m['open_accuracy']:.0%}")
+
+    logger.info(f"\nBy Difficulty:")
+    for d, m in diff_metrics.items():
+        logger.info(f"  {d:8s}({m['count']:3d}): MM={m['mm_accuracy']:.0%}  TO={m['to_accuracy']:.0%}  Open={m['open_accuracy']:.0%}")
 
     logger.info(f"\nVisual vs Non-Visual:")
-    v = summary['visual_questions']
-    nv = summary['non_visual_questions']
-    logger.info(f"  Visual    ({v['count']}): MM={v['multimodal_anls']:.3f}/{v['mm_accuracy']:.0%}  TO={v['text_only_anls']:.3f}/{v['to_accuracy']:.0%}")
-    logger.info(f"  NonVisual ({nv['count']}): MM={nv['multimodal_anls']:.3f}/{nv['mm_accuracy']:.0%}  TO={nv['text_only_anls']:.3f}/{nv['to_accuracy']:.0%}")
+    v  = summary["visual_questions"]
+    nv = summary["non_visual_questions"]
+    logger.info(f"  Visual   ({v['count']:3d}): MM={v['mm_accuracy']:.0%}  TO={v['to_accuracy']:.0%}  Open={v['open_accuracy']:.0%}")
+    logger.info(f"  NonVisual({nv['count']:3d}): MM={nv['mm_accuracy']:.0%}  TO={nv['to_accuracy']:.0%}  Open={nv['open_accuracy']:.0%}")
 
-    # Print failures for the report
+    # Print MM failures for error analysis
     mm_failures = [r for r in results if not r["mm_correct"]]
     if mm_failures:
         logger.info(f"\nMultimodal RAG FAILURES ({len(mm_failures)}/{n}):")
