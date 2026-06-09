@@ -28,7 +28,7 @@
 | `**/__pycache__/` | Python 字节码缓存 | 自动生成 |
 | `~/.cache/huggingface/` | BGE-M3 / Docling / 公式 OCR 模型权重（约 3~4 GB） | 首次启动时从 HuggingFace 下载 |
 
-> **⚠️ 关于 `data/` 目录**：仓库里**保留了**两份测试 PDF（K-Means/GMM 实验报告 + IMDB 情感分类报告），方便评测者直接用 ▶ 触发处理来体验全流程。如果想测自己的 PDF，把它们放进 `data/` 即可（重启后端自动检测）。
+> **⚠️ 关于 `data/` 目录**：仓库里预置了 **5 份测试 PDF**（2 份中文 ML 实验报告 + 1 篇 arXiv 英文论文 + IPCC 气候报告 + 战略经济报告），覆盖多种文档类型，方便评测者直接用 ▶ 触发处理来体验全流程。如果想测自己的 PDF，把它们放进 `data/` 即可（重启后端自动检测）。
 
 > **⚠️ 关于 `.env`**：仓库里只有 `.env.example` 模板。请按照下面"配置 API Key"小节复制一份并填入你自己的智谱 API Key（**绝对不要把含 key 的 `.env` 提交到 git**）。
 
@@ -75,6 +75,8 @@ python scripts/patch_flagembedding.py
 
 > 该脚本会自动定位并修改 conda 环境中 FlagEmbedding 的对应文件，添加 `try/except` 兼容回退，不影响任何功能。
 
+### 2. 安装前端依赖
+
 ```bash
 cd frontend
 npm install
@@ -82,18 +84,20 @@ npm install
 
 ### 3. 配置 API Key
 
-在项目根目录创建 `.env` 文件（复制.env.exampleb并且改名成.env），修改：
+在项目根目录创建 `.env` 文件（复制 `.env.example` 并改名为 `.env`），填入：
 ```env
 ZHIPUAI_API_KEY=your_api_key_here
 ```
 
 ### 4. 启动服务
-在正式启动服务运行之前，强烈建议先对embedding下载+测试：
-```bash
-python -u .\scripts\test_embedding.py
 
-# 这可以评估embedding模型的能力，测试的时候可以不用
-# python -u test_embedding.py --eval true
+在正式启动服务运行之前，强烈建议先对 embedding 下载 + 测试：
+
+```bash
+python -u scripts/test_embedding.py
+
+# 若要同时测试 dense/sparse/ColBERT 三种嵌入效果（可选，耗时约 30 秒）：
+# python -u scripts/test_embedding.py --eval true
 ```
 
 ```bash
@@ -149,7 +153,7 @@ npm run dev
 | **⑥ 表格读数** | 问"Random 初始化的测试集准确率是多少？"<br/>→ 模型从 Markdown 表格中精确提取 0.5937 |
 | **⑦ 混淆矩阵单元格读数** | 问"TF-IDF+LR 混淆矩阵中 negative→positive 的样本数？"<br/>→ Multimodal 答 1480；Text-only 拒答 |
 | **⑧ LaTeX 公式渲染** | 在含公式的文档（如 K-Means/GMM 实验报告）上问"K-Means 目标函数公式是什么？"<br/>→ 前端用 KaTeX 把 `\sum_{j=1}^k ‖x_i - μ_j‖²` 渲染成漂亮数学符号 |
-| **⑨ 多文档评测** | `python -m evaluation.run_eval` 跑 25 题，对比多模态 vs 纯文本的 ANLS / Accuracy<br/>→ 见 `evaluation/EVALUATION_REPORT.md` |
+| **⑨ 多文档三路评测** | `python -m evaluation.run_eval` 跑 124 题（5 篇文档），三路对比 Multimodal / Text-only Grounded / Text-only Open 的 ANLS / Accuracy<br/>→ 见 `evaluation/EVALUATION_REPORT.md`<br/>⚠️ **首次运行约需 30~50 分钟**（124 题 × 3 次 API 调用） |
 
 ---
 
@@ -160,18 +164,23 @@ npm run dev
 3. **多模态问答 (60s)**：选中已 ready 的 K-Means/GMM 实验报告，Multimodal 模式下问"从训练损失曲线来看，哪种初始化方法的损失下降更快？" → 展示回答附带的曲线图 + 引用页码。点击 📄 标签弹出原页预览。
 4. **消融对比 (60s)**：右上角切换到 Text Only，重问同样的问题 → 展示模型只能给出模糊回答或拒答。回到 Multimodal，问"K-Means 的目标函数公式" → 展示 KaTeX 渲染的 LaTeX 数学符号。
 5. **引用溯源 + 跨文档 (60s)**：上传第二份 PDF（如电影评论情感分类报告），跨文档切换演示对话历史互不污染。在情感分类文档上问"哪个模型 Accuracy 最高？"，展示模型对柱状图的解读。
-6. **评测结果 (45s)**：终端跑 `python -m evaluation.rescore`（无 API 消耗），展示 Multimodal 100% vs Text-only 56% 的对比表。打开 `evaluation/EVALUATION_REPORT.md` 划过关键案例。
+6. **评测结果 (45s)**：终端跑 `python -m evaluation.rescore`（无 API 消耗，基于已有 results.json 重新计算），展示三路对比表（Multimodal vs Text-only Grounded vs Text-only Open）。打开 `evaluation/EVALUATION_REPORT.md` 划过关键案例与可视化图表。
 
 ---
 
 #### 默认演示文档
 
-仓库的 `data/` 目录已经预置两份测试 PDF：
+仓库的 `data/` 目录预置了 5 份测试 PDF：
 
-| 文档 | 适合演示什么 |
-|---|---|
-| **测试数据（某次实验报告）.pdf**（K-Means/GMM 聚类实验，10 页） | 训练曲线趋势、Log-Likelihood 比较、表格读数、**LaTeX 公式渲染** |
-| **大数据报告（电影评论情感二分类）.pdf**（IMDB BiLSTM 实验，7 页） | 柱状图比较、混淆矩阵单元格读数、跨图比较（4 张混淆矩阵） |
+| 文档 | 类型 | 适合演示什么 |
+|---|---|---|
+| **测试数据（某次实验报告）.pdf**（K-Means/GMM 聚类实验，10 页） | 中文学术 | 训练曲线趋势、Log-Likelihood 比较、表格读数、**LaTeX 公式渲染** |
+| **大数据报告（电影评论情感二分类）.pdf**（IMDB BiLSTM 实验，7 页） | 中文学术 | 柱状图比较、混淆矩阵单元格读数、跨图比较（4 张混淆矩阵） |
+| **2404.07143v2.pdf**（arXiv 英文论文） | 英文学术 | 英文文档问答、跨语言检索能力 |
+| **IPCC_AR6_SYR_SPM.pdf**（IPCC 第六次评估报告摘要） | 英文政策报告 | 长文档多页检索、气候数据图表理解 |
+| **战略经济前景报告.pdf** | 中文报告 | 经济数据表格读取、政策文本理解 |
+
+> **演示建议**：优先用前两份中文 ML 报告展示核心功能（图表对比最直观），其余三份可作为"多文档评测覆盖不同领域"的说明。
 
 ---
 
@@ -358,14 +367,22 @@ MultimodalQA/
 │   └── vite.config.js            #   开发代理配置
 │
 ├── evaluation/                    # 评测系统
-│   ├── EVALUATION_REPORT.md      #   详细评测报告（25 题 × 2 模式 × ANLS/Accuracy）
+│   ├── EVALUATION_REPORT.md      #   详细评测报告（124 题 × 3 模式 × ANLS/Accuracy）
+│   ├── IMPROVEMENT_PLAN.md       #   实验改进方案（数据集扩充、统计检验等）
 │   ├── metrics.py                #   ANLS（含子串/数值/有序比较）
-│   ├── run_eval.py               #   自动化评测脚本（多文档路由）
+│   ├── run_eval.py               #   自动化评测脚本（多文档路由 + 自动建索引）
+│   ├── eval_retrieval.py         #   检索层独立评测脚本
 │   ├── rescore.py                #   只用更新后的指标重新打分（不消耗 API）
+│   ├── visualize.py              #   生成 6 张评测可视化图表
+│   ├── ablation_images.py        #   消融实验图表生成
+│   ├── figures/                  #   评测图表（fig1~fig7）
 │   └── datasets/
-│       └── self_built_qa.json    #   自建 25 题 QA 数据集（跨 2 篇 PDF）
+│       ├── self_built_qa.json    #   自建 124 题 QA 数据集（跨 5 篇 PDF、3 难度）
+│       └── annotate_dataset.py   #   数据集标注辅助脚本
 │
-├── scripts/                       # 测试脚本
+├── scripts/                       # 测试与维护脚本
+│   ├── test_embedding.py         #   BGE-M3 模型测试（支持 --eval 完整评测）
+│   └── patch_flagembedding.py    #   修复 FlagEmbedding 与新版 transformers 的兼容性
 ├── configs/config.yaml            # 系统配置
 ├── data/                          # 测试 PDF 文件
 ├── run.sh                         # 统一启动脚本
@@ -395,6 +412,7 @@ MultimodalQA/
 | Phase 3b | 纯文本 RAG 基线对比 | ✅ 完成 |
 | Phase 4 | 全栈 Web 前端 (Vue 3) + 后端 (FastAPI) | ✅ 完成 |
 | Phase 5 | 数据集评测 (自建 QA + ANLS) | ✅ 完成 |
+| Phase 6 | 实验完善（数据集扩充至 124 题 × 5 文档 × 3 路基线 + 统计检验 + 可视化） | ✅ 完成 |
 
 ## 已验证的关键指标
 
@@ -408,17 +426,27 @@ MultimodalQA/
 | 公式 OCR（Docling CodeFormulaPredictor） | 约 50ms/公式（首次需下载 ~500MB 权重） |
 | BGE-M3 向量化 | 约 1~2 秒（fp16 + CUDA） |
 
-### 自建 QA 数据集评测（25 题 × 2 模式，详见 `evaluation/EVALUATION_REPORT.md`）
+### 自建 QA 数据集评测（详见 `evaluation/EVALUATION_REPORT.md`）
 
-| 指标 | Multimodal RAG | Text-only RAG | 差距 |
-|---|---|---|---|
-| **整体 Accuracy** | **25/25 = 100%** | 14/25 = 56% | **+44 pp** |
-| **整体 ANLS** | 1.0000 | 0.5600 | +0.4400 |
-| 视觉问题（11 题） | **100%** | **9%** | **+91 pp** 🔥 |
-| 表格问题（7 题） | 100% | 100% | 持平 |
-| 文本问题（7 题） | 100% | 86% | +14 pp |
+**数据集规模（最新版）**：124 题 × 5 篇文档（2 份中文 ML 报告 + 1 篇 arXiv 论文 + IPCC 报告 + 战略经济报告），覆盖 figure / table / text 三类题型，easy / medium / hard 三档难度，视觉题与非视觉题各 62 道。
 
-> **关键发现**：在 11 道必须看图才能回答的问题（混淆矩阵单元格、训练曲线趋势、柱状图比较、过拟合判断等）上，纯文本 RAG 几乎完全失效（仅答对 1 题），证明了多模态架构的必要性。
+**三路基线对比**（124 题，5 类文档，2026-06 实测）：
+
+| 指标 | Multimodal RAG | Text-only Grounded | Text-only Open | MM vs TO 差距 |
+|---|---|---|---|---|
+| **整体 Accuracy** | **67.7%** | 37.1% | 52.4% | **+30.6 pp** |
+| **整体 ANLS** | **0.6774** | 0.3710 | 0.5202 | +0.3064 |
+| 视觉题（62 题） | **66%** | 13% | 35% | **+53 pp** 🔥 |
+| 表格题（31 题） | 68% | 61% | 74% | +7 pp |
+| 文本题（31 题） | 71% | 61% | 65% | +10 pp |
+| 非视觉题（62 题） | 69% | 61% | 69% | +8 pp（不显著）|
+
+**McNemar 检验（MM vs TO Grounded）**：
+- 全部题目：$\chi^2=36.03$，$p<0.0001$（高度显著）
+- 视觉题子集：$\chi^2=31.03$，$p<0.0001$（高度显著）
+- 非视觉题子集：$p=0.074$（不显著，符合预期）
+
+> **关键发现**：在 62 道视觉题上，TO Grounded 中有 85% 的失败源于"拒答"（无法从文本中找到图表信息），而 TO Open 放开推断后准确率仅提升至 35%，远低于多模态系统（66%），证明多模态提升来自真实的视觉理解而非基线设计缺陷。详细报告见 [`evaluation/EVALUATION_REPORT.md`](evaluation/EVALUATION_REPORT.md)。
 
 ### 多模态 vs 纯文本对比（真实 Web Demo 测试结果）
 
@@ -431,7 +459,7 @@ MultimodalQA/
 | **视觉依据** | 引用了 Figure 1 (训练损失折线图) 并展示原图 | 无图表支撑，只能从文字描述推测 |
 | **回答质量** | 精确、有数据支撑 | 笼统、缺乏关键视觉对比信息 |
 
-**结论**：对于需要图表视觉信息的问题，纯文本 RAG 因无法获取曲线走势而产生模糊/错误回答；多模态 RAG 通过代理召回原始图片，让 VLM 直接"看到"图表，回答显著更准确。详细评测报告见 [`evaluation/EVALUATION_REPORT.md`](evaluation/EVALUATION_REPORT.md)。
+**结论**：对于需要图表视觉信息的问题，纯文本 RAG 因无法获取曲线走势而产生模糊/错误回答；多模态 RAG 通过代理召回原始图片，让 VLM 直接"看到"图表，回答显著更准确。完整三路评测报告（Multimodal / Text-only Grounded / Text-only Open）见 [`evaluation/EVALUATION_REPORT.md`](evaluation/EVALUATION_REPORT.md)。
 
 ## 团队
 

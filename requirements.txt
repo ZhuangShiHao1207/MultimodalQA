@@ -63,7 +63,8 @@ numpy>=1.24.0                 # Embedding arrays (src/indexing/embedder.py)
 # --- Utilities ---
 python-dotenv>=1.0.0          # Load .env files (API keys in src/generation, src/indexing)
 
-# --- Evaluation ---
+# --- Evaluation & Visualization ---
 python-Levenshtein>=0.25.0    # ANLS metric in evaluation/metrics.py
+matplotlib>=3.7.0             # Evaluation charts (evaluation/visualize.py, ablation_images.py)
 
 sniffio==1.3.1

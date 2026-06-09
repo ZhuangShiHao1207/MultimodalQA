@@ -2,13 +2,20 @@
 Evaluation: Multimodal RAG vs Text-only RAG on multi-document QA dataset.
 Routes each question to the correct ChromaDB collection based on the `document` field.
 Uses the persistent ChromaDB indexes built by the backend.
+
+If a document's index is missing (vectors=0), the script automatically runs the
+full ingestion pipeline (Docling parse → VLM summarize → BGE-M3 embed → ChromaDB)
+without needing the backend/frontend running. Pass --skip-build to disable this
+and fail fast instead.
 """
 import sys
 import os
 import json
+import shutil
 import logging
 import hashlib
 import time
+import argparse
 from pathlib import Path
 from datetime import datetime
 
@@ -16,6 +23,11 @@ from datetime import datetime
 if sys.platform == "win32":
     os.environ.setdefault("HF_HUB_DISABLE_SYMLINKS", "1")
     os.environ.setdefault("PYTHONIOENCODING", "utf-8")
+os.environ.setdefault("KMP_DUPLICATE_LIB_OK", "TRUE")
+try:
+    import pyarrow  # noqa: must come before torch
+except Exception:
+    pass
 
 import transformers.utils.import_utils
 if hasattr(transformers.utils.import_utils, 'check_torch_load_is_safe'):
@@ -27,7 +39,7 @@ if hasattr(transformers.modeling_utils, 'check_torch_load_is_safe'):
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from src.indexing import BGEEmbedder, VectorStore
+from src.indexing import BGEEmbedder, VectorStore, build_index
 from src.retrieval import MultiVectorRetriever
 from src.generation import GroundedGenerator
 from evaluation.metrics import anls_score
@@ -38,8 +50,9 @@ logger = logging.getLogger(__name__)
 # ============================================================
 # Document → doc_id mapping (matches backend/services.py logic)
 # ============================================================
-DATA_DIR = project_root / "data"
-CHROMA_DIR = project_root / "backend" / "chroma_data"
+DATA_DIR    = project_root / "data"
+CHROMA_DIR  = project_root / "backend" / "chroma_data"
+DOCS_DIR    = project_root / "backend" / "documents"
 
 
 def get_doc_id_for_filename(filename: str) -> str:
@@ -47,41 +60,152 @@ def get_doc_id_for_filename(filename: str) -> str:
     return hashlib.md5(filename.encode()).hexdigest()[:8]
 
 
-def run_evaluation():
+# ============================================================
+# Auto index builder — runs the full pipeline when index missing
+# ============================================================
+def ensure_index_built(filename: str, embedder: BGEEmbedder, skip_build: bool = False) -> VectorStore | None:
+    """
+    Return the VectorStore for *filename*, building the index from scratch if needed.
+
+    Steps (mirrors backend/services.py::process_document_sync):
+      1. Locate PDF in data/ or backend/documents/<id>/source.pdf
+      2. Docling parse → elements
+      3. Merge + chunk
+      4. VLM summarize figures/tables
+      5. Copy images to persistent backend/documents/<id>/images|pages/
+      6. BGE-M3 embed → ChromaDB persist
+
+    Args:
+        filename:   PDF basename as stored in self_built_qa.json
+        embedder:   shared BGEEmbedder instance (avoid reloading the model)
+        skip_build: if True, return None instead of building
+
+    Returns:
+        VectorStore with vectors > 0, or None on failure.
+    """
+    doc_id = get_doc_id_for_filename(filename)
+    collection_name = f"doc_{doc_id}"
+
+    # --- Check if already built -------------------------------------------------
+    store = VectorStore(collection_name=collection_name, persist_dir=str(CHROMA_DIR))
+    if store.size > 0:
+        logger.info(f"Index already exists for '{filename}' ({store.size} vectors) — skipping build")
+        return store
+
+    if skip_build:
+        logger.error(f"No index for '{filename}' and --skip-build is set. Skipping document.")
+        return None
+
+    # --- Locate source PDF ------------------------------------------------------
+    pdf_path = DATA_DIR / filename
+    if not pdf_path.exists():
+        # Try backend/documents/<id>/source.pdf
+        pdf_path = DOCS_DIR / doc_id / "source.pdf"
+    if not pdf_path.exists():
+        logger.error(f"PDF not found for '{filename}' (tried data/ and backend/documents/). Skipping.")
+        return None
+
+    logger.info(f"Building index for '{filename}' (id={doc_id}) from {pdf_path} ...")
+    t_start = time.time()
+
+    doc_dir = DOCS_DIR / doc_id
+    doc_dir.mkdir(parents=True, exist_ok=True)
+    (doc_dir / "images").mkdir(exist_ok=True)
+    (doc_dir / "pages").mkdir(exist_ok=True)
+
+    # Copy PDF to documents dir if not already there
+    dest_pdf = doc_dir / "source.pdf"
+    if not dest_pdf.exists():
+        shutil.copy2(pdf_path, dest_pdf)
+
+    try:
+        # Stage 1: Parse with Docling
+        from src.ingestion import DoclingParser, TextChunker, merge_small_elements
+        logger.info(f"  [1/4] Parsing with Docling...")
+        parser = DoclingParser(
+            output_dir=str(doc_dir / "docling_output"),
+            extract_images=True,
+            extract_tables=True,
+            generate_page_images=True,
+            images_scale=2.0,
+        )
+        elements, _ = parser.parse(str(pdf_path))
+        logger.info(f"  [1/4] Parsed {len(elements)} elements")
+
+        # Stage 2: Merge + chunk
+        logger.info(f"  [2/4] Chunking...")
+        elements = merge_small_elements(elements, min_size=80)
+        chunker = TextChunker(max_chunk_size=1500, chunk_overlap=200, min_chunk_size=80)
+        elements = chunker.chunk_elements(elements)
+        logger.info(f"  [2/4] {len(elements)} chunks")
+
+        # Stage 3: VLM summaries for figures/tables
+        from src.ingestion.models import ElementType
+        from src.indexing import VLMSummarizer
+        visual_count = sum(1 for e in elements if e.type in (ElementType.FIGURE, ElementType.TABLE))
+        logger.info(f"  [3/4] Summarizing {visual_count} visual elements with GLM-4.6V...")
+        summarizer = VLMSummarizer(model="glm-4.6v")
+        elements = summarizer.summarize_elements(elements)
+
+        # Stage 4: Copy images to persistent paths
+        for elem in elements:
+            if elem.image_path and Path(elem.image_path).exists():
+                if elem.type == ElementType.PAGE_IMAGE:
+                    dest = doc_dir / "pages" / Path(elem.image_path).name
+                else:
+                    dest = doc_dir / "images" / Path(elem.image_path).name
+                if not dest.exists():
+                    shutil.copy2(elem.image_path, dest)
+                elem.image_path = str(dest)
+
+        # Stage 5: Embed + persist to ChromaDB
+        logger.info(f"  [4/4] Embedding with BGE-M3 → ChromaDB...")
+        store = build_index(
+            elements, embedder,
+            persist_dir=str(CHROMA_DIR),
+            collection_name=collection_name,
+        )
+
+        # Cleanup Docling temp output
+        docling_out = doc_dir / "docling_output"
+        if docling_out.exists():
+            shutil.rmtree(docling_out)
+
+        elapsed = round(time.time() - t_start, 1)
+        logger.info(f"  Done: {store.size} vectors indexed in {elapsed}s")
+        return store
+
+    except Exception as e:
+        logger.error(f"Failed to build index for '{filename}': {e}", exc_info=True)
+        return None
+
+
+def run_evaluation(skip_build: bool = False):
     """Run full evaluation on multi-document QA dataset."""
     qa_path = project_root / "evaluation" / "datasets" / "self_built_qa.json"
     with open(qa_path, "r", encoding="utf-8") as f:
         qa_dataset = json.load(f)
     logger.info(f"Loaded {len(qa_dataset)} QA pairs")
 
-    # Build mapping from PDF filename → doc_id and load ChromaDB collections
+    # Initialize embedder once (shared across all documents)
+    embedder = BGEEmbedder(model_name="BAAI/bge-m3", device="auto", use_fp16=True)
+    generator = GroundedGenerator(model="glm-4.6v", max_tokens=4096)
+
+    # Build/load ChromaDB collections for every unique document
     documents = {}
     for qa in qa_dataset:
         fname = qa["document"]
         if fname not in documents:
-            doc_id = get_doc_id_for_filename(fname)
-            collection_name = f"doc_{doc_id}"
-            try:
-                store = VectorStore(
-                    collection_name=collection_name,
-                    persist_dir=str(CHROMA_DIR),
-                )
-                if store.size == 0:
-                    logger.error(f"Empty collection for {fname} (id={doc_id})")
-                    continue
-                documents[fname] = {"doc_id": doc_id, "store": store}
-                logger.info(f"Loaded index for '{fname}' (id={doc_id}, vectors={store.size})")
-            except Exception as e:
-                logger.error(f"Failed to load index for {fname}: {e}")
-                continue
+            store = ensure_index_built(fname, embedder, skip_build=skip_build)
+            if store is not None:
+                documents[fname] = {"doc_id": get_doc_id_for_filename(fname), "store": store}
+                logger.info(f"Ready: '{fname}' ({store.size} vectors)")
+            else:
+                logger.warning(f"Skipping all questions for '{fname}' (no index)")
 
     if not documents:
-        logger.error("No documents could be loaded! Run the backend first to build indexes.")
+        logger.error("No documents could be loaded or built! Check data/ directory.")
         return
-
-    # Initialize models (singletons)
-    embedder = BGEEmbedder(model_name="BAAI/bge-m3", device="auto", use_fp16=True)
-    generator = GroundedGenerator(model="glm-4.6v", max_tokens=4096)
 
     # Run evaluation
     results = []
@@ -314,4 +438,11 @@ def run_evaluation():
 
 
 if __name__ == "__main__":
-    run_evaluation()
+    parser = argparse.ArgumentParser(description="MultimodalQA evaluation script")
+    parser.add_argument(
+        "--skip-build",
+        action="store_true",
+        help="Do not auto-build missing indexes; skip documents without an existing index instead.",
+    )
+    args = parser.parse_args()
+    run_evaluation(skip_build=args.skip_build)

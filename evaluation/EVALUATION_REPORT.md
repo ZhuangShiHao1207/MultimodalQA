@@ -59,48 +59,77 @@
 
 ---
 
-## 3. 实验结果（⚠️ 待重跑填入）
+## 3. 实验结果（2026-06-09 实测，124 题，5 类文档）
 
-> **注意**：以下 3.1–3.3 为旧版 25 题评测的历史参考数据，当前数据集已扩充至 124 题、5 类文档、3 路对比基线。**所有数字在 Windows 上重跑后需全部更新。**
-
-### 3.1 总体指标（旧版 25 题参考，待更新）
+### 3.1 总体指标
 
 | 模式 | ANLS | 准确率 |
 |---|---|---|
-| **Multimodal RAG** | 待重跑 | 待重跑 |
-| Text-only Grounded | 待重跑 | 待重跑 |
-| Text-only Open（新增）| 待重跑 | 待重跑 |
+| **Multimodal RAG** | **0.6774** | **67.74%** |
+| Text-only Grounded | 0.3710 | 37.10% |
+| Text-only Open（新增）| 0.5202 | 52.42% |
+| MM vs TO Grounded | +0.3064 | **+30.6 pp** |
+| MM vs TO Open | +0.1572 | +15.3 pp |
 
-### 3.2 按问题类型（待重跑）
+### 3.2 按问题类型
 
 | 类型 | 数量 | MM Acc | TO Grounded | TO Open |
 |---|---|---|---|---|
-| figure（视觉） | 62 | 待 | 待 | 待 |
-| table | 38 | 待 | 待 | 待 |
-| text | 24 | 待 | 待 | 待 |
+| figure（视觉）| 62 | **66%** | 13% | 35% |
+| table | 31 | 68% | 61% | 74% |
+| text | 31 | 71% | 61% | 65% |
 
-### 3.3 按难度（待重跑）
+### 3.3 按难度
 
 | 难度 | 数量 | MM Acc | TO Grounded | TO Open |
 |---|---|---|---|---|
-| easy | 63 | 待 | 待 | 待 |
-| medium | 53 | 待 | 待 | 待 |
-| hard | 8 | 待 | 待 | 待 |
+| easy | 63 | 73% | 56% | 67% |
+| medium | 53 | 62% | 21% | 42% |
+| hard | 8 | 62% | 0% | 12% |
 
-### 3.4 统计显著性（待重跑）
+### 3.4 视觉题 vs 非视觉题
 
-McNemar 检验代码已就绪（`evaluation/visualize.py` fig5），回 Windows 重跑后自动生成。
+| 子集 | 数量 | MM Acc | TO Grounded | TO Open |
+|---|---|---|---|---|
+| 视觉题 | 62 | **66%** | 13% | 35% |
+| 非视觉题 | 62 | 69% | 61% | 69% |
 
-### 3.5 可视化（evaluation/figures/，部分基于旧数据）
+### 3.5 统计显著性（McNemar 检验，MM vs TO Grounded）
+
+| 子集 | b（MM对TO错）| c（MM错TO对）| χ² | p |
+|---|---|---|---|---|
+| 全部（n=124）| 38 | 0 | 36.03 | **<0.0001**（高度显著）|
+| 视觉题（n=62）| 33 | 0 | 31.03 | **<0.0001**（高度显著）|
+| 非视觉题（n=62）| 5 | 0 | 3.20 | 0.074（**不显著**，符合预期）|
+
+### 3.6 延迟分析
+
+| 模式 | 平均延迟（秒/题）|
+|---|---|
+| Multimodal RAG | 5.1s |
+| Text-only Grounded | 4.6s |
+| Text-only Open | 11.9s |
+| 图像附加开销（MM−TO）| +0.6s |
+| 平均图片数/题 | 1.46 |
+
+### 3.7 TO Grounded 失败模式（视觉题 62 道）
+
+| 失败类型 | 数量 | 占比 |
+|---|---|---|
+| 拒答（"根据文档内容无法回答"）| 46 | 85% |
+| 推理错误（有答案但答错）| 8 | 15% |
+| 答对 | 8 | 13% |
+
+### 3.8 可视化（evaluation/figures/）
 
 | 图表 | 文件 | 状态 |
 |---|---|---|
-| MM vs TO 按题型分组柱状图 | fig1_main_comparison.png | 旧版，待重跑更新 |
-| 视觉题 vs 非视觉题对比 | fig2_visual_split.png | 旧版，待重跑更新 |
-| 每道题 ANLS 热图 | fig3_per_question_heatmap.png | 旧版，待重跑更新 |
-| Text-only 失败原因饼图 | fig4_to_failure_pie.png | 旧版，待重跑更新 |
-| McNemar 检验结果 | fig5_mcnemar_summary.png | 旧版，待重跑更新 |
-| 消融实验（max_images 曲线） | fig6_ablation_images.png | 待重跑生成 |
+| MM vs TO 按题型分组柱状图 | fig1_main_comparison.png | ✅ 已更新（2026-06-09）|
+| 视觉题 vs 非视觉题对比 | fig2_visual_split.png | ✅ 已更新 |
+| 每道题 ANLS 热图 | fig3_per_question_heatmap.png | ✅ 已更新 |
+| Text-only 失败原因饼图 | fig4_to_failure_pie.png | ✅ 已更新 |
+| McNemar 检验结果 | fig5_mcnemar_summary.png | ✅ 已更新 |
+| 按难度分组柱状图 | fig7_difficulty.png | ✅ 已更新 |
 
 ---
 
