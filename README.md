@@ -120,7 +120,7 @@ npm run dev
 
 ### 6. 运行评测
 
-评测时间预估在1小时左右，评测结果已经保存在evaluation下可以直接查看，`evaluation\figures`有可视化图表，`evaluation\results.json`有结果。直接运行下面的 `rescore` 或 `visualize` 不消耗 API，可随时重新生成报告。
+评测时间预估在1小时左右，如果不想跑可以直接看结果，评测结果已经保存在evaluation文件夹下可以直接查看，`evaluation\figures`有可视化图表，`evaluation\results.json`有结果。直接运行下面的 `rescore` 或 `visualize` 不消耗 API，可随时重新生成报告。
 
 评测系统无需启动前后端，直接在项目根目录执行：
 

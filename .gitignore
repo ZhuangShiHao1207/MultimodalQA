@@ -11,6 +11,7 @@
 # coursework reports, intentionally shipped so the TA can run the full
 # pipeline + reproduce the evaluation report).
 !data/*.pdf
+!reports/*.pdf
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
