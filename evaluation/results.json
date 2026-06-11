@@ -13,12 +13,10 @@
   "overall": {
     "multimodal_anls": 0.695,
     "text_only_anls": 0.45,
-    "text_open_anls": 0.585,
     "multimodal_accuracy": 0.695,
     "text_only_accuracy": 0.45,
-    "text_open_accuracy": 0.585,
-    "mm_vs_to_improvement": 0.245,
-    "mm_vs_open_improvement": 0.11
+    "anls_improvement": 0.24499999999999994,
+    "accuracy_improvement": 0.24499999999999994
   },
   "latency": {
     "mm_avg_sec": 5.02,
@@ -32,28 +30,22 @@
       "count": 100,
       "multimodal_anls": 0.65,
       "text_only_anls": 0.18,
-      "text_open_anls": 0.42,
       "mm_accuracy": 0.65,
-      "to_accuracy": 0.18,
-      "open_accuracy": 0.42
+      "to_accuracy": 0.18
     },
     "table": {
       "count": 55,
       "multimodal_anls": 0.7272727272727273,
       "text_only_anls": 0.7090909090909091,
-      "text_open_anls": 0.7454545454545455,
       "mm_accuracy": 0.7272727272727273,
-      "to_accuracy": 0.7090909090909091,
-      "open_accuracy": 0.7454545454545455
+      "to_accuracy": 0.7090909090909091
     },
     "text": {
       "count": 45,
       "multimodal_anls": 0.7555555555555555,
       "text_only_anls": 0.7333333333333333,
-      "text_open_anls": 0.7555555555555555,
       "mm_accuracy": 0.7555555555555555,
-      "to_accuracy": 0.7333333333333333,
-      "open_accuracy": 0.7555555555555555
+      "to_accuracy": 0.7333333333333333
     }
   },
   "by_difficulty": {
@@ -80,19 +72,15 @@
     "count": 100,
     "multimodal_anls": 0.65,
     "text_only_anls": 0.18,
-    "text_open_anls": 0.42,
     "mm_accuracy": 0.65,
-    "to_accuracy": 0.18,
-    "open_accuracy": 0.42
+    "to_accuracy": 0.18
   },
   "non_visual_questions": {
     "count": 100,
     "multimodal_anls": 0.74,
     "text_only_anls": 0.72,
-    "text_open_anls": 0.75,
     "mm_accuracy": 0.74,
-    "to_accuracy": 0.72,
-    "open_accuracy": 0.75
+    "to_accuracy": 0.72
   },
   "details": [
     {

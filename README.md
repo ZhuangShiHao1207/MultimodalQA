@@ -118,7 +118,33 @@ npm run dev
 | http://localhost:5173 | 前端界面（主入口） |
 | http://localhost:8001/docs | API 文档（Swagger UI） |
 
-### 6. 使用介绍
+### 6. 运行评测
+
+评测时间预估在1小时左右，评测结果已经保存在evaluation下可以直接查看，`evaluation\figures`有可视化图表，`evaluation\results.json`有结果。直接运行下面的 `rescore` 或 `visualize` 不消耗 API，可随时重新生成报告。
+
+评测系统无需启动前后端，直接在项目根目录执行：
+
+```bash
+conda activate multimodalQA
+
+# 完整评测（200 题 × 3 路 API，约 50~60 分钟，消耗约 600 次 GLM-4.6V API 调用）
+python -m evaluation.run_eval
+
+# 仅在已处理文档上跑（跳过缺失索引的文档，不自动构建）
+python -m evaluation.run_eval --skip-build
+
+# 用已有 results.json 重新计算指标，不消耗任何 API（适合修改指标后重跑）
+python -m evaluation.rescore
+
+# 根据 results.json 重新生成可视化图表（保存到 evaluation/figures/）
+python -m evaluation.visualize
+```
+
+> ⚠️ **关于文档索引**：评测脚本会自动检测 `data/` 目录下所有 PDF 的 ChromaDB 索引。若某文档索引为空（未被后端处理过），默认会自动触发完整索引构建（Docling 解析 + GLM-4.6V 摘要 + BGE-M3 向量化），耗时约 2~5 分钟/文档。如果索引构建失败，可以通过前面启动前后端的方式手动构建索引。如不希望自动构建，加 `--skip-build` 参数。
+
+详细报告见 [`evaluation/EVALUATION_REPORT.md`](evaluation/EVALUATION_REPORT.md)。
+
+### 7. 使用介绍
 
 #### 基本流程
 
@@ -154,17 +180,6 @@ npm run dev
 | **⑦ 混淆矩阵单元格读数** | 问"TF-IDF+LR 混淆矩阵中 negative→positive 的样本数？"<br/>→ Multimodal 答 1480；Text-only 拒答 |
 | **⑧ LaTeX 公式渲染** | 在含公式的文档（如 K-Means/GMM 实验报告）上问"K-Means 目标函数公式是什么？"<br/>→ 前端用 KaTeX 把 `\sum_{j=1}^k ‖x_i - μ_j‖²` 渲染成漂亮数学符号 |
 | **⑨ 多文档三路评测** | `python -m evaluation.run_eval` 跑 124 题（5 篇文档），三路对比 Multimodal / Text-only Grounded / Text-only Open 的 ANLS / Accuracy<br/>→ 见 `evaluation/EVALUATION_REPORT.md`<br/>⚠️ **首次运行约需 30~50 分钟**（124 题 × 3 次 API 调用） |
-
----
-
-#### 推荐演示脚本（约 5 分钟视频）
-
-1. **开场 (15s)**：展示前端首页（左侧文档列表 + 中间对话区 + 右上模式开关 + 左下问号），点 ❓ 弹出使用指南简单划过。
-2. **上传 + 处理 (60s)**：拖拽一份小 PDF，展示弹出的中文阶段化进度条（"解析 PDF" → "VLM 图表摘要" → "BGE-M3 向量化"）。处理时口播解释多模态 RAG 离线索引的步骤。
-3. **多模态问答 (60s)**：选中已 ready 的 K-Means/GMM 实验报告，Multimodal 模式下问"从训练损失曲线来看，哪种初始化方法的损失下降更快？" → 展示回答附带的曲线图 + 引用页码。点击 📄 标签弹出原页预览。
-4. **消融对比 (60s)**：右上角切换到 Text Only，重问同样的问题 → 展示模型只能给出模糊回答或拒答。回到 Multimodal，问"K-Means 的目标函数公式" → 展示 KaTeX 渲染的 LaTeX 数学符号。
-5. **引用溯源 + 跨文档 (60s)**：上传第二份 PDF（如电影评论情感分类报告），跨文档切换演示对话历史互不污染。在情感分类文档上问"哪个模型 Accuracy 最高？"，展示模型对柱状图的解读。
-6. **评测结果 (45s)**：终端跑 `python -m evaluation.rescore`（无 API 消耗，基于已有 results.json 重新计算），展示三路对比表（Multimodal vs Text-only Grounded vs Text-only Open）。打开 `evaluation/EVALUATION_REPORT.md` 划过关键案例与可视化图表。
 
 ---
 
@@ -447,7 +462,7 @@ MultimodalQA/
 - 视觉题子集：$\chi^2=43.18$，$p<0.0001$（高度显著）
 - 非视觉题子集：$p=0.683$（不显著，符合预期）
 
-> **关键发现**：在 100 道视觉题上，保守基线中有 85% 的失败源于"拒答"，而开放基线放开推断后准确率仅提升至 42%，远低于多模态系统（65%），证明多模态提升来自真实的视觉理解而非基线设计缺陷。hard 难度题目中差距更明显（+55 pp），说明视觉信息在复杂推理场景下价值更高。详细报告见 [`evaluation/EVALUATION_REPORT.md`](evaluation/EVALUATION_REPORT.md)。
+> **关键发现**：在 100 道视觉题上，保守基线中有 85% 的失败源于缺少信息而"拒答"，而开放基线放开推断后准确率仅提升至 42%，远低于多模态系统（65%），证明多模态提升来自真实的视觉理解而非基线设计缺陷。hard 难度题目中差距更明显（+55 pp），说明视觉信息在复杂推理场景下价值更高。详细报告见 [`evaluation/EVALUATION_REPORT.md`](evaluation/EVALUATION_REPORT.md)。
 
 ### 多模态 vs 纯文本对比（真实 Web Demo 测试结果）
 
