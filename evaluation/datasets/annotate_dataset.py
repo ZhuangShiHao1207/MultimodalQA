@@ -164,6 +164,84 @@ ANNOTATIONS = {
     "q121":("easy",   []),   # figure - read approximate bar height
     "q122":("medium", []),   # figure - comparative magnitude
     "q123":("medium", []),   # figure - identify monotonically rising line
+
+    # ── new q124-q199 ─────────────────────────────────────────────────────────
+    "q124":("easy",   ["76", "Random", "迭代"]),
+    "q125":("easy",   ["2359941.29", "K-Means++", "损失"]),
+    "q126":("easy",   ["2361084.75", "Random", "损失"]),
+    "q127":("easy",   ["0.4095", "Diagonal", "测试"]),
+    "q128":("easy",   ["40.24", "Spherical", "训练时间"]),
+    "q129":("easy",   ["136.29", "Random", "训练时间"]),
+    "q130":("easy",   ["-308797.24", "K-Means++", "对数似然"]),
+    "q131":("medium", ["Random", "K-Means++", "训练ACC"]),
+    "q132":("medium", ["Spherical", "对数似然", "最低"]),
+    "q133":("medium", ["K-Means", "GMM", "测试", "ACC"]),
+    "q134":("medium", []),   # figure - log-likelihood GMM covariance
+    "q135":("medium", []),   # figure - ACC curve lowest
+    "q136":("medium", []),   # figure - init log-likelihood comparison
+    "q137":("hard",   []),   # figure - scatter plot clarity
+    "q138":("hard",   []),   # figure - loss vs ACC sync
+    "q139":("easy",   ["0.8820", "Precision", "LogisticRegression"]),
+    "q140":("easy",   ["0.8985", "ROC_AUC", "BiLSTM"]),
+    "q141":("easy",   ["0.8622", "Recall", "LinearSVM"]),
+    "q142":("easy",   ["0.9063", "ROC_AUC", "RNN-Strong"]),
+    "q143":("easy",   []),   # figure - confusion matrix TN cell LR
+    "q144":("easy",   []),   # figure - confusion matrix TP cell SVM
+    "q145":("easy",   []),   # figure - confusion matrix FP cell RNN
+    "q146":("easy",   []),   # figure - confusion matrix FN cell RNN-Strong
+    "q147":("medium", []),   # figure - highest F1 bar
+    "q148":("medium", []),   # figure - final train loss value
+    "q149":("medium", []),   # figure - val loss upturn epoch
+    "q150":("hard",   []),   # figure - highest FP across 4 matrices
+    "q151":("hard",   []),   # figure - compare FN between SVM and RNN-Strong
+    "q152":("easy",   ["11.88", "Transformer-XL", "PG19"]),
+    "q153":("easy",   ["2.24", "Arxiv-math", "Linear"]),
+    "q154":("easy",   ["15.6", "PRIMERA", "ROUGE-L"]),
+    "q155":("easy",   ["36.4", "BART", "ROUGE-1"]),
+    "q156":("easy",   ["114x", "Memorizing", "压缩"]),
+    "q157":("easy",   ["73x", "RMT", "compression"]),
+    "q158":("medium", []),   # figure - BookSum score vs input length
+    "q159":("medium", []),   # figure - gating fusion mechanism
+    "q160":("medium", []),   # figure - Infini vs XL structural difference
+    "q161":("hard",   ["18.5", "17.2", "PRIMERA", "Overall"]),
+    "q162":("hard",   ["183M", "1.6M", "Memorizing", "Infini"]),
+    "q163":("hard",   []),   # figure - two head types heatmap
+    "q164":("easy",   ["1.1", "2011-2020", "1850-1900"]),
+    "q165":("easy",   ["59", "GtCO2", "2019"]),
+    "q166":("easy",   ["1.01", "SSP5-8.5", "2100"]),
+    "q167":("easy",   ["3.2", "2100", "政策"]),
+    "q168":("easy",   ["0.45", "1000 GtCO2", "温度"]),
+    "q169":("easy",   ["500", "GtCO2", "1.5°C"]),
+    "q170":("medium", []),   # figure - climate stripes deepest color
+    "q171":("medium", []),   # figure - hottest day temperature amplification
+    "q172":("medium", []),   # figure - sea level rise SSP3-7.0
+    "q173":("medium", []),   # figure - GHG peak timing C1
+    "q174":("hard",   []),   # figure - highest confidence impact type
+    "q175":("hard",   []),   # figure - AR5 vs AR6 RFC comparison
+    "q176":("hard",   []),   # figure - C1 vs policy gap at 2030
+    "q177":("medium", ["3.7", "2006", "2018", "sea level"]),
+    "q178":("easy",   ["85%", "solar", "cost"]),
+    "q179":("medium", []),   # figure - reference forecast GDP adjustment
+    "q180":("medium", []),   # figure - severe scenario GDP vs reference
+    "q181":("medium", []),   # figure - energy price surge March 2026
+    "q182":("medium", []),   # figure - largest negative factor bar
+    "q183":("medium", []),   # figure - energy mix trend renewables
+    "q184":("hard",   []),   # figure - oil share decline reading
+    "q185":("hard",   []),   # figure - MENA conflict impact value
+    "q186":("easy",   []),   # figure - severe scenario inflation
+    "q187":("easy",   []),   # figure - unfavorable scenario GDP
+    "q188":("hard",   []),   # figure - energy commodity price drop %
+    "q189":("hard",   []),   # figure - energy importer gap comparison
+    "q190":("easy",   ["80", "Diagonal", "迭代"]),
+    "q191":("easy",   ["50", "PCA", "降维"]),
+    "q192":("easy",   ["25000", "训练集", "IMDB"]),
+    "q193":("easy",   ["256", "hidden", "BiLSTM"]),
+    "q194":("medium", ["98", "1M", "passkey"]),
+    "q195":("easy",   ["32768", "sequence length"]),
+    "q196":("easy",   ["1.3", "2010-2019", "增速"]),
+    "q197":("easy",   ["1150", "GtCO2", "2°C"]),
+    "q198":("medium", []),   # figure - smallest negative bar factor
+    "q199":("easy",   []),   # figure - gas trend 1980-2020
 }
 
 # ── Apply annotations ─────────────────────────────────────────────────────────

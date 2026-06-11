@@ -2689,5 +2689,1607 @@
       "tables": [],
       "text_keywords": []
     }
+  },
+  {
+    "id": "q124",
+    "document": "测试数据（某次实验报告）.pdf",
+    "question": "Random初始化的收敛迭代次数是多少？",
+    "gold_answers": [
+      "76",
+      "76次",
+      "76次迭代"
+    ],
+    "type": "table",
+    "requires_visual": false,
+    "page": 4,
+    "difficulty": "easy",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": [
+        "76",
+        "Random",
+        "迭代"
+      ]
+    }
+  },
+  {
+    "id": "q125",
+    "document": "测试数据（某次实验报告）.pdf",
+    "question": "K-Means++初始化的最终损失值是多少？",
+    "gold_answers": [
+      "2359941.29",
+      "2359941"
+    ],
+    "type": "table",
+    "requires_visual": false,
+    "page": 4,
+    "difficulty": "easy",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": [
+        "2359941.29",
+        "K-Means++",
+        "损失"
+      ]
+    }
+  },
+  {
+    "id": "q126",
+    "document": "测试数据（某次实验报告）.pdf",
+    "question": "Random初始化的最终损失值是多少？",
+    "gold_answers": [
+      "2361084.75",
+      "2361084"
+    ],
+    "type": "table",
+    "requires_visual": false,
+    "page": 4,
+    "difficulty": "easy",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": [
+        "2361084.75",
+        "Random",
+        "损失"
+      ]
+    }
+  },
+  {
+    "id": "q127",
+    "document": "测试数据（某次实验报告）.pdf",
+    "question": "Diagonal协方差结构的测试集准确率是多少？",
+    "gold_answers": [
+      "0.4095",
+      "40.95%",
+      "0.4095"
+    ],
+    "type": "table",
+    "requires_visual": false,
+    "page": 5,
+    "difficulty": "easy",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": [
+        "0.4095",
+        "Diagonal",
+        "测试"
+      ]
+    }
+  },
+  {
+    "id": "q128",
+    "document": "测试数据（某次实验报告）.pdf",
+    "question": "Spherical协方差结构的训练时间是多少秒？",
+    "gold_answers": [
+      "40.24",
+      "40.24s",
+      "40.24秒"
+    ],
+    "type": "table",
+    "requires_visual": false,
+    "page": 5,
+    "difficulty": "easy",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": [
+        "40.24",
+        "Spherical",
+        "训练时间"
+      ]
+    }
+  },
+  {
+    "id": "q129",
+    "document": "测试数据（某次实验报告）.pdf",
+    "question": "GMM Full协方差+Random初始化配置的训练时间是多少？",
+    "gold_answers": [
+      "136.29",
+      "136.29s",
+      "136.29秒"
+    ],
+    "type": "table",
+    "requires_visual": false,
+    "page": 6,
+    "difficulty": "easy",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": [
+        "136.29",
+        "Random",
+        "训练时间"
+      ]
+    }
+  },
+  {
+    "id": "q130",
+    "document": "测试数据（某次实验报告）.pdf",
+    "question": "GMM Full协方差+K-Means++初始化的对数似然值是多少？",
+    "gold_answers": [
+      "-308797.24",
+      "-308797"
+    ],
+    "type": "table",
+    "requires_visual": false,
+    "page": 6,
+    "difficulty": "easy",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": [
+        "-308797.24",
+        "K-Means++",
+        "对数似然"
+      ]
+    }
+  },
+  {
+    "id": "q131",
+    "document": "测试数据（某次实验报告）.pdf",
+    "question": "在GMM Full协方差对比中，Random初始化的训练ACC比K-Means++高出多少百分点？",
+    "gold_answers": [
+      "约6个百分点",
+      "约6pp",
+      "6百分点",
+      "5.87",
+      "近6个百分点"
+    ],
+    "type": "table",
+    "requires_visual": false,
+    "page": 6,
+    "difficulty": "medium",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": [
+        "Random",
+        "K-Means++",
+        "训练ACC",
+        "对比"
+      ]
+    }
+  },
+  {
+    "id": "q132",
+    "document": "测试数据（某次实验报告）.pdf",
+    "question": "三种协方差结构中，哪种结构的对数似然最低？",
+    "gold_answers": [
+      "Spherical",
+      "球形协方差",
+      "球形"
+    ],
+    "type": "table",
+    "requires_visual": false,
+    "page": 5,
+    "difficulty": "medium",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": [
+        "Spherical",
+        "对数似然",
+        "最低"
+      ]
+    }
+  },
+  {
+    "id": "q133",
+    "document": "测试数据（某次实验报告）.pdf",
+    "question": "K-Means与GMM最优配置相比，测试集ACC差距约为多少个百分点？",
+    "gold_answers": [
+      "约4个百分点",
+      "4pp",
+      "约4%",
+      "4个百分点"
+    ],
+    "type": "table",
+    "requires_visual": false,
+    "page": 8,
+    "difficulty": "medium",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": [
+        "K-Means",
+        "GMM",
+        "测试",
+        "ACC",
+        "对比"
+      ]
+    }
+  },
+  {
+    "id": "q134",
+    "document": "测试数据（某次实验报告）.pdf",
+    "question": "从GMM不同协方差结构的Log-Likelihood曲线来看，哪种结构收敛后的对数似然值最高？",
+    "gold_answers": [
+      "Full",
+      "完全协方差",
+      "full"
+    ],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 5,
+    "difficulty": "medium",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": []
+    }
+  },
+  {
+    "id": "q135",
+    "document": "测试数据（某次实验报告）.pdf",
+    "question": "从GMM不同协方差结构的ACC曲线来看，哪种结构的准确率始终最低？",
+    "gold_answers": [
+      "Diagonal",
+      "对角协方差",
+      "diag"
+    ],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 5,
+    "difficulty": "medium",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": []
+    }
+  },
+  {
+    "id": "q136",
+    "document": "测试数据（某次实验报告）.pdf",
+    "question": "从GMM不同初始化方法的对数似然曲线看，K-Means++与Random相比，哪种的似然值在整个训练过程中都更高？",
+    "gold_answers": [
+      "K-Means++",
+      "KMeans++",
+      "K-Means++初始化"
+    ],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 7,
+    "difficulty": "medium",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": []
+    }
+  },
+  {
+    "id": "q137",
+    "document": "测试数据（某次实验报告）.pdf",
+    "question": "从散点图可视化来看，Ground Truth、Random、K-Means++三种结果中，哪种的簇边界最清晰、类别分布最明确？",
+    "gold_answers": [
+      "Ground Truth",
+      "真实标签",
+      "Ground Truth聚类"
+    ],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 7,
+    "difficulty": "hard",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": []
+    }
+  },
+  {
+    "id": "q138",
+    "document": "测试数据（某次实验报告）.pdf",
+    "question": "在K-Means++初始化的训练ACC曲线与损失曲线中，损失快速下降阶段与ACC快速上升阶段是否同步？",
+    "gold_answers": [
+      "不同步",
+      "不一致",
+      "否",
+      "损失下降更快，ACC上升相对缓慢"
+    ],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 5,
+    "difficulty": "hard",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": []
+    }
+  },
+  {
+    "id": "q139",
+    "document": "大数据报告（电影评论情感二分类）.pdf",
+    "question": "TF-IDF+LogisticRegression的Precision是多少？",
+    "gold_answers": [
+      "0.8820",
+      "88.20%",
+      "0.882"
+    ],
+    "type": "table",
+    "requires_visual": false,
+    "page": 3,
+    "difficulty": "easy",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": [
+        "0.8820",
+        "Precision",
+        "LogisticRegression"
+      ]
+    }
+  },
+  {
+    "id": "q140",
+    "document": "大数据报告（电影评论情感二分类）.pdf",
+    "question": "RNN (BiLSTM, PyTorch)的ROC_AUC是多少？",
+    "gold_answers": [
+      "0.8985",
+      "89.85%",
+      "0.8985"
+    ],
+    "type": "table",
+    "requires_visual": false,
+    "page": 3,
+    "difficulty": "easy",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": [
+        "0.8985",
+        "ROC_AUC",
+        "BiLSTM"
+      ]
+    }
+  },
+  {
+    "id": "q141",
+    "document": "大数据报告（电影评论情感二分类）.pdf",
+    "question": "TF-IDF+LinearSVM的Recall是多少？",
+    "gold_answers": [
+      "0.8622",
+      "86.22%",
+      "0.8622"
+    ],
+    "type": "table",
+    "requires_visual": false,
+    "page": 3,
+    "difficulty": "easy",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": [
+        "0.8622",
+        "Recall",
+        "LinearSVM"
+      ]
+    }
+  },
+  {
+    "id": "q142",
+    "document": "大数据报告（电影评论情感二分类）.pdf",
+    "question": "RNN-Strong(BiLSTM)的ROC_AUC是多少？",
+    "gold_answers": [
+      "0.9063",
+      "90.63%",
+      "0.9063"
+    ],
+    "type": "table",
+    "requires_visual": false,
+    "page": 3,
+    "difficulty": "easy",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": [
+        "0.9063",
+        "ROC_AUC",
+        "RNN-Strong"
+      ]
+    }
+  },
+  {
+    "id": "q143",
+    "document": "大数据报告（电影评论情感二分类）.pdf",
+    "question": "TF-IDF+LogisticRegression混淆矩阵中，negative类被正确预测为negative的数量是多少？",
+    "gold_answers": [
+      "11020",
+      "11020例"
+    ],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 4,
+    "difficulty": "easy",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": []
+    }
+  },
+  {
+    "id": "q144",
+    "document": "大数据报告（电影评论情感二分类）.pdf",
+    "question": "TF-IDF+LinearSVM混淆矩阵中，true positive被正确预测的数量是多少？",
+    "gold_answers": [
+      "10778",
+      "10778例"
+    ],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 4,
+    "difficulty": "easy",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": []
+    }
+  },
+  {
+    "id": "q145",
+    "document": "大数据报告（电影评论情感二分类）.pdf",
+    "question": "RNN(BiLSTM)混淆矩阵中，true negative被错误预测为positive的数量是多少？",
+    "gold_answers": [
+      "2554",
+      "2554例"
+    ],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 5,
+    "difficulty": "easy",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": []
+    }
+  },
+  {
+    "id": "q146",
+    "document": "大数据报告（电影评论情感二分类）.pdf",
+    "question": "RNN-Strong混淆矩阵中，true positive被错误预测为negative的数量是多少？",
+    "gold_answers": [
+      "2360",
+      "2360例"
+    ],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 5,
+    "difficulty": "easy",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": []
+    }
+  },
+  {
+    "id": "q147",
+    "document": "大数据报告（电影评论情感二分类）.pdf",
+    "question": "四个模型中，哪个模型的F1分数最高？",
+    "gold_answers": [
+      "TF-IDF+LogisticRegression",
+      "LogisticRegression",
+      "TF-IDF+LR"
+    ],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 3,
+    "difficulty": "medium",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": []
+    }
+  },
+  {
+    "id": "q148",
+    "document": "大数据报告（电影评论情感二分类）.pdf",
+    "question": "从RNN训练损失曲线看，训练集损失（Train Loss）的最终值约为多少？",
+    "gold_answers": [
+      "约0.03",
+      "0.03左右",
+      "接近0"
+    ],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 3,
+    "difficulty": "medium",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": []
+    }
+  },
+  {
+    "id": "q149",
+    "document": "大数据报告（电影评论情感二分类）.pdf",
+    "question": "从RNN训练曲线看，验证集Loss（Val Loss）大约从第几个Epoch开始回升？",
+    "gold_answers": [
+      "第4个",
+      "4",
+      "约第4个Epoch",
+      "第4"
+    ],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 3,
+    "difficulty": "medium",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": []
+    }
+  },
+  {
+    "id": "q150",
+    "document": "大数据报告（电影评论情感二分类）.pdf",
+    "question": "比较四个模型的混淆矩阵，哪个模型对negative类的误判率最高（即FP最多）？",
+    "gold_answers": [
+      "RNN (BiLSTM, PyTorch)",
+      "普通RNN",
+      "RNN BiLSTM"
+    ],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 4,
+    "difficulty": "hard",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": []
+    }
+  },
+  {
+    "id": "q151",
+    "document": "大数据报告（电影评论情感二分类）.pdf",
+    "question": "比较LinearSVM和RNN-Strong两个模型的混淆矩阵，哪个模型对positive类的召回率更高（即FN更少）？",
+    "gold_answers": [
+      "TF-IDF+LinearSVM",
+      "LinearSVM",
+      "SVM"
+    ],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 4,
+    "difficulty": "hard",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": []
+    }
+  },
+  {
+    "id": "q152",
+    "document": "2404.07143v2.pdf",
+    "question": "Transformer-XL在PG19上的perplexity是多少？",
+    "gold_answers": [
+      "11.88",
+      "11.88 perplexity"
+    ],
+    "type": "table",
+    "requires_visual": false,
+    "page": 7,
+    "difficulty": "easy",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": [
+        "11.88",
+        "Transformer-XL",
+        "PG19"
+      ]
+    }
+  },
+  {
+    "id": "q153",
+    "document": "2404.07143v2.pdf",
+    "question": "Infini-Transformer(Linear)在Arxiv-math上的perplexity是多少？",
+    "gold_answers": [
+      "2.24",
+      "2.24 perplexity"
+    ],
+    "type": "table",
+    "requires_visual": false,
+    "page": 7,
+    "difficulty": "easy",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": [
+        "2.24",
+        "Arxiv-math",
+        "Linear"
+      ]
+    }
+  },
+  {
+    "id": "q154",
+    "document": "2404.07143v2.pdf",
+    "question": "在BookSum任务上，PRIMERA的ROUGE-L分数是多少？",
+    "gold_answers": [
+      "15.6",
+      "ROUGE-L 15.6"
+    ],
+    "type": "table",
+    "requires_visual": false,
+    "page": 8,
+    "difficulty": "easy",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": [
+        "15.6",
+        "PRIMERA",
+        "ROUGE-L"
+      ]
+    }
+  },
+  {
+    "id": "q155",
+    "document": "2404.07143v2.pdf",
+    "question": "在BookSum任务上，BART的ROUGE-1分数是多少？",
+    "gold_answers": [
+      "36.4",
+      "ROUGE-1 36.4"
+    ],
+    "type": "table",
+    "requires_visual": false,
+    "page": 8,
+    "difficulty": "easy",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": [
+        "36.4",
+        "BART",
+        "ROUGE-1"
+      ]
+    }
+  },
+  {
+    "id": "q156",
+    "document": "2404.07143v2.pdf",
+    "question": "Infini-Transformer与Memorizing Transformers相比，内存压缩比是多少？",
+    "gold_answers": [
+      "114x",
+      "114倍",
+      "114×"
+    ],
+    "type": "table",
+    "requires_visual": false,
+    "page": 7,
+    "difficulty": "easy",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": [
+        "114x",
+        "Memorizing",
+        "压缩"
+      ]
+    }
+  },
+  {
+    "id": "q157",
+    "document": "2404.07143v2.pdf",
+    "question": "RMT模型的内存压缩比是多少？",
+    "gold_answers": [
+      "73x",
+      "73倍",
+      "73×"
+    ],
+    "type": "table",
+    "requires_visual": false,
+    "page": 7,
+    "difficulty": "easy",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": [
+        "73x",
+        "RMT",
+        "compression"
+      ]
+    }
+  },
+  {
+    "id": "q158",
+    "document": "2404.07143v2.pdf",
+    "question": "在BookSum任务中，随着输入长度从16K增加到128K，Infini-Transformer的Rouge整体得分如何变化？",
+    "gold_answers": [
+      "整体上升",
+      "呈上升趋势",
+      "波动上升",
+      "从18.02升至19.43"
+    ],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 8,
+    "difficulty": "medium",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": []
+    }
+  },
+  {
+    "id": "q159",
+    "document": "2404.07143v2.pdf",
+    "question": "从Infini-attention架构图看，长期记忆（compressive memory）与局部注意力的输出是通过什么方式融合的？",
+    "gold_answers": [
+      "gating",
+      "门控机制",
+      "learned gating scalar",
+      "sigmoid门控"
+    ],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 1,
+    "difficulty": "medium",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": []
+    }
+  },
+  {
+    "id": "q160",
+    "document": "2404.07143v2.pdf",
+    "question": "从Infini-Transformer与Transformer-XL对比图中，两者的核心区别是什么？",
+    "gold_answers": [
+      "Infini-Transformer有压缩记忆",
+      "Infini-Transformer保留历史记忆",
+      "Transformer-XL只保留最近段的KV缓存"
+    ],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 3,
+    "difficulty": "medium",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": []
+    }
+  },
+  {
+    "id": "q161",
+    "document": "2404.07143v2.pdf",
+    "question": "Infini-Transformer(Linear+Delta)在BookSum上的Overall得分比PRIMERA+Unlimiformer高多少？",
+    "gold_answers": [
+      "1.3",
+      "18.5 vs 17.2",
+      "+1.3"
+    ],
+    "type": "table",
+    "requires_visual": false,
+    "page": 8,
+    "difficulty": "hard",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": [
+        "18.5",
+        "17.2",
+        "PRIMERA",
+        "Overall"
+      ]
+    }
+  },
+  {
+    "id": "q162",
+    "document": "2404.07143v2.pdf",
+    "question": "在表1中，Memorizing Transformers的内存占用（cache footprint）是Infini-Transformer的多少倍？",
+    "gold_answers": [
+      "约114倍",
+      "114倍",
+      "183M vs 1.6M约114倍"
+    ],
+    "type": "table",
+    "requires_visual": false,
+    "page": 5,
+    "difficulty": "hard",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": [
+        "183M",
+        "1.6M",
+        "Memorizing",
+        "Infini"
+      ]
+    }
+  },
+  {
+    "id": "q163",
+    "document": "2404.07143v2.pdf",
+    "question": "从注意力头门控分数热力图来看，训练后出现了哪两种类型的注意力头？",
+    "gold_answers": [
+      "specialized heads和mixer heads",
+      "专业头和混合头",
+      "specialized heads与mixer heads"
+    ],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 6,
+    "difficulty": "hard",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": []
+    }
+  },
+  {
+    "id": "q164",
+    "document": "IPCC_AR6_SYR_SPM.pdf",
+    "question": "根据IPCC AR6，2011-2020年全球地表温度比1850-1900年高出多少摄氏度？",
+    "gold_answers": [
+      "1.1°C",
+      "1.1",
+      "1.09°C",
+      "1.09"
+    ],
+    "type": "text",
+    "requires_visual": false,
+    "page": 2,
+    "difficulty": "easy",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": [
+        "1.1",
+        "2011-2020",
+        "1850-1900"
+      ]
+    }
+  },
+  {
+    "id": "q165",
+    "document": "IPCC_AR6_SYR_SPM.pdf",
+    "question": "2019年全球GHG净人为排放量是多少GtCO2当量？",
+    "gold_answers": [
+      "59",
+      "59 GtCO2-eq",
+      "59±6.6"
+    ],
+    "type": "text",
+    "requires_visual": false,
+    "page": 2,
+    "difficulty": "easy",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": [
+        "59",
+        "GtCO2",
+        "2019"
+      ]
+    }
+  },
+  {
+    "id": "q166",
+    "document": "IPCC_AR6_SYR_SPM.pdf",
+    "question": "根据SSP5-8.5情景，2100年海平面可能上升多少厘米（likely range上限）？",
+    "gold_answers": [
+      "1.01m",
+      "101cm",
+      "0.63至1.01m",
+      "63至101cm"
+    ],
+    "type": "text",
+    "requires_visual": false,
+    "page": 3,
+    "difficulty": "easy",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": [
+        "0.63",
+        "1.01",
+        "SSP5-8.5",
+        "2100"
+      ]
+    }
+  },
+  {
+    "id": "q167",
+    "document": "IPCC_AR6_SYR_SPM.pdf",
+    "question": "在不强化政策的情况下，2100年全球变暖预测值是多少摄氏度？",
+    "gold_answers": [
+      "3.2°C",
+      "3.2",
+      "3.2 [2.2 to 3.5]°C"
+    ],
+    "type": "text",
+    "requires_visual": false,
+    "page": 8,
+    "difficulty": "easy",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": [
+        "3.2",
+        "2100",
+        "政策"
+      ]
+    }
+  },
+  {
+    "id": "q168",
+    "document": "IPCC_AR6_SYR_SPM.pdf",
+    "question": "每排放1000 GtCO2，全球地表温度上升多少摄氏度？",
+    "gold_answers": [
+      "0.45°C",
+      "0.45",
+      "约0.45°C"
+    ],
+    "type": "text",
+    "requires_visual": false,
+    "page": 17,
+    "difficulty": "easy",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": [
+        "0.45",
+        "1000 GtCO2",
+        "温度"
+      ]
+    }
+  },
+  {
+    "id": "q169",
+    "document": "IPCC_AR6_SYR_SPM.pdf",
+    "question": "将升温限制在1.5°C(50%)所剩的碳预算是多少GtCO2？",
+    "gold_answers": [
+      "500 GtCO2",
+      "500",
+      "500吉吨"
+    ],
+    "type": "text",
+    "requires_visual": false,
+    "page": 17,
+    "difficulty": "easy",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": [
+        "500",
+        "GtCO2",
+        "1.5°C",
+        "碳预算"
+      ]
+    }
+  },
+  {
+    "id": "q170",
+    "document": "IPCC_AR6_SYR_SPM.pdf",
+    "question": "从全球温度变化条纹图看，2020年出生的人到2090年时（约70岁），哪种排放情景下的气候条纹颜色最深（升温最严重）？",
+    "gold_answers": [
+      "very high排放情景",
+      "SSP5-8.5",
+      "最高排放情景",
+      "very high"
+    ],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 5,
+    "difficulty": "medium",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": []
+    }
+  },
+  {
+    "id": "q171",
+    "document": "IPCC_AR6_SYR_SPM.pdf",
+    "question": "从图SPM.2中，在全球升温4°C时，哪个区域的最热日温度增幅最显著？",
+    "gold_answers": [
+      "中纬度地区",
+      "半干旱区",
+      "陆地中纬度和半干旱区"
+    ],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 12,
+    "difficulty": "medium",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": []
+    }
+  },
+  {
+    "id": "q172",
+    "document": "IPCC_AR6_SYR_SPM.pdf",
+    "question": "根据图SPM.4中的海平面变化图，SSP3-7.0情景下2100年全球平均海平面相比1900年约上升多少厘米？",
+    "gold_answers": [
+      "约50-60cm",
+      "约0.5-0.6m",
+      "约50至60厘米"
+    ],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 16,
+    "difficulty": "medium",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": []
+    }
+  },
+  {
+    "id": "q173",
+    "document": "IPCC_AR6_SYR_SPM.pdf",
+    "question": "从图SPM.5可以看出，在1.5°C路径（C1类）下，全球GHG排放峰值大约在哪个年份之前出现？",
+    "gold_answers": [
+      "2025年前",
+      "2025年",
+      "2020-2025年"
+    ],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 20,
+    "difficulty": "medium",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": []
+    }
+  },
+  {
+    "id": "q174",
+    "document": "IPCC_AR6_SYR_SPM.pdf",
+    "question": "从图SPM.1中，气候变化对哪类系统（陆地、淡水、海洋之一）的影响被评估为置信度最高（虚拟确定）？",
+    "gold_answers": [
+      "海洋生态系统",
+      "海洋",
+      "ocean ecosystems"
+    ],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 5,
+    "difficulty": "hard",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": []
+    }
+  },
+  {
+    "id": "q175",
+    "document": "IPCC_AR6_SYR_SPM.pdf",
+    "question": "比较AR5与AR6的全球关注理由（RFC）燃烧柱图，AR6评估在哪个风险类别上相比AR5风险等级提升最明显（风险过渡温度更低）？",
+    "gold_answers": [
+      "极端天气事件",
+      "RFC2",
+      "extreme weather events"
+    ],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 15,
+    "difficulty": "hard",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": []
+    }
+  },
+  {
+    "id": "q176",
+    "document": "IPCC_AR6_SYR_SPM.pdf",
+    "question": "在GHG减排路径图（图SPM.5）中，相比于现行政策路径，C1（1.5°C）路径在2030年的GHG排放需减少多少GtCO2-eq？",
+    "gold_answers": [
+      "约20GtCO2",
+      "约20",
+      "约20 GtCO2-eq"
+    ],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 20,
+    "difficulty": "hard",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": []
+    }
+  },
+  {
+    "id": "q177",
+    "document": "IPCC_AR6_SYR_SPM.pdf",
+    "question": "2006-2018年间全球平均海平面上升速率是多少mm/年？",
+    "gold_answers": [
+      "3.7",
+      "3.7 mm/yr",
+      "3.7 [3.2 to 4.2] mm/yr"
+    ],
+    "type": "text",
+    "requires_visual": false,
+    "page": 3,
+    "difficulty": "medium",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": [
+        "3.7",
+        "2006",
+        "2018",
+        "sea level"
+      ]
+    }
+  },
+  {
+    "id": "q178",
+    "document": "IPCC_AR6_SYR_SPM.pdf",
+    "question": "2010-2019年间太阳能单位成本下降了多少百分比？",
+    "gold_answers": [
+      "85%",
+      "85",
+      "下降85%"
+    ],
+    "type": "text",
+    "requires_visual": false,
+    "page": 9,
+    "difficulty": "easy",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": [
+        "85%",
+        "solar",
+        "太阳能",
+        "cost"
+      ]
+    }
+  },
+  {
+    "id": "q179",
+    "document": "战事给全球经济前景蒙上阴影并重塑政策优先事项.pdf",
+    "question": "参考预测对2026年GDP增速的调整是多少（相对于2026年1月《世界经济展望》）？",
+    "gold_answers": [
+      "3.4%",
+      "3.4",
+      "3.4%增速"
+    ],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 6,
+    "difficulty": "medium",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": []
+    }
+  },
+  {
+    "id": "q180",
+    "document": "战事给全球经济前景蒙上阴影并重塑政策优先事项.pdf",
+    "question": "在GDP增速与通胀的预测图中，严峻情景（橙色）下GDP增速与参考预测相比如何？",
+    "gold_answers": [
+      "更低",
+      "低于参考预测",
+      "严峻情景GDP增速最低"
+    ],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 5,
+    "difficulty": "medium",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": []
+    }
+  },
+  {
+    "id": "q181",
+    "document": "战事给全球经济前景蒙上阴影并重塑政策优先事项.pdf",
+    "question": "从能源价格折线图看，2026年3月哪种能源价格涨幅最显著？",
+    "gold_answers": [
+      "天然气（亚洲液化天然气市场）",
+      "亚洲LNG",
+      "亚洲液化天然气"
+    ],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 3,
+    "difficulty": "medium",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": []
+    }
+  },
+  {
+    "id": "q182",
+    "document": "战事给全球经济前景蒙上阴影并重塑政策优先事项.pdf",
+    "question": "从柱状图来看，对某指标影响最大的负面因素是什么？",
+    "gold_answers": [
+      "政策不确定性",
+      "政策不确定性（2025年4月）",
+      "policy uncertainty"
+    ],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 2,
+    "difficulty": "medium",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": []
+    }
+  },
+  {
+    "id": "q183",
+    "document": "战事给全球经济前景蒙上阴影并重塑政策优先事项.pdf",
+    "question": "从能源结构折线图（1980-2020）看，哪种能源的占比增长最显著？",
+    "gold_answers": [
+      "可再生能源",
+      "renewables",
+      "可再生能源增长最显著"
+    ],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 9,
+    "difficulty": "medium",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": []
+    }
+  },
+  {
+    "id": "q184",
+    "document": "战事给全球经济前景蒙上阴影并重塑政策优先事项.pdf",
+    "question": "从能源结构折线图（1980-2020）看，石油的占比从约多少下降到约多少？",
+    "gold_answers": [
+      "从46降至32",
+      "从约46降至约32",
+      "46→32"
+    ],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 9,
+    "difficulty": "hard",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": []
+    }
+  },
+  {
+    "id": "q185",
+    "document": "战事给全球经济前景蒙上阴影并重塑政策优先事项.pdf",
+    "question": "在受冲突影响国家中，中东和北非的GDP调整数值约为多少？",
+    "gold_answers": [
+      "-2.2",
+      "约-2.2",
+      "-2.2%"
+    ],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 6,
+    "difficulty": "hard",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": []
+    }
+  },
+  {
+    "id": "q186",
+    "document": "战事给全球经济前景蒙上阴影并重塑政策优先事项.pdf",
+    "question": "严峻情景下2026年总体通胀率是多少？",
+    "gold_answers": [
+      "6%",
+      "6",
+      "严峻情景通胀6%"
+    ],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 5,
+    "difficulty": "easy",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": []
+    }
+  },
+  {
+    "id": "q187",
+    "document": "战事给全球经济前景蒙上阴影并重塑政策优先事项.pdf",
+    "question": "不利情景下2026年参考预测GDP增速是多少？",
+    "gold_answers": [
+      "2.5%",
+      "2.5",
+      "不利情景2.5%"
+    ],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 5,
+    "difficulty": "easy",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": []
+    }
+  },
+  {
+    "id": "q188",
+    "document": "战事给全球经济前景蒙上阴影并重塑政策优先事项.pdf",
+    "question": "从图中能源大宗商品价格相关数据来看，2026年能源大宗商品价格相对2025年1月约下降了多少百分比？",
+    "gold_answers": [
+      "19%",
+      "约19%",
+      "下降约19%"
+    ],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 3,
+    "difficulty": "hard",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": []
+    }
+  },
+  {
+    "id": "q189",
+    "document": "战事给全球经济前景蒙上阴影并重塑政策优先事项.pdf",
+    "question": "比较能源进口国中发达经济体与低收入发展中国家的GDP调整幅度，差距约为多少百分点？",
+    "gold_answers": [
+      "约0.3个百分点",
+      "约-0.3 vs -0.6差0.3",
+      "0.3pp"
+    ],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 6,
+    "difficulty": "hard",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": []
+    }
+  },
+  {
+    "id": "q190",
+    "document": "测试数据（某次实验报告）.pdf",
+    "question": "Diagonal协方差结构的迭代次数是多少？",
+    "gold_answers": [
+      "80",
+      "80次"
+    ],
+    "type": "table",
+    "requires_visual": false,
+    "page": 5,
+    "difficulty": "easy",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": [
+        "80",
+        "Diagonal",
+        "迭代"
+      ]
+    }
+  },
+  {
+    "id": "q191",
+    "document": "测试数据（某次实验报告）.pdf",
+    "question": "GMM使用PCA将数据降至多少维？",
+    "gold_answers": [
+      "50维",
+      "50",
+      "50维（PCA降维）"
+    ],
+    "type": "text",
+    "requires_visual": false,
+    "page": 5,
+    "difficulty": "easy",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": [
+        "50",
+        "PCA",
+        "降维"
+      ]
+    }
+  },
+  {
+    "id": "q192",
+    "document": "大数据报告（电影评论情感二分类）.pdf",
+    "question": "实验使用的IMDB数据集训练集有多少样本？",
+    "gold_answers": [
+      "25000",
+      "25000个样本",
+      "完整25000训练集"
+    ],
+    "type": "text",
+    "requires_visual": false,
+    "page": 2,
+    "difficulty": "easy",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": [
+        "25000",
+        "训练集",
+        "IMDB"
+      ]
+    }
+  },
+  {
+    "id": "q193",
+    "document": "大数据报告（电影评论情感二分类）.pdf",
+    "question": "改进版BiLSTM的隐层维度是多少？",
+    "gold_answers": [
+      "256",
+      "hidden dim 256",
+      "256维"
+    ],
+    "type": "text",
+    "requires_visual": false,
+    "page": 2,
+    "difficulty": "easy",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": [
+        "256",
+        "hidden",
+        "BiLSTM"
+      ]
+    }
+  },
+  {
+    "id": "q194",
+    "document": "2404.07143v2.pdf",
+    "question": "Infini-Transformer在零样本1M长度passkey检索任务上的准确率是多少？",
+    "gold_answers": [
+      "98%",
+      "98",
+      "98/100"
+    ],
+    "type": "table",
+    "requires_visual": false,
+    "page": 7,
+    "difficulty": "medium",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": [
+        "98",
+        "1M",
+        "passkey"
+      ]
+    }
+  },
+  {
+    "id": "q195",
+    "document": "2404.07143v2.pdf",
+    "question": "论文中Infini-attention训练时使用的输入序列长度是多少？",
+    "gold_answers": [
+      "32768",
+      "32K",
+      "32768 tokens"
+    ],
+    "type": "text",
+    "requires_visual": false,
+    "page": 7,
+    "difficulty": "easy",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": [
+        "32768",
+        "sequence length",
+        "training"
+      ]
+    }
+  },
+  {
+    "id": "q196",
+    "document": "IPCC_AR6_SYR_SPM.pdf",
+    "question": "2010-2019年GHG年均排放增速是多少（%/年）？",
+    "gold_answers": [
+      "1.3%/年",
+      "1.3",
+      "1.3% yr-1"
+    ],
+    "type": "text",
+    "requires_visual": false,
+    "page": 2,
+    "difficulty": "easy",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": [
+        "1.3",
+        "2010-2019",
+        "增速"
+      ]
+    }
+  },
+  {
+    "id": "q197",
+    "document": "IPCC_AR6_SYR_SPM.pdf",
+    "question": "将升温限制在2°C(67%)所剩的碳预算是多少GtCO2？",
+    "gold_answers": [
+      "1150 GtCO2",
+      "1150",
+      "1150吉吨"
+    ],
+    "type": "text",
+    "requires_visual": false,
+    "page": 17,
+    "difficulty": "easy",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": [
+        "1150",
+        "GtCO2",
+        "2°C"
+      ]
+    }
+  },
+  {
+    "id": "q198",
+    "document": "战事给全球经济前景蒙上阴影并重塑政策优先事项.pdf",
+    "question": "从柱状图看，对GDP影响最小（负向最小）的因素是什么？",
+    "gold_answers": [
+      "技术投资",
+      "技术投资影响最小"
+    ],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 2,
+    "difficulty": "medium",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": []
+    }
+  },
+  {
+    "id": "q199",
+    "document": "战事给全球经济前景蒙上阴影并重塑政策优先事项.pdf",
+    "question": "从1980年到2020年，天然气的能源占比走势如何？",
+    "gold_answers": [
+      "持续上升",
+      "不断增长",
+      "呈上升趋势"
+    ],
+    "type": "figure",
+    "requires_visual": true,
+    "page": 9,
+    "difficulty": "easy",
+    "expected_elements": {
+      "images": [],
+      "tables": [],
+      "text_keywords": []
+    }
   }
 ]
