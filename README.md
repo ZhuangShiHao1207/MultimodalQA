@@ -179,7 +179,16 @@ python -m evaluation.visualize
 | **⑥ 表格读数** | 问"Random 初始化的测试集准确率是多少？"<br/>→ 模型从 Markdown 表格中精确提取 0.5937 |
 | **⑦ 混淆矩阵单元格读数** | 问"TF-IDF+LR 混淆矩阵中 negative→positive 的样本数？"<br/>→ Multimodal 答 1480；Text-only 拒答 |
 | **⑧ LaTeX 公式渲染** | 在含公式的文档（如 K-Means/GMM 实验报告）上问"K-Means 目标函数公式是什么？"<br/>→ 前端用 KaTeX 把 `\sum_{j=1}^k ‖x_i - μ_j‖²` 渲染成漂亮数学符号 |
-| **⑨ 多文档三路评测** | `python -m evaluation.run_eval` 跑 124 题（5 篇文档），三路对比 Multimodal / Text-only Grounded / Text-only Open 的 ANLS / Accuracy<br/>→ 见 `evaluation/EVALUATION_REPORT.md`<br/>⚠️ **首次运行约需 30~50 分钟**（124 题 × 3 次 API 调用） |
+| **⑨ 多文档三路评测** | `python -m evaluation.run_eval` 跑 200 题（5 篇文档），三路对比多模态 / 纯文本保守 / 纯文本开放的 ANLS / Accuracy<br/>→ 见 `evaluation/EVALUATION_REPORT.md`<br/>⚠️ **首次运行约需 50~60 分钟**（200 题 × 3 次 API 调用） |
+
+---
+
+#### 分工说明
+
+| 成员 | 负责内容 |
+|---|---|
+| **庄仕豪**（23336355） | 方案设计、开题报告、后端开发、多模态 RAG 核心管道（Docling 解析等）、纯文本开放基线（Text-only Open）、完整数据集构建与评测体系（ANLS / McNemar / 可视化） |
+| **钟晨晖**（23336336） | 前端开发、纯文本保守基线（Text-only Grounded）、Demo 视频录制、PPT 制作与最终汇报 |
 
 ---
 
@@ -480,7 +489,7 @@ MultimodalQA/
 ## 团队
 
 - 庄仕豪 (23336355)
-- 钟晨辉 (23336336)
+- 钟晨晖 (23336336)
 
 ## 参考文献
 
