@@ -442,17 +442,36 @@ img,video,canvas,svg{max-width:100%;max-height:100%;}
   </div>
   <div class="s11-c">
     <div class="s11-tt rv d1">Demo <span class="ac">视频</span></div>
-    <div class="rv d2" style="width:1300px;">
-      <video
-        src="fast-demo.mp4"
-        controls
-        style="width:100%;max-height:600px;border-radius:14px;
-               border:2px solid rgba(0,229,255,.3);background:#0a1830;
-               box-shadow:0 0 40px rgba(0,229,255,.12);display:block;">
-        您的浏览器不支持 video 标签。
-      </video>
+    <!-- 截图区域：点击跳转 B 站 -->
+    <a href="https://www.bilibili.com/video/BV1UqjN6gEaB/?vd_source=11f2137d6276ac03fd493958370ff17e"
+       target="_blank"
+       class="rv d2"
+       style="display:block;width:1300px;position:relative;cursor:pointer;text-decoration:none;">
+      <!-- 截图 -->
+      <img src="缩略图.png"
+           style="width:100%;max-height:560px;object-fit:cover;border-radius:14px;
+                  border:2px solid rgba(0,229,255,.35);display:block;
+                  box-shadow:0 0 40px rgba(0,229,255,.15);">
+      <!-- 播放按钮蒙层 -->
+      <div style="position:absolute;inset:0;border-radius:14px;
+                  background:rgba(4,12,24,.45);
+                  display:flex;align-items:center;justify-content:center;
+                  transition:background .25s;"
+           onmouseover="this.style.background='rgba(4,12,24,.25)'"
+           onmouseout="this.style.background='rgba(4,12,24,.45)'">
+        <div style="width:88px;height:88px;border-radius:50%;
+                    background:rgba(0,229,255,.18);border:2px solid rgba(0,229,255,.6);
+                    display:flex;align-items:center;justify-content:center;
+                    font-size:40px;color:#00e5ff;padding-left:6px;">▶</div>
+      </div>
+    </a>
+    <!-- 链接文字 -->
+    <div style="font-family:'Space Mono',monospace;font-size:20px;
+                color:rgba(0,229,255,.7);letter-spacing:.04em;text-align:center;" class="rv d3">
+      点击图片或扫码前往 B 站观看 &nbsp;·&nbsp;
+      https://www.bilibili.com/video/BV1UqjN6gEaB
     </div>
-    <div style="font-size:var(--fs-body);color:var(--mu);line-height:1.7;text-align:center;" class="rv d3">
+    <div style="font-size:22px;color:var(--mu);line-height:1.7;text-align:center;" class="rv d3">
       演示内容：PDF 上传 · 多模态问答 · 纯文本对比消融 · 引用溯源 · LaTeX 公式渲染
     </div>
   </div>
