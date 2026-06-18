@@ -338,7 +338,75 @@ GLM-4.6V 按 system prompt 要求在回答末尾附加结构化引用标签：
 前端解析该标签，渲染为可点击的"第5页"按钮，点击弹窗显示对应页面原图。
 
 % ================================================================
-%  四、实验
+%  四、系统实现
+% ================================================================
+\section{系统实现}
+
+\subsection{前后端架构}
+
+系统采用前后端分离架构：后端基于 FastAPI 提供 REST API 与 SSE（Server-Sent Events）流式推送，前端基于 Vue 3 + Vite 构建，通过 HTTP/SSE 与后端通信。
+
+\textbf{后端}（\texttt{backend/}）共 7 个 API 端点，核心流程如下：
+\begin{itemize}
+    \item \texttt{POST /api/upload}：接收 PDF 文件，分配 \texttt{task\_id}，异步触发四阶段处理管道；
+    \item \texttt{GET /api/upload/\{task\_id\}/progress}：SSE 流，实时推送每个阶段的进度百分比与阶段名称；
+    \item \texttt{POST /api/chat}：接收用户问题与文档 ID，调用检索-生成管道，返回答案、引用列表与（可选）图片。
+\end{itemize}
+
+处理管道运行在后台线程池中，通过 \texttt{asyncio.Queue} 向 SSE 端点传递进度事件，保证主线程不阻塞。ChromaDB 的向量索引持久化到磁盘（\texttt{backend/chroma\_data/}），重启后端无需重建。
+
+\textbf{前端}（\texttt{frontend/}）关键组件包括：
+\begin{itemize}
+    \item \texttt{Sidebar.vue}：PDF 拖拽上传与文档列表管理，支持点选切换当前文档；
+    \item \texttt{UploadProgress.vue}：实时进度弹窗，订阅 SSE 流，按阶段显示中文名称与耗时；
+    \item \texttt{ChatPanel.vue} + \texttt{MessageBubble.vue}：图文混合对话框，通过 KaTeX 渲染 LaTeX 公式，引用标签渲染为可点击按钮；
+    \item \texttt{AppHeader.vue}：顶部 RAG 模式切换开关（Multimodal / Text-only），通过 props 透传至 API 调用层。
+\end{itemize}
+
+\subsection{VLM Prompt 设计}
+
+系统在三个环节调用 GLM-4.6V，每个环节的 prompt 设计如下。
+
+\subsubsection{图表摘要 Prompt（离线索引阶段）}
+
+对图像元素，prompt 要求 VLM 描述图表类型、关键数值与趋势；对表格元素，以 Markdown 格式传入原始表格，要求 VLM 概括字段含义与核心对比：
+
+\begin{lstlisting}[style=pythonstyle]
+# 图像摘要 prompt（简化展示）
+"你是专业文档分析助手。仔细观察这张图片，生成简洁但信息丰富的文本描述。
+ 要求：
+ 1. 描述图表类型（折线图/柱状图/散点图等）
+ 2. 概括主要趋势、关键数值或核心结论
+ 3. 提及图例/坐标轴的关键信息
+ 4. 用中文回答，100-200字以内"
+\end{lstlisting}
+
+摘要以纯文本形式存入 ChromaDB，同时在元数据中记录原始图片路径，支持后续代理召回。
+
+\subsubsection{答案生成 Prompt（在线推理阶段）}
+
+多模态模式下，将检索到的文本上下文与原始图片一并构造 content array 传入 GLM-4.6V；纯文本模式仅传文本。核心 system prompt 如下：
+
+\begin{lstlisting}[style=pythonstyle]
+SYSTEM_PROMPT = """你是专业的文档问答助手。根据提供的文档内容
+（包括文本片段、表格和图片），准确回答用户的问题。
+严格要求：
+1. 只根据提供的文档内容回答，不要编造信息
+2. 回答结束后必须标注引用来源：
+   <citation page="页码" type="类型" label="标签"/>
+3. 如果文档内容无法回答，明确说明"根据提供的文档内容无法回答"
+4. 回答要简洁准确，突出关键数据和结论"""
+
+# 纯文本开放基线的 prompt 则允许推断：
+OPEN_SYSTEM_PROMPT = """...优先根据文档内容直接回答。
+若文档没有直接信息，可基于文档中的相关上下文进行合理推断，
+并在回答末尾注明"（推断）"..."""
+\end{lstlisting}
+
+两个 prompt 的核心差异在于对"无证据时"的处理策略：保守 prompt 要求明确拒答，开放 prompt 允许基于间接证据推断。这正是三路消融实验中"保守基线"与"开放基线"行为差异的根本来源。
+
+% ================================================================
+%  五、实验
 % ================================================================
 \section{实验}
 
@@ -636,30 +704,59 @@ McNemar 检验 $\chi^2=43.18$，$p<0.0001$，高度显著。
 
 \subsubsection{可视化分析}
 
-图~\ref{fig:comparison}~展示了三路基线在各题型上的准确率对比，
-可直观看到 figure 类的大幅差距与 table/text 类的基本持平。
-图~\ref{fig:visual}~聚焦视觉/非视觉分组，清晰呈现多模态优势的集中区间。
-图~\ref{fig:heatmap}~为每道题的 ANLS 得分热图，纵向比较三路基线在每道题上的表现，
-深色区域（得分低）集中在视觉类题目的保守基线行，与量化结论吻合。
+\textbf{图~\ref{fig:comparison}（三路基线按题型准确率对比）}：
+柱状图从左到右依次为 figure、table、text 三类题型，三组柱分别对应三路基线。
+最显著的特征是 figure 类中三条柱高度的极端不对称：多模态柱（65\%）远高于保守柱（18\%），
+而 table 和 text 两类中三条柱几乎等高。
+这一视觉模式直接支持了核心论点：\textbf{多模态优势高度集中于图表类题目，
+对文本/表格类题目不产生影响}。
+值得关注的是开放基线在 figure 类的 42\%——它显著高于保守基线（18\%），
+说明允许推断确实有帮助，但与多模态的 65\% 仍有 23 pp 的差距，
+证明这部分差距无法通过"放开推断限制"来弥合，必须依赖真实的视觉信息。
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{../evaluation/figures/fig1_main_comparison.png}
-    \caption{三路基线按题型准确率对比。figure 类差距达 47 pp，table/text 类三路基本持平。}
+    \caption{三路基线按题型准确率对比。figure 类差距达 47 pp，table/text 类三路基本持平；
+    开放基线在 figure 类（42\%）介于两者之间，说明多模态优势并非全来自"拒答偏差"。}
     \label{fig:comparison}
 \end{figure}
+
+\textbf{图~\ref{fig:visual}（视觉题 vs 非视觉题三路准确率对比）}：
+左侧视觉题组中，三路基线的准确率形成明显梯度（65\% / 42\% / 18\%），
+与 figure 类分析结论一致。
+右侧非视觉题组中，三条柱高度几乎相同（74\% / 75\% / 72\%），
+差距不超过 3 pp，统计上不显著（McNemar $p=0.683$）。
+两组之间的对比揭示了一个重要性质：\textbf{视觉模块的引入是"加法"而非"乘法"——
+它只在需要图像的题目上贡献增量，不干扰不需要图像的题目}。
+这一性质使系统在混合文档场景下具有良好的鲁棒性。
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75\textwidth]{../evaluation/figures/fig2_visual_split.png}
-    \caption{视觉题（左）vs 非视觉题（右）三路准确率对比。视觉题差距高度显著（$p<0.0001$），非视觉题无显著差异（$p=0.683$）。}
+    \caption{视觉题（左）vs 非视觉题（右）三路准确率对比。
+    视觉题组差距高度显著（$p<0.0001$）；非视觉题组三路等效（$p=0.683$），
+    印证了视觉模块"按需启用、不引入噪声"的设计目标。}
     \label{fig:visual}
 \end{figure}
+
+\textbf{图~\ref{fig:heatmap}（每道题 ANLS 得分热图）}：
+热图的三行分别对应多模态 RAG、纯文本保守和纯文本开放，列对应 200 道题（按文档顺序排列）。
+从中可以观察到几个规律：
+（1）保守基线行在约 q36–q105 区间（对应 figure 类集中题目）出现大量深色（低分）区域，
+而多模态行同一区域颜色明显更浅，两行的色差最为突出；
+（2）多模态行自身也存在若干深色格子，主要集中在 hard 难度题目（q18、q20 等），
+对应前述 VLM 视觉误判的失败模式；
+（3）三行在表格类和文本类题目（约 q100–q200）区域颜色分布基本一致，
+保守基线在此区间的深色格子大幅减少，与"非视觉题三路等效"的量化结论吻合。
+热图整体呈现的色差模式，是对量化指标的直观佐证。
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{../evaluation/figures/fig3_per_question_heatmap.png}
-    \caption{每道题 ANLS 得分热图（行：三种模式，列：题号）。深色区域集中于视觉类题目的保守基线行。}
+    \caption{每道题 ANLS 得分热图（行：三种模式，列：题号）。
+    保守基线行在 figure 类题目区间（约 q1–q100）出现大量深色，
+    多模态行在同区间颜色显著更浅；三行在非视觉类题目区间颜色趋于一致。}
     \label{fig:heatmap}
 \end{figure}
 
@@ -758,7 +855,7 @@ IMF 经济报告准确率最低（56\%），
           推测是"允许推断"的 prompt 使模型生成了更长的思维链。
 \end{enumerate}
 
-\section{局限性与未来工作}：
+\section{局限性与未来工作}
 \begin{enumerate}
     \item \textbf{英文文档跨语言处理有待改进}：
     系统的 VLM 摘要和生成 prompt 目前以中文为主，英文文档的图表摘要由 GLM-4.6V 以中文描述，
